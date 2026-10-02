@@ -4,9 +4,10 @@
  */
 
 // Dynamically determine API Base URL
+// Supports localhost, direct LAN IP (192.168.x.x), and any global cloud/tunnel domain
 const API_BASE = window.location.protocol === 'file:' 
   ? 'http://localhost:5000/api'
-  : (window.location.origin.includes(':5000') ? '/api' : (window.location.port ? '/api' : 'http://localhost:5000/api'));
+  : '/api';
 
 /**
  * Standard fetch wrapper with JWT authorization and unified error extraction

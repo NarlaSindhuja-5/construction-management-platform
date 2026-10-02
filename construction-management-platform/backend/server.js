@@ -86,11 +86,11 @@ app.use(errorHandler);
 
 // Start Server
 if (process.env.NODE_ENV !== 'test') {
-  app.listen(PORT, async () => {
+  app.listen(PORT, '0.0.0.0', async () => {
     console.log('================================================================');
     console.log('  CONSTRUCTION MANAGEMENT & RESOURCE BOOKING PLATFORM');
-    console.log(`  Backend API Server listening on: http://localhost:${PORT}`);
-    console.log(`  Frontend Web Application:        http://localhost:${PORT}`);
+    console.log(`  Local URL:        http://localhost:${PORT}`);
+    console.log(`  Network/LAN URL:  http://192.168.0.104:${PORT}`);
     console.log('================================================================');
     await testConnection();
   });
