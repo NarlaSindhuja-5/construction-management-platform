@@ -104,7 +104,7 @@ $$(S_{\text{existing}} \le E_{\text{new}}) \land (E_{\text{existing}} \ge S_{\te
 
 ### Step 1: Clone Repository
 ```bash
-git clone https://github.com/yourusername/construction-management-platform.git
+git clone https://github.com/NarlaSindhuja-5/construction-management-platform.git
 cd construction-management-platform
 ```
 
@@ -246,7 +246,7 @@ git add .
 git commit -m "feat: complete end-to-end construction management and resource booking platform"
 
 # 4. Link your remote GitHub repository
-git remote add origin https://github.com/yourusername/construction-management-platform.git
+git remote add origin https://github.com/NarlaSindhuja-5/construction-management-platform.git
 
 # 5. Push to GitHub
 git branch -M main
