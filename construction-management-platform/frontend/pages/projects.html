@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projects | Construction Management Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item active">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">Loading...</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out" style="color:#ef4444; border-color:rgba(239,68,68,0.3); padding:0.3rem 0.5rem;">
+            ⏻
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1>Construction Projects</h1>
+            <p>Manage project lifecycles, milestones, client contracts, and financial allocations</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="openCreateProjectModal()">
+            <span>+ Create Project</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-search">
+            <input type="text" id="project-search" class="form-control" placeholder="Search project name, client, or location...">
+          </div>
+          <div class="filter-item">
+            <select id="project-status-filter" class="form-select">
+              <option value="">All Statuses</option>
+              <option value="PLANNED">Planned</option>
+              <option value="ACTIVE">Active</option>
+              <option value="COMPLETED">Completed</option>
+              <option value="ON_HOLD">On Hold</option>
+              <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Projects Table Card -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Client</th>
+                  <th>Schedule</th>
+                  <th>Allocated Budget</th>
+                  <th>Expenses Spent</th>
+                  <th>Overall Progress</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="projects-table-body">
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:2rem;">Loading construction projects...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Create / Edit Project Modal -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title" id="project-modal-title">Create New Construction Project</h3>
+        <button class="modal-close" onclick="closeModal('project-modal')">&times;</button>
+      </div>
+      <form id="project-form">
+        <input type="hidden" id="project-modal-id">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="project-name">Project Title <span class="required">*</span></label>
+              <input type="text" id="project-name" class="form-control" placeholder="e.g. Hyderabad Road Development Project" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="client-name">Client Name <span class="required">*</span></label>
+              <input type="text" id="client-name" class="form-control" placeholder="e.g. GHMC Infrastructure Corp" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="project-type">Project Type <span class="required">*</span></label>
+              <input type="text" id="project-type" class="form-control" placeholder="e.g. Highway, Commercial, Residential" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="project-location">Location / City <span class="required">*</span></label>
+              <input type="text" id="project-location" class="form-control" placeholder="e.g. Gachibowli, Hyderabad" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="start-date">Start Date <span class="required">*</span></label>
+              <input type="date" id="start-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="end-date">Expected End Date <span class="required">*</span></label>
+              <input type="date" id="end-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="project-budget">Total Allocated Budget (₹ INR) <span class="required">*</span></label>
+              <input type="number" id="project-budget" class="form-control" placeholder="e.g. 12500000" min="0" step="1000" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="project-status">Project Status <span class="required">*</span></label>
+              <select id="project-status" class="form-select" required>
+                <option value="PLANNED">PLANNED</option>
+                <option value="ACTIVE" selected>ACTIVE</option>
+                <option value="ON_HOLD">ON_HOLD</option>
+                <option value="COMPLETED">COMPLETED</option>
+                <option value="CANCELLED">CANCELLED</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="project-description">Scope of Work &amp; Description</label>
+            <textarea id="project-description" class="form-control" rows="3" placeholder="Provide operational scope, milestones, and site technical specs..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('project-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Project Details</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script src="/js/projects.js"></script>
+</body>
+</html>

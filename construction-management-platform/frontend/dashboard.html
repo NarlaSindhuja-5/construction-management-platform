@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Construction Management & Resource Booking Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item active">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">Loading...</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out" style="color:#ef4444; border-color:rgba(239,68,68,0.3); padding:0.3rem 0.5rem;">
+            ⏻
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-main">
+      <!-- Topbar Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1>Executive Dashboard</h1>
+            <p>Real-time construction intelligence, resource deployment & date-based bookings</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="/pages/machinery.html" class="btn btn-outline btn-sm">
+            <span>🚜 Search Machinery</span>
+          </a>
+          <a href="/pages/bookings.html" class="btn btn-primary btn-sm">
+            <span>📅 Booking Requests</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Dashboard Viewport -->
+      <div class="page-content">
+        <!-- 5 KPI Stat Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">📁</div>
+            <div class="stat-info">
+              <div class="stat-label">Active Projects</div>
+              <div class="stat-value" id="stat-active-projects">-</div>
+              <div class="stat-subtext">Under active execution</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon amber">🏗️</div>
+            <div class="stat-info">
+              <div class="stat-label">Active Sites</div>
+              <div class="stat-value" id="stat-active-sites">-</div>
+              <div class="stat-subtext">Work locations</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon green">👷</div>
+            <div class="stat-info">
+              <div class="stat-label">Active Workers</div>
+              <div class="stat-value" id="stat-total-workers">-</div>
+              <div class="stat-subtext">Laborers & operators</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon purple">🚜</div>
+            <div class="stat-info">
+              <div class="stat-label">Available Machinery</div>
+              <div class="stat-value" id="stat-available-machinery">-</div>
+              <div class="stat-subtext">Fleet ready to deploy</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon rose">⏳</div>
+            <div class="stat-info">
+              <div class="stat-label">Pending Bookings</div>
+              <div class="stat-value" id="stat-pending-bookings">-</div>
+              <div class="stat-subtext">Awaiting owner approval</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Overview Card -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">💼 Financial & Budget Utilization Overview</h2>
+            <a href="/pages/expenses.html" class="btn btn-outline btn-sm">View Itemized Expenses →</a>
+          </div>
+          <div class="card-body">
+            <div class="finance-metrics-strip">
+              <div class="finance-metric-item">
+                <div class="f-label">Total Projects Budget</div>
+                <div class="f-val" id="finance-total-budget">₹0</div>
+              </div>
+              <div class="finance-metric-item">
+                <div class="f-label">Total Cumulative Spent</div>
+                <div class="f-val spent" id="finance-total-spent">₹0</div>
+              </div>
+              <div class="finance-metric-item">
+                <div class="f-label">Remaining Budget Balance</div>
+                <div class="f-val positive" id="finance-remaining-budget">₹0</div>
+              </div>
+            </div>
+
+            <div>
+              <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:700; color:var(--text-muted); margin-bottom:0.35rem;">
+                <span>Portfolio Budget Utilization</span>
+                <span id="finance-utilization-rate">0%</span>
+              </div>
+              <div class="progress-bar-wrap" style="height: 10px;">
+                <div class="progress-bar-fill" id="finance-progress-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Grid: Projects Progress & System Alerts -->
+        <div class="dashboard-grid-2">
+          <!-- Projects Progress List -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">📈 Construction Projects Milestones</h2>
+              <a href="/pages/projects.html" class="btn btn-outline btn-sm">All Projects →</a>
+            </div>
+            <div class="card-body">
+              <div id="projects-progress-list">
+                <p class="text-muted">Loading projects milestone data...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Intelligent Alerts -->
+          <div class="card">
+            <div class="card-header">
+              <h2 class="card-title">🚨 System Alerts & Notifications</h2>
+            </div>
+            <div class="card-body">
+              <div id="alerts-list" class="alerts-list">
+                <p class="text-muted">Checking system alerts...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

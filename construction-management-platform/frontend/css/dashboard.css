@@ -1,0 +1,241 @@
+/* ==========================================================================
+   Dashboard Specific Styles: KPI Metric Cards, Budget Gauges & Alerts
+   ========================================================================== */
+
+/* Metric Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.stat-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.35rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.stat-icon.blue { background-color: #eff6ff; color: #2563eb; }
+.stat-icon.amber { background-color: #fffbeb; color: #d97706; }
+.stat-icon.green { background-color: #ecfdf5; color: #059669; }
+.stat-icon.purple { background-color: #faf5ff; color: #7e22ce; }
+.stat-icon.cyan { background-color: #f0fdf4; color: #0891b2; }
+.stat-icon.rose { background-color: #fff1f2; color: #e11d48; }
+
+.stat-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.1;
+}
+
+.stat-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+/* Two Column Layout */
+.dashboard-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Financial Overview Card */
+.finance-metrics-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f8fafc;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  margin-bottom: 1.25rem;
+}
+
+.finance-metric-item {
+  text-align: center;
+}
+
+.finance-metric-item .f-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.finance-metric-item .f-val {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.finance-metric-item .f-val.positive { color: var(--color-success); }
+.finance-metric-item .f-val.spent { color: var(--accent-blue); }
+
+/* Progress Bar Component */
+.progress-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  border-radius: var(--radius-full);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.progress-bar-fill.success {
+  background: linear-gradient(90deg, #059669, #10b981);
+}
+
+.progress-bar-fill.warning {
+  background: linear-gradient(90deg, #d97706, #f59e0b);
+}
+
+.progress-bar-fill.danger {
+  background: linear-gradient(90deg, #dc2626, #ef4444);
+}
+
+/* Project Progress Card Items */
+.project-progress-item {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.project-progress-item:last-child {
+  border-bottom: none;
+}
+
+.project-progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.35rem;
+}
+
+.project-progress-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.project-progress-percent {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+}
+
+.project-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 0.35rem;
+}
+
+/* Alerts System */
+.alerts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.alert-item {
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  font-size: 0.85rem;
+}
+
+.alert-item.severity-CRITICAL {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+  border-left: 4px solid #dc2626;
+  color: #991b1b;
+}
+
+.alert-item.severity-HIGH,
+.alert-item.severity-WARNING {
+  background-color: #fffbeb;
+  border-color: #fef3c7;
+  border-left: 4px solid #d97706;
+  color: #92400e;
+}
+
+.alert-item.severity-INFO {
+  background-color: #f0fdf4;
+  border-color: #bbf7d0;
+  border-left: 4px solid #16a34a;
+  color: #166534;
+}
+
+.alert-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.alert-content {
+  flex: 1;
+}
+
+.alert-title {
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+}
+
+.alert-desc {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}

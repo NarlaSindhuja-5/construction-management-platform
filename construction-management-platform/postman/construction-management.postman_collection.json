@@ -1,0 +1,189 @@
+{
+  "info": {
+    "name": "Construction Management & Resource Booking Platform",
+    "_postman_id": "9a38f712-8419-482d-8622-c10ba4359d99",
+    "description": "Complete Postman API Collection covering Auth, Projects, Sites, Machinery Marketplace, Date-based Bookings, Owner Approvals, Tasks, Workforce, Materials, Expenses, Dashboard, and Reports.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "authToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Login as Contractor",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"contractor@buildpro.com\",\n  \"password\": \"Contractor@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Login as Machinery Owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"owner@buildpro.com\",\n  \"password\": \"Owner@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+          }
+        },
+        {
+          "name": "Get Profile / Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Machinery & Availability",
+      "item": [
+        {
+          "name": "List All Machinery",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/machinery?all=true", "host": ["{{baseUrl}}"], "path": ["machinery"], "query": [{ "key": "all", "value": "true" }] }
+          }
+        },
+        {
+          "name": "Check Availability (Valid Dates)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/machinery/1/availability?startDate=2026-10-25&endDate=2026-10-30", "host": ["{{baseUrl}}"], "path": ["machinery", "1", "availability"] }
+          }
+        },
+        {
+          "name": "Check Availability (Overlapping Dates - Conflict Expected)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/machinery/2/availability?startDate=2026-09-15&endDate=2026-09-25", "host": ["{{baseUrl}}"], "path": ["machinery", "2", "availability"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Machinery Bookings",
+      "item": [
+        {
+          "name": "Request Booking (Contractor)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"machinery_id\": 1,\n  \"project_id\": 1,\n  \"site_id\": 1,\n  \"start_date\": \"2026-10-10\",\n  \"end_date\": \"2026-10-19\",\n  \"operator_required\": true,\n  \"transport_charge\": 4000,\n  \"additional_charge\": 1000\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/machinery-bookings", "host": ["{{baseUrl}}"], "path": ["machinery-bookings"] }
+          }
+        },
+        {
+          "name": "Approve Booking (Owner Transaction)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/machinery-bookings/2/approve", "host": ["{{baseUrl}}"], "path": ["machinery-bookings", "2", "approve"] }
+          }
+        },
+        {
+          "name": "Reject Booking (Owner)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{authToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejection_reason\": \"Machine currently under scheduled preventive maintenance.\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/machinery-bookings/2/reject", "host": ["{{baseUrl}}"], "path": ["machinery-bookings", "2", "reject"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects & Sites",
+      "item": [
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"] }
+          }
+        },
+        {
+          "name": "Get Project Resources",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/projects/1/resources", "host": ["{{baseUrl}}"], "path": ["projects", "1", "resources"] }
+          }
+        },
+        {
+          "name": "Get All Sites",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/sites", "host": ["{{baseUrl}}"], "path": ["sites"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Reports",
+      "item": [
+        {
+          "name": "Get Dashboard Summary KPIs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/summary", "host": ["{{baseUrl}}"], "path": ["dashboard", "summary"] }
+          }
+        },
+        {
+          "name": "Get System Alerts",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/dashboard/alerts", "host": ["{{baseUrl}}"], "path": ["dashboard", "alerts"] }
+          }
+        },
+        {
+          "name": "Get Project Analytical Report",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{authToken}}" }],
+            "url": { "raw": "{{baseUrl}}/reports/project/1", "host": ["{{baseUrl}}"], "path": ["reports", "project", "1"] }
+          }
+        }
+      ]
+    }
+  ]
+}

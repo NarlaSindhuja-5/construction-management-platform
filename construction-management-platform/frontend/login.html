@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Construction Management & Resource Booking Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <style>
+    .auth-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 100%);
+      padding: 1.5rem;
+    }
+    .auth-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+    }
+    .auth-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 2rem 2rem 1.5rem 2rem;
+      text-align: center;
+    }
+    .auth-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .auth-body {
+      padding: 2rem;
+    }
+    .auth-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 1.5rem;
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all var(--transition-fast);
+    }
+    .auth-tab.active {
+      color: var(--accent-blue);
+      border-bottom-color: var(--accent-blue);
+    }
+    .demo-accounts-box {
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
+      border-top: 1px dashed var(--border-color);
+    }
+    .demo-btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    .btn-demo {
+      font-size: 0.75rem;
+      padding: 0.5rem;
+      text-align: center;
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-main);
+      transition: background 0.15s;
+    }
+    .btn-demo:hover {
+      background: #e2e8f0;
+      border-color: #cbd5e1;
+    }
+  </style>
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-brand">
+        <div class="brand-icon">⚡</div>
+        <div style="text-align: left;">
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+      <p style="font-size: 0.825rem; color: #94a3b8;">
+        Enterprise Construction Management & Date-Based Resource Booking Platform
+      </p>
+    </div>
+
+    <div class="auth-body">
+      <!-- Tabs -->
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address <span class="required">*</span></label>
+          <input type="email" id="login-email" class="form-control" placeholder="name@company.com" required value="contractor@buildpro.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password <span class="required">*</span></label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required value="Contractor@123">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem; margin-top: 0.5rem;">
+          Sign In to Workspace →
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="reg-name">Full Name <span class="required">*</span></label>
+          <input type="text" id="reg-name" class="form-control" placeholder="e.g. Ramesh Chandra" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-email">Email Address <span class="required">*</span></label>
+          <input type="email" id="reg-email" class="form-control" placeholder="name@domain.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="reg-phone">Phone Number</label>
+          <input type="tel" id="reg-phone" class="form-control" placeholder="+91 9876543210">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="reg-role">Role <span class="required">*</span></label>
+            <select id="reg-role" class="form-select" required>
+              <option value="CONTRACTOR">Contractor / PM</option>
+              <option value="OWNER">Machinery Owner</option>
+              <option value="SITE_MANAGER">Site Manager</option>
+              <option value="ADMIN">System Admin</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="reg-password">Password <span class="required">*</span></label>
+            <input type="password" id="reg-password" class="form-control" placeholder="Min 6 chars" required minlength="6">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem; margin-top: 0.5rem;">
+          Create New Account →
+        </button>
+      </form>
+
+      <!-- Quick Demo Role Switcher for Faculty & Student Demonstration -->
+      <div class="demo-accounts-box">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; text-align: center;">
+          ⚡ 1-Click Demo Logins (Viva / Evaluation)
+        </div>
+        <div class="demo-btn-grid">
+          <button type="button" class="btn-demo" onclick="quickLogin('contractor@buildpro.com', 'Contractor@123')">
+            🚜 Contractor
+          </button>
+          <button type="button" class="btn-demo" onclick="quickLogin('owner@buildpro.com', 'Owner@123')">
+            🔑 Machine Owner
+          </button>
+          <button type="button" class="btn-demo" onclick="quickLogin('sitemanager@buildpro.com', 'SiteManager@123')">
+            🏗️ Site Manager
+          </button>
+          <button type="button" class="btn-demo" onclick="quickLogin('admin@buildpro.com', 'Admin@123')">
+            🛡️ Admin User
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    function switchAuthTab(tab) {
+      const loginTab = document.getElementById('tab-login');
+      const regTab = document.getElementById('tab-register');
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+
+      if (tab === 'login') {
+        loginTab.classList.add('active');
+        regTab.classList.remove('active');
+        loginForm.style.display = 'block';
+        regForm.style.display = 'none';
+      } else {
+        loginTab.classList.remove('active');
+        regTab.classList.add('active');
+        loginForm.style.display = 'none';
+        regForm.style.display = 'block';
+      }
+    }
+
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const res = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+        setAuth(res.token, res.user);
+        showToast('Login successful! Redirecting...', 'success');
+        setTimeout(() => { window.location.href = '/dashboard.html'; }, 500);
+      } catch (err) {
+        showToast(err.message || 'Login failed', 'error');
+      }
+    });
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById('reg-name').value,
+        email: document.getElementById('reg-email').value,
+        phone: document.getElementById('reg-phone').value,
+        role: document.getElementById('reg-role').value,
+        password: document.getElementById('reg-password').value
+      };
+
+      try {
+        const res = await apiRequest('/auth/register', {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        });
+        setAuth(res.token, res.user);
+        showToast('Account registered successfully! Redirecting...', 'success');
+        setTimeout(() => { window.location.href = '/dashboard.html'; }, 500);
+      } catch (err) {
+        showToast(err.message || 'Registration failed', 'error');
+      }
+    });
+
+    async function quickLogin(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+      switchAuthTab('login');
+
+      try {
+        const res = await apiRequest('/auth/login', {
+          method: 'POST',
+          body: JSON.stringify({ email, password })
+        });
+        setAuth(res.token, res.user);
+        showToast(`Signed in as ${res.user.role}! Redirecting...`, 'success');
+        setTimeout(() => { window.location.href = '/dashboard.html'; }, 400);
+      } catch (err) {
+        showToast(err.message || 'Login error', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

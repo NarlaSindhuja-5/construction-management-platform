@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BuildPro | End-to-End Construction Management & Resource Booking Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <style>
+    .hero-section {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      color: #ffffff;
+      padding: 4.5rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-block;
+      padding: 0.35rem 0.95rem;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.4);
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #60a5fa;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1.25rem;
+    }
+    .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.2;
+      max-width: 860px;
+      margin: 0 auto 1.25rem auto;
+      letter-spacing: -0.02em;
+    }
+    .hero-title span {
+      background: linear-gradient(90deg, #60a5fa, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      max-width: 680px;
+      margin: 0 auto 2.25rem auto;
+      line-height: 1.6;
+    }
+    .hero-cta {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      padding: 3.5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .feature-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .workflow-strip {
+      background: #ffffff;
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .workflow-steps {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      max-width: 1000px;
+      margin: 2rem auto 0 auto;
+    }
+    .wf-step {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.15rem;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--secondary-slate);
+    }
+    .wf-arrow {
+      color: var(--accent-blue);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Simple Nav -->
+  <header style="background:#0f172a; border-bottom:1px solid rgba(255,255,255,0.1); padding:1rem 2rem; display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; align-items:center; gap:0.75rem;">
+      <div class="brand-icon">⚡</div>
+      <div style="color:#ffffff; font-weight:800; font-size:1.1rem;">BuildPro Cloud</div>
+    </div>
+    <div style="display:flex; gap:0.75rem;">
+      <a href="/login.html" class="btn btn-outline btn-sm" style="color:#ffffff; border-color:rgba(255,255,255,0.3);">Sign In</a>
+      <a href="/dashboard.html" class="btn btn-primary btn-sm">Enter Workspace →</a>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <section class="hero-section">
+    <div class="hero-badge">Enterprise Full-Stack Architecture</div>
+    <h1 class="hero-title">
+      Construction Project Management &amp; <span>Date-Based Resource Booking</span>
+    </h1>
+    <p class="hero-desc">
+      Unify projects, sites, work milestones, inventory, and conflict-prevented equipment rental in one seamless MySQL platform.
+    </p>
+    <div class="hero-cta">
+      <a href="/login.html" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size:1rem;">
+        Launch Platform Demonstration →
+      </a>
+      <a href="/pages/machinery.html" class="btn btn-secondary" style="padding: 0.85rem 1.5rem; font-size:1rem;">
+        Browse Machinery Marketplace
+      </a>
+    </div>
+  </section>
+
+  <!-- Workflow Explanation -->
+  <section class="workflow-strip">
+    <h2 style="font-size:1.5rem; font-weight:800; color:var(--text-main);">The Core Construction &amp; Booking Pipeline</h2>
+    <p style="color:var(--text-muted); font-size:0.9rem; margin-top:0.35rem;">
+      Automated conflict prevention: A machine cannot have two confirmed bookings for overlapping dates.
+    </p>
+
+    <div class="workflow-steps">
+      <div class="wf-step">1. Create Project &amp; Site</div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">2. Search Machinery &amp; Check Dates</div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">3. Submit Booking Request</div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">4. Owner Approves via Transaction</div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">5. Auto-Added to Expenses</div>
+      <div class="wf-arrow">→</div>
+      <div class="wf-step">6. Live Dashboard &amp; Reports</div>
+    </div>
+  </section>
+
+  <!-- Features Grid -->
+  <section class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#eff6ff; color:#2563eb;">🚜</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Date-Based Booking</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        Strict conflict detection logic checks approved reservations and maintenance blocks to eliminate double bookings.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fef3c7; color:#d97706;">🔑</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Owner Approval Workflow</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        Machinery fleet owners receive booking requests, review contractor details, approve or reject with transactional integrity.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#ecfdf5; color:#059669;">💰</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Automated Project Expenses</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        When a machinery booking is confirmed, the rental cost automatically converts into a project expense and updates budget remaining.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#f3e8ff; color:#7e22ce;">👷</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Workforce &amp; Site Operations</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        Track skilled operators, masons, laborers, daily muster attendance, and task assignments across multiple sites.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#fff1f2; color:#e11d48;">📦</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Materials &amp; Low Stock Alerts</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        Automated threshold alerts when cement, steel, sand, or bitumen inventory falls below critical safety levels.
+      </p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon" style="background:#e0f2fe; color:#0284c7;">📈</div>
+      <h3 style="font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;">Daily Progress &amp; Audit</h3>
+      <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">
+        Site managers log daily achievements, machine usage hours, fuel costs, and site issues with print-ready reports.
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="background:#0f172a; color:#94a3b8; padding:2.5rem 2rem; text-align:center; font-size:0.85rem; border-top:1px solid rgba(255,255,255,0.08);">
+    <p>End-to-End Construction Management &amp; Resource Booking Platform</p>
+    <p style="font-size:0.75rem; margin-top:0.5rem; color:#64748b;">
+      Full-Stack Node.js • Express • MySQL (mysql2) • JWT • Vanilla JS &amp; CSS Architecture
+    </p>
+  </footer>
+
+</body>
+</html>
