@@ -5,8 +5,18 @@
 
 const fs = require('fs');
 const path = require('path');
-const mysql = require('mysql2/promise');
-require('dotenv').config({ path: path.join(__dirname, '../backend/.env') });
+
+// Resolve packages from backend/node_modules if running from database folder
+let mysql, dotenv;
+try {
+  mysql = require('mysql2/promise');
+  dotenv = require('dotenv');
+} catch (e) {
+  mysql = require(path.join(__dirname, '../backend/node_modules/mysql2/promise'));
+  dotenv = require(path.join(__dirname, '../backend/node_modules/dotenv'));
+}
+
+dotenv.config({ path: path.join(__dirname, '../backend/.env') });
 
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
