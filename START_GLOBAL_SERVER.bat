@@ -20,5 +20,5 @@ echo Once started, copy the 'https://*.trycloudflare.com' URL below and share it
 echo with judges, evaluators, faculty, or open it on your mobile phone!
 echo.
 echo ===============================================================================
-.\bin\cloudflared.exe tunnel --url http://127.0.0.1:5000
+.\bin\cloudflared.exe tunnel --protocol http2 --url http://127.0.0.1:5000
 pause
