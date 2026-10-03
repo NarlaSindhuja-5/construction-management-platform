@@ -1,0 +1,33 @@
+# Compiled Java / Maven target directories
+target/
+**/target/
+*.class
+
+# IDE and Editor configurations
+.idea/
+*.iml
+.vscode/
+*.ipr
+*.iws
+.settings/
+.project
+.classpath
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Environment files
+.env
+.env.local
+
+# Runtime uploads / media (leave directory structure intact via .gitkeep)
+uploads/*
+!uploads/.gitkeep
+backend/uploads/*
+!backend/uploads/.gitkeep

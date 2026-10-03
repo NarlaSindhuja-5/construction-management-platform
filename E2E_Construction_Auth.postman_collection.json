@@ -1,0 +1,2512 @@
+{
+  "info": {
+    "name": "E2E Construction Management System - Complete API Collection",
+    "description": "Postman Collection for Authentication, Profiles (Contractor, Laborer, Machinery Owner, Material Supplier), Projects, Machinery, Labor Assignments, and Construction Material Management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0. System Health",
+      "item": [
+        {
+          "name": "Health & DB Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Register - Machinery Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"machinery_owner_token\", jsonData.token);",
+                  "    console.log(\"Saved machinery_owner_token:\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"machinery.alex@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"Alex\",\n  \"lastName\": \"Vance\",\n  \"phoneNumber\": \"+1-555-0912\",\n  \"role\": \"MACHINERY_OWNER\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Login - Machinery Owner",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"machinery_owner_token\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"machinery.alex@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Machinery Owner Profile",
+      "item": [
+        {
+          "name": "Create Machinery Owner Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Titan Heavy Fleet LLC\",\n  \"taxId\": \"TX-TAX-884920\",\n  \"location\": \"Dallas, Texas\",\n  \"address\": \"8800 Industrial Highway\",\n  \"city\": \"Dallas\",\n  \"state\": \"Texas\",\n  \"description\": \"Certified heavy machinery rentals\",\n  \"profileImage\": \"https://images.unsplash.com/photo-1581094288338-2314dddb7ece?q=80&w=300\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery-owners/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery-owners",
+                "profile"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Machinery Listing",
+      "item": [
+        {
+          "name": "Create Machine (POST /api/machinery)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"machine_id\", jsonData.id);",
+                  "    console.log(\"Saved machine_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CAT 320 GC Hydraulic Excavator\",\n  \"category\": \"EARTHWORK\",\n  \"manufacturer\": \"Caterpillar\",\n  \"model\": \"320 GC\",\n  \"manufacturingYear\": 2023,\n  \"capacity\": \"1.0 m3 bucket (20.5 Ton Operating Weight)\",\n  \"fuelType\": \"DIESEL\",\n  \"transmission\": \"HYDROSTATIC\",\n  \"location\": \"Dallas Industrial Yard, Texas\",\n  \"rentalPricePerDay\": 480.00,\n  \"description\": \"High-efficiency 20-ton excavator with Cat C4.4 engine, standard digging bucket, and low fuel consumption.\",\n  \"availabilityStatus\": \"AVAILABLE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery"
+              ]
+            }
+          }
+        },
+        {
+          "name": "View Machine by ID (GET /api/machinery/{id})",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Machine (PUT /api/machinery/{id})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"CAT 320 GC Hydraulic Excavator (Updated)\",\n  \"category\": \"EARTHWORK\",\n  \"manufacturer\": \"Caterpillar\",\n  \"model\": \"320 GC Pro\",\n  \"manufacturingYear\": 2023,\n  \"capacity\": \"1.2 m3 bucket (21 Ton Operating Weight)\",\n  \"fuelType\": \"DIESEL\",\n  \"transmission\": \"HYDROSTATIC\",\n  \"location\": \"Dallas Industrial Yard, Texas\",\n  \"rentalPricePerDay\": 520.00,\n  \"description\": \"Upgraded: High-efficiency 21-ton excavator with heavy-duty rock bucket and quick coupler.\",\n  \"availabilityStatus\": \"AVAILABLE\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Owner's Machines (GET /api/machinery/my-machines)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/my-machines",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "my-machines"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Machines (GET /api/machinery?search=Excavator)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery?search=Excavator",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Excavator"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Category (GET /api/machinery?category=EARTHWORK)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery?category=EARTHWORK",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "EARTHWORK"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Location (GET /api/machinery?location=Dallas)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery?location=Dallas",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery"
+              ],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "Dallas"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Availability (GET /api/machinery?availability=AVAILABLE)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery?availability=AVAILABLE",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery"
+              ],
+              "query": [
+                {
+                  "key": "availability",
+                  "value": "AVAILABLE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Machine (DELETE /api/machinery/{id})",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Machinery Image Upload & Management",
+      "item": [
+        {
+          "name": "Upload Machine Image - FRONT (POST multipart)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"image_id\", jsonData.id);",
+                  "    pm.collectionVariables.set(\"image_url\", jsonData.fileUrl);",
+                  "    console.log(\"Uploaded image ID:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "imageType",
+                  "value": "FRONT",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "images"
+              ]
+            },
+            "description": "Uploads an actual photo with imageType (FRONT, REAR, LEFT_SIDE, RIGHT_SIDE, CABIN, ENGINE, TYRE, HYDRAULIC, HOUR_METER, OTHER)."
+          }
+        },
+        {
+          "name": "Upload Machine Image - ENGINE (POST multipart)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "imageType",
+                  "value": "ENGINE",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "images"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get All Images for Machine (GET /api/machinery/{id}/images)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/images",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "images"
+              ]
+            },
+            "description": "Returns all image metadata records including imageType, fileName, fileUrl, fileSize, and uploadDate."
+          }
+        },
+        {
+          "name": "View/Download Image File (GET /api/machinery/images/{file})",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080{{image_url}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "images",
+                "example.jpg"
+              ]
+            },
+            "description": "Streams the raw image file for embedding in browser <img> tags or downloading."
+          }
+        },
+        {
+          "name": "Delete Machine Image (DELETE /api/machinery/images/{imageId})",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/images/{{image_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "images",
+                "{{image_id}}"
+              ]
+            },
+            "description": "Deletes the image file from disk and its metadata record from MySQL. Allowed only by machine owner."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Machine Conditions",
+      "item": [
+        {
+          "name": "Create Condition Report (POST /api/machinery/{machineId}/condition)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"condition_id\", jsonData.id);",
+                  "    console.log(\"Saved condition_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"engine\": \"GOOD\",\n  \"engineOil\": \"NORMAL\",\n  \"coolant\": \"NORMAL\",\n  \"transmission\": \"GOOD\",\n  \"hydraulicSystem\": \"GOOD\",\n  \"battery\": \"EXCELLENT\",\n  \"brakes\": \"GOOD\",\n  \"tyres\": \"80%\",\n  \"lights\": \"GOOD\",\n  \"body\": \"GOOD\",\n  \"leakage\": \"NO\",\n  \"startingCondition\": \"GOOD\",\n  \"inspectionDate\": \"2026-10-03\",\n  \"lastServiceDate\": \"2026-09-15\",\n  \"nextServiceDate\": \"2026-12-15\",\n  \"engineHours\": 1250.5,\n  \"odometer\": 45000.0,\n  \"remarks\": \"Machine is in very good working condition. Regular servicing completed.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/condition",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "condition"
+              ]
+            },
+            "description": "Create a condition report for a machine. Only machine owner or authorized admin allowed."
+          }
+        },
+        {
+          "name": "Update Condition Report by Condition ID (PUT /api/machinery/conditions/{conditionId})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"engine\": \"EXCELLENT\",\n  \"engineOil\": \"NORMAL\",\n  \"coolant\": \"NORMAL\",\n  \"transmission\": \"GOOD\",\n  \"hydraulicSystem\": \"GOOD\",\n  \"battery\": \"EXCELLENT\",\n  \"brakes\": \"GOOD\",\n  \"tyres\": \"80%\",\n  \"lights\": \"EXCELLENT\",\n  \"body\": \"GOOD\",\n  \"leakage\": \"NO\",\n  \"startingCondition\": \"EXCELLENT\",\n  \"inspectionDate\": \"2026-10-03\",\n  \"lastServiceDate\": \"2026-09-15\",\n  \"nextServiceDate\": \"2026-12-15\",\n  \"engineHours\": 1260.0,\n  \"odometer\": 45150.0,\n  \"remarks\": \"Updated post-inspection. Engine tuned to excellent.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/conditions/{{condition_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "conditions",
+                "{{condition_id}}"
+              ]
+            },
+            "description": "Updates an existing condition report. Only machine owner or admin allowed."
+          }
+        },
+        {
+          "name": "Update Current Machine Condition (PUT /api/machinery/{machineId}/condition)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"engine\": \"GOOD\",\n  \"engineOil\": \"NORMAL\",\n  \"coolant\": \"NORMAL\",\n  \"transmission\": \"GOOD\",\n  \"hydraulicSystem\": \"GOOD\",\n  \"battery\": \"GOOD\",\n  \"brakes\": \"GOOD\",\n  \"tyres\": \"60%\",\n  \"lights\": \"GOOD\",\n  \"body\": \"FAIR\",\n  \"leakage\": \"NO\",\n  \"startingCondition\": \"GOOD\",\n  \"inspectionDate\": \"2026-10-03\",\n  \"lastServiceDate\": \"2026-09-15\",\n  \"nextServiceDate\": \"2026-12-15\",\n  \"engineHours\": 1300.0,\n  \"odometer\": 46000.0,\n  \"remarks\": \"Tyres wear observed at 60%. Next service scheduled in December.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/condition",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "condition"
+              ]
+            },
+            "description": "Updates the current/latest condition report for the machine."
+          }
+        },
+        {
+          "name": "View Machine Condition Report (GET /api/machinery/{machineId}/condition)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/condition",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "condition"
+              ]
+            },
+            "description": "Retrieves the current/latest condition report for the machine."
+          }
+        },
+        {
+          "name": "View Machine Condition History (GET /api/machinery/{machineId}/conditions/history)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/conditions/history",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "conditions",
+                "history"
+              ]
+            },
+            "description": "Retrieves complete chronological history of machine condition inspections."
+          }
+        },
+        {
+          "name": "View Condition Report by Condition ID (GET /api/machinery/conditions/{conditionId})",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/conditions/{{condition_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "conditions",
+                "{{condition_id}}"
+              ]
+            },
+            "description": "Retrieves specific condition report by its unique ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Machinery Maintenance",
+      "item": [
+        {
+          "name": "Add Maintenance Record (POST /api/machinery/{machineId}/maintenance)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"maintenance_id\", jsonData.id);",
+                  "    console.log(\"Saved maintenance_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenanceDate\": \"2026-10-01\",\n  \"maintenanceType\": \"ENGINE_SERVICE\",\n  \"description\": \"500-hour comprehensive engine check, fuel injector overhaul and filter change.\",\n  \"cost\": 25000.00,\n  \"serviceProvider\": \"Cat Heavy Equipment Care Services\",\n  \"engineHours\": 1250.0,\n  \"nextServiceDate\": \"2027-04-01\",\n  \"remarks\": \"Engine running smoothly post-calibration. Next service in 6 months.\",\n  \"images\": [\n    \"/api/machinery/images/engine_service_receipt.jpg\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/maintenance",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "maintenance"
+              ]
+            },
+            "description": "Records a new maintenance event for the machinery. Only machine owner or authorized admin allowed."
+          }
+        },
+        {
+          "name": "Update Maintenance Record (PUT /api/machinery/maintenance/{maintenanceId})",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"maintenanceDate\": \"2026-10-01\",\n  \"maintenanceType\": \"ENGINE_SERVICE\",\n  \"description\": \"500-hour comprehensive engine check, valve adjustment, fuel injector overhaul and filter change.\",\n  \"cost\": 27500.00,\n  \"serviceProvider\": \"Cat Heavy Equipment Care Services - Main Yard\",\n  \"engineHours\": 1255.0,\n  \"nextServiceDate\": \"2027-04-01\",\n  \"remarks\": \"Adjusted invoice cost after final tax invoice receipt.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/maintenance/{{maintenance_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "maintenance",
+                "{{maintenance_id}}"
+              ]
+            },
+            "description": "Updates an existing maintenance record. Only machine owner or authorized admin allowed."
+          }
+        },
+        {
+          "name": "View Maintenance History (GET /api/machinery/{machineId}/maintenance)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/maintenance?sort=desc",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "maintenance"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "desc",
+                  "description": "desc (newest to oldest) or asc (oldest to newest)"
+                }
+              ]
+            },
+            "description": "View full maintenance history in chronological order."
+          }
+        },
+        {
+          "name": "View Maintenance Record by ID (GET /api/machinery/maintenance/{maintenanceId})",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/maintenance/{{maintenance_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "maintenance",
+                "{{maintenance_id}}"
+              ]
+            },
+            "description": "View details of a single maintenance record."
+          }
+        },
+        {
+          "name": "Delete Incorrect Maintenance Record (DELETE /api/machinery/maintenance/{maintenanceId})",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/maintenance/{{maintenance_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "maintenance",
+                "{{maintenance_id}}"
+              ]
+            },
+            "description": "Deletes an incorrect maintenance record. Only authorized machine owner or admin allowed."
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Machinery Bookings",
+      "item": [
+        {
+          "name": "1. Search Verified Machinery (GET /api/machinery/verified)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/verified",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "verified"
+              ]
+            },
+            "description": "1. Contractor searches for verified machinery available for public booking."
+          }
+        },
+        {
+          "name": "2-7. Open Machine Profile (Specs, Images, Condition, History, Availability) (GET /api/machinery/{id}/profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "profile"
+              ]
+            },
+            "description": "2-7. View complete machine profile: specifications, photographs, condition report, maintenance logs, and calendar availability."
+          }
+        },
+        {
+          "name": "View Machine Availability Calendar (GET /api/machinery/{id}/availability)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/availability",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "availability"
+              ]
+            },
+            "description": "Contractor views active/upcoming booked date ranges to select unbooked dates."
+          }
+        },
+        {
+          "name": "8-10. Send Booking Request (POST /api/machinery/{id}/bookings)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"booking_id\", jsonData.id);",
+                  "    console.log(\"Saved booking_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-11-10\",\n  \"projectName\": \"Skyline Commercial Complex - Excavation Phase\",\n  \"deliveryLocation\": \"Plot 42, North Corridor, Austin, TX\",\n  \"remarks\": \"Required for foundational basement trenching. Experienced operator available on site.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "bookings"
+              ]
+            },
+            "description": "8-10. Contractor selects start and end dates and sends booking request."
+          }
+        },
+        {
+          "name": "Contractor View My Bookings (GET /api/machinery/bookings/my-bookings)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/my-bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "my-bookings"
+              ]
+            },
+            "description": "Contractor views all their sent booking requests and active rentals."
+          }
+        },
+        {
+          "name": "Owner View Booking Requests (GET /api/machinery/bookings/owner-requests)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/owner-requests",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "owner-requests"
+              ]
+            },
+            "description": "Machinery owner views pending rental requests for their fleet."
+          }
+        },
+        {
+          "name": "Owner Accept Booking (PUT /api/machinery/bookings/{id}/accept)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Accepted. Machine pre-inspection completed. Driver delivery confirmed for 2026-11-01 morning.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/{{booking_id}}/accept",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "{{booking_id}}",
+                "accept"
+              ]
+            },
+            "description": "Machinery owner accepts rental booking. Strictly prevents double booking overlapping dates."
+          }
+        },
+        {
+          "name": "Test Double Booking Collision (POST /api/machinery/{id}/bookings) [Expect 400 Conflict]",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startDate\": \"2026-11-05\",\n  \"endDate\": \"2026-11-15\",\n  \"projectName\": \"Overlapping Conflict Project\",\n  \"deliveryLocation\": \"Austin Downtown\",\n  \"remarks\": \"This request overlaps with the accepted Nov 01-10 booking and MUST be rejected.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/{{machine_id}}/bookings",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "{{machine_id}}",
+                "bookings"
+              ]
+            },
+            "description": "Tests double-booking prevention. Attempting to book overlapping dates with an accepted booking returns 400."
+          }
+        },
+        {
+          "name": "Owner Reject Booking (PUT /api/machinery/bookings/{id}/reject)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"rejectionReason\": \"Machine scheduled for depot preventive overhaul during this period.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/{{booking_id}}/reject",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "{{booking_id}}",
+                "reject"
+              ]
+            },
+            "description": "Machinery owner rejects booking request."
+          }
+        },
+        {
+          "name": "Owner View Current Bookings (GET /api/machinery/bookings/owner-current)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/owner-current",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "owner-current"
+              ]
+            },
+            "description": "Machinery owner views active/accepted bookings."
+          }
+        },
+        {
+          "name": "Owner View Booking History (GET /api/machinery/bookings/owner-history)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{machinery_owner_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/owner-history",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "owner-history"
+              ]
+            },
+            "description": "Machinery owner views full historical booking catalog."
+          }
+        },
+        {
+          "name": "Cancel Booking (PUT /api/machinery/bookings/{id}/cancel)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Project start postponed due to torrential weather.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/machinery/bookings/{{booking_id}}/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "machinery",
+                "bookings",
+                "{{booking_id}}",
+                "cancel"
+              ]
+            },
+            "description": "Contractor or owner cancels booking."
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Labor Work Requests & Assignments",
+      "item": [
+        {
+          "name": "1. Contractor Search Verified Laborers (GET /api/laborers/search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/laborers/search?location=Austin&skill=Masonry&minExperience=2&availability=AVAILABLE&maxDailyWage=500",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "laborers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "location",
+                  "value": "Austin"
+                },
+                {
+                  "key": "skill",
+                  "value": "Masonry"
+                },
+                {
+                  "key": "minExperience",
+                  "value": "2"
+                },
+                {
+                  "key": "availability",
+                  "value": "AVAILABLE"
+                },
+                {
+                  "key": "maxDailyWage",
+                  "value": "500"
+                }
+              ]
+            },
+            "description": "Contractors search verified laborers by location, skill, experience, availability, and max daily wage."
+          }
+        },
+        {
+          "name": "2. Contractor View Laborer Profile (GET /api/laborers/{id}/profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/laborers/{{laborer_id}}/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "laborers",
+                "{{laborer_id}}",
+                "profile"
+              ]
+            },
+            "description": "Contractor views verified laborer profile before submitting a work request."
+          }
+        },
+        {
+          "name": "3. Contractor Send Work Request to Laborer (POST /api/laborers/{laborerId}/work-requests)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"labor_request_id\", jsonData.id);",
+                  "    console.log(\"Saved labor_request_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": 1,\n  \"startDate\": \"2026-11-01\",\n  \"endDate\": \"2026-11-07\",\n  \"dailyWage\": 280.00,\n  \"jobDescription\": \"Exterior stone masonry and structural bricklaying\",\n  \"contractorNotes\": \"Report to Site Manager at 7:00 AM with standard PPE.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/laborers/{{laborer_id}}/work-requests",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "laborers",
+                "{{laborer_id}}",
+                "work-requests"
+              ]
+            },
+            "description": "Contractor selects project and sends work request to laborer. Calculates total days and total cost."
+          }
+        },
+        {
+          "name": "4. Laborer View Incoming Work Requests (GET /api/labor-requests/my-requests)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{laborer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/labor-requests/my-requests?status=PENDING",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-requests",
+                "my-requests"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            },
+            "description": "Laborer views received work requests in PENDING status."
+          }
+        },
+        {
+          "name": "5. Laborer Accept Work Request (PUT /api/labor-requests/{id}/accept)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.assignmentId) {",
+                  "        pm.collectionVariables.set(\"labor_assignment_id\", jsonData.assignmentId);",
+                  "        console.log(\"Saved labor_assignment_id:\", jsonData.assignmentId);",
+                  "    }",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{laborer_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Accepted work request. Ready to commence on Nov 01.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/labor-requests/{{labor_request_id}}/accept",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-requests",
+                "{{labor_request_id}}",
+                "accept"
+              ]
+            },
+            "description": "Laborer accepts work request. Creates labor assignment, connects laborer to project, and sets availability status to WORKING."
+          }
+        },
+        {
+          "name": "6. Overlapping Work Request Rejection Test (POST /api/laborers/{laborerId}/work-requests -> 400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": 1,\n  \"startDate\": \"2026-11-04\",\n  \"endDate\": \"2026-11-10\",\n  \"jobDescription\": \"Overlapping framing task that collides with Nov 01-07 assignment\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/laborers/{{laborer_id}}/work-requests",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "laborers",
+                "{{laborer_id}}",
+                "work-requests"
+              ]
+            },
+            "description": "Tests double assignment prevention. Requesting overlapping dates with an active assignment returns 400 Bad Request."
+          }
+        },
+        {
+          "name": "7. Laborer View Active Assignments (GET /api/labor-assignments/my-assignments)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{laborer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/labor-assignments/my-assignments?status=ACTIVE",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-assignments",
+                "my-assignments"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Laborer checks their ongoing project assignments."
+          }
+        },
+        {
+          "name": "8. Contractor View Project Labor Assignments (GET /api/projects/{projectId}/labor-assignments)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/projects/1/labor-assignments",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "projects",
+                "1",
+                "labor-assignments"
+              ]
+            },
+            "description": "Contractor views all labor assignments assigned to their project."
+          }
+        },
+        {
+          "name": "9. Complete Labor Assignment (PUT /api/labor-assignments/{id}/complete)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Masonry work completed to perfection.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/labor-assignments/{{labor_assignment_id}}/complete",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-assignments",
+                "{{labor_assignment_id}}",
+                "complete"
+              ]
+            },
+            "description": "Marks assignment and request as COMPLETED, and restores laborer availability to AVAILABLE."
+          }
+        },
+        {
+          "name": "10. Laborer Reject Work Request (PUT /api/labor-requests/{id}/reject)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{laborer_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Unavailable during requested dates due to prior schedule.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/labor-requests/{{labor_request_id}}/reject",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-requests",
+                "{{labor_request_id}}",
+                "reject"
+              ]
+            },
+            "description": "Laborer rejects incoming work request with reason."
+          }
+        },
+        {
+          "name": "11. Contractor Cancel Work Request (PUT /api/labor-requests/{id}/cancel)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Project start rescheduled by client.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/labor-requests/{{labor_request_id}}/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "labor-requests",
+                "{{labor_request_id}}",
+                "cancel"
+              ]
+            },
+            "description": "Contractor cancels pending work request."
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Construction Material Management",
+      "item": [
+        {
+          "name": "1. Register - Material Supplier (POST /api/auth/register)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"material_supplier_token\", jsonData.token);",
+                  "    console.log(\"Saved material_supplier_token:\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"supplier.apex@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"firstName\": \"Apex\",\n  \"lastName\": \"Suppliers\",\n  \"phoneNumber\": \"+1-555-4321\",\n  \"role\": \"MATERIAL_SUPPLIER\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Registers a new user with the MATERIAL_SUPPLIER role."
+          }
+        },
+        {
+          "name": "2. Login - Material Supplier (POST /api/auth/login)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"material_supplier_token\", jsonData.token);",
+                  "    console.log(\"Saved material_supplier_token:\", jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"supplier.apex@example.com\",\n  \"password\": \"SecurePass123!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticates the material supplier and stores the JWT token in material_supplier_token."
+          }
+        },
+        {
+          "name": "3. Material Supplier Create / Update Profile (POST /api/material-suppliers/profile)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"storeName\": \"Apex Construction Materials & Aggregate Co.\",\n  \"taxGstNumber\": \"GST-TX-98765432\",\n  \"contactPhone\": \"+1-555-888-9999\",\n  \"warehouseAddress\": \"700 Quarry Road, Industrial Zone\",\n  \"city\": \"Austin\",\n  \"state\": \"TX\",\n  \"description\": \"Premier supplier of certified cement, aggregate, steel, bitumen, and road materials.\",\n  \"deliveryAvailable\": true\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/material-suppliers/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-suppliers",
+                "profile"
+              ]
+            },
+            "description": "Material supplier sets up their company profile, warehouse location, and delivery details."
+          }
+        },
+        {
+          "name": "4. Material Supplier View Profile (GET /api/material-suppliers/profile)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/material-suppliers/profile",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-suppliers",
+                "profile"
+              ]
+            },
+            "description": "Retrieves the authenticated supplier profile."
+          }
+        },
+        {
+          "name": "5. Supplier Create Material Listing - CEMENT (POST /api/materials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"material_id\", jsonData.id);",
+                  "    console.log(\"Saved material_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"UltraTech 53 Grade Portland Cement\",\n  \"category\": \"CEMENT\",\n  \"gradeSpecification\": \"OPC 53 Grade IS 269:2015 High Strength\",\n  \"unit\": \"Bags\",\n  \"availableQuantity\": 500,\n  \"price\": 380.0,\n  \"location\": \"Austin\",\n  \"description\": \"High performance 53 grade cement suitable for RCC structural works and bridges.\",\n  \"availability\": \"IN_STOCK\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/materials",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials"
+              ]
+            },
+            "description": "Supplier creates a new material listing. Supports categories: CEMENT, STEEL, SAND, AGGREGATE, BITUMEN, DBM, BC, WMM, GSB, CONCRETE, BRICKS, PIPES, ELECTRICAL, PLUMBING, FUEL_OIL, OTHER."
+          }
+        },
+        {
+          "name": "6. Supplier Update Stock (PATCH /api/materials/{id}/stock)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 600,\n  \"updateMode\": \"SET\",\n  \"notes\": \"Received new warehouse restock shipment of 100 bags.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}/stock",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}",
+                "stock"
+              ]
+            },
+            "description": "Supplier updates material stock level (SET or DELTA). Audits new entry in MaterialStockHistory."
+          }
+        },
+        {
+          "name": "7. Supplier Update Price (PATCH /api/materials/{id}/price)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 375.0,\n  \"notes\": \"Special seasonal bulk procurement rate adjustment.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}/price",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}",
+                "price"
+              ]
+            },
+            "description": "Supplier updates material unit price."
+          }
+        },
+        {
+          "name": "8. Supplier View My Materials (GET /api/materials/my-materials)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/materials/my-materials",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "my-materials"
+              ]
+            },
+            "description": "Lists all material listings owned by the authenticated supplier."
+          }
+        },
+        {
+          "name": "9. Contractor Search & Filter Materials (GET /api/materials/search)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/materials/search?category=CEMENT&location=Austin&maxPrice=500&availability=IN_STOCK",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "CEMENT"
+                },
+                {
+                  "key": "location",
+                  "value": "Austin"
+                },
+                {
+                  "key": "maxPrice",
+                  "value": "500"
+                },
+                {
+                  "key": "availability",
+                  "value": "IN_STOCK"
+                }
+              ]
+            },
+            "description": "Contractor searches and filters materials by category, location, max price, and availability."
+          }
+        },
+        {
+          "name": "10. Contractor View Material Details, Stock & Price (GET /api/materials/{id})",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}"
+              ]
+            },
+            "description": "Contractor views real-time material specification, unit price, and available stock."
+          }
+        },
+        {
+          "name": "11. View Material Stock History (GET /api/materials/{id}/stock-history)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}/stock-history",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}",
+                "stock-history"
+              ]
+            },
+            "description": "Chronological audit log of stock movements (Initial, Restock, Order Deductions, Restorations)."
+          }
+        },
+        {
+          "name": "12. Contractor Order Material - Within Stock (POST /api/materials/{id}/orders)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201 || pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"material_order_id\", jsonData.id);",
+                  "    console.log(\"Saved material_order_id:\", jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 100,\n  \"deliveryAddress\": \"Site 4B, Hill Country Expressway, Austin, TX\",\n  \"contactPhone\": \"+1-555-123-4567\",\n  \"specialInstructions\": \"Palletized delivery required during morning hours.\",\n  \"notes\": \"Urgent requirement for bridge pier casting.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}",
+                "orders"
+              ]
+            },
+            "description": "Contractor orders a quantity within available stock. Calculates total amount."
+          }
+        },
+        {
+          "name": "13. Contractor Order Material - Exceed Stock [Expects 400] (POST /api/materials/{id}/orders)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 400 Bad Request for excessive quantity\", function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 999999,\n  \"deliveryAddress\": \"Site 4B, Austin, TX\",\n  \"contactPhone\": \"+1-555-123-4567\",\n  \"notes\": \"Attempting to order far beyond available stock.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/materials/{{material_id}}/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "materials",
+                "{{material_id}}",
+                "orders"
+              ]
+            },
+            "description": "Validates system constraint: Disallows contractor from ordering more than available stock."
+          }
+        },
+        {
+          "name": "14. Contractor View My Material Orders (GET /api/material-orders/my-orders)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/material-orders/my-orders?status=PENDING",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-orders",
+                "my-orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            },
+            "description": "Contractor views their order history, optionally filtered by status."
+          }
+        },
+        {
+          "name": "15. Supplier View Incoming Orders (GET /api/material-orders/supplier-orders)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/api/material-orders/supplier-orders?status=PENDING",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-orders",
+                "supplier-orders"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            },
+            "description": "Supplier views incoming order requests placed by contractors."
+          }
+        },
+        {
+          "name": "16. Supplier Accept Order (PUT /api/material-orders/{id}/accept)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notes\": \"Order confirmed and scheduled for morning batch dispatch.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/material-orders/{{material_order_id}}/accept",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-orders",
+                "{{material_order_id}}",
+                "accept"
+              ]
+            },
+            "description": "Supplier accepts order; quantity is automatically deducted from stock and recorded in MaterialStockHistory."
+          }
+        },
+        {
+          "name": "17. Supplier Reject Order (PUT /api/material-orders/{id}/reject)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{material_supplier_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Delivery schedule unavailable for requested date window.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/material-orders/{{material_order_id}}/reject",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-orders",
+                "{{material_order_id}}",
+                "reject"
+              ]
+            },
+            "description": "Supplier rejects order request with reason."
+          }
+        },
+        {
+          "name": "18. Contractor Cancel Order (PUT /api/material-orders/{id}/cancel)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{contractor_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Project plan adjusted; delivery cancelled by contractor.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/material-orders/{{material_order_id}}/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "material-orders",
+                "{{material_order_id}}",
+                "cancel"
+              ]
+            },
+            "description": "Contractor cancels order; if order was already accepted, reserved stock is automatically restored."
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "machinery_owner_token",
+      "value": ""
+    },
+    {
+      "key": "contractor_token",
+      "value": ""
+    },
+    {
+      "key": "laborer_token",
+      "value": ""
+    },
+    {
+      "key": "machine_id",
+      "value": "1"
+    },
+    {
+      "key": "laborer_id",
+      "value": "1"
+    },
+    {
+      "key": "labor_request_id",
+      "value": "1"
+    },
+    {
+      "key": "labor_assignment_id",
+      "value": "1"
+    },
+    {
+      "key": "image_id",
+      "value": "1"
+    },
+    {
+      "key": "condition_id",
+      "value": "1"
+    },
+    {
+      "key": "maintenance_id",
+      "value": "1"
+    },
+    {
+      "key": "booking_id",
+      "value": "1"
+    },
+    {
+      "key": "image_url",
+      "value": "/api/machinery/images/sample.jpg"
+    },
+    {
+      "key": "material_supplier_token",
+      "value": ""
+    },
+    {
+      "key": "material_id",
+      "value": "1"
+    },
+    {
+      "key": "material_order_id",
+      "value": "1"
+    }
+  ]
+}
