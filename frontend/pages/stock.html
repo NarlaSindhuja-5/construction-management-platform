@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Warehouse Stock & Price Management - E2E Construction Management System">
+    <title>Warehouse Inventory &amp; Stock - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/material.css">
+    <style>
+        .stock-control-row {
+            padding: 1.1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: grid;
+            grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr 1fr auto;
+            align-items: center;
+            gap: 1rem;
+            transition: background 0.15s;
+        }
+        .stock-control-row:last-child {
+            border-bottom: none;
+        }
+        .stock-control-row:hover {
+            background: #f8fafc;
+        }
+        .stock-header-row {
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="stock.html" class="logo">
+                <span class="logo-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">E2E</span>
+                <span>Stock &amp; Pricing Manager</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="materials-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <a href="material-orders.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Purchase Orders</a>
+                <a href="add-material.html" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; background: var(--mat-primary); border-color: var(--mat-primary);">+ Add Material</a>
+                <a href="supplier-dashboard.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Supplier Portal</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        <!-- Page Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Header Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
+                    Warehouse Inventory &amp; Price Controls
+                </h1>
+                <p style="color: #64748b; font-size: 0.95rem;">
+                    Update live stock levels, adjust price-per-unit, and inspect inventory audit movement logs.
+                </p>
+            </div>
+
+            <div>
+                <a href="add-material.html" class="btn btn-primary" style="background: var(--mat-primary); border-color: var(--mat-primary);">
+                    + Add New Material
+                </a>
+            </div>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="mat-kpi-grid">
+            <div class="mat-kpi-card">
+                <span class="label">Total Material Lines</span>
+                <span class="val" id="kpiTotalLines">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #10b981;">
+                <span class="label">In Stock Items</span>
+                <span class="val" style="color: #15803d;" id="kpiInStock">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #f59e0b;">
+                <span class="label">Low Stock Alerts</span>
+                <span class="val" style="color: #b45309;" id="kpiLowStock">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #ef4444;">
+                <span class="label">Out of Stock</span>
+                <span class="val" style="color: #b91c1c;" id="kpiOutOfStock">0</span>
+            </div>
+        </div>
+
+        <!-- Filter Toolbar Card -->
+        <div class="content-card" style="padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; flex: 1;">
+                    <input type="text" id="stockSearchInput" class="form-control" placeholder="Filter materials by name or grade..." style="min-width: 240px; flex: 1;" oninput="filterMaterialsList()">
+                    <select id="stockCategoryFilter" class="form-control" style="width: 200px;" onchange="filterMaterialsList()">
+                        <option value="">All Categories</option>
+                        <option value="CEMENT">CEMENT</option>
+                        <option value="STEEL">STEEL</option>
+                        <option value="SAND">SAND</option>
+                        <option value="AGGREGATE">AGGREGATE</option>
+                        <option value="CONCRETE">CONCRETE</option>
+                        <option value="BRICKS">BRICKS</option>
+                        <option value="BITUMEN">BITUMEN</option>
+                        <option value="PIPES">PIPES</option>
+                        <option value="ELECTRICAL">ELECTRICAL</option>
+                        <option value="PLUMBING">PLUMBING</option>
+                        <option value="FUEL_OIL">FUEL &amp; OIL</option>
+                        <option value="OTHER">OTHER</option>
+                    </select>
+                    <select id="stockStatusFilter" class="form-control" style="width: 170px;" onchange="filterMaterialsList()">
+                        <option value="">All Stock Statuses</option>
+                        <option value="IN_STOCK">IN STOCK</option>
+                        <option value="LOW_STOCK">LOW STOCK</option>
+                        <option value="OUT_OF_STOCK">OUT OF STOCK</option>
+                    </select>
+                </div>
+                <button class="btn btn-outline" onclick="resetStockFilters()" style="padding: 0.55rem 1rem;">Reset</button>
+            </div>
+        </div>
+
+        <!-- Inventory List Card -->
+        <div class="mat-table-wrapper">
+            <div class="stock-control-row stock-header-row">
+                <div>Material &amp; Specification</div>
+                <div>Category</div>
+                <div>Available Inventory</div>
+                <div>Current Unit Price</div>
+                <div>Availability</div>
+                <div style="text-align: right;">Inventory Actions</div>
+            </div>
+
+            <div id="stockListContainer">
+                <div class="empty-state-box" style="padding: 3rem;">
+                    <span class="spinner"></span> Loading your inventory...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Adjust Stock Modal -->
+    <div class="modal-overlay" id="adjustStockModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Adjust Inventory: <span id="modalStockMatName" style="color:var(--mat-primary);"></span></h3>
+                <button class="modal-close-btn" onclick="closeAdjustStockModal()">&times;</button>
+            </div>
+            <form onsubmit="handleStockSubmit(event)" novalidate>
+                <input type="hidden" id="adjustStockMatId">
+                <div class="modal-body">
+                    <div id="adjustStockAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem; display: flex; justify-content: space-between;">
+                        <div>
+                            <span style="font-size:0.75rem; color:#64748b; text-transform:uppercase; font-weight:700;">Current Level</span>
+                            <div style="font-size:1.25rem; font-weight:800; color:#0f172a;" id="modalStockCurrentDisplay">0</div>
+                        </div>
+                        <div style="text-align:right;">
+                            <span style="font-size:0.75rem; color:#64748b; text-transform:uppercase; font-weight:700;">Unit</span>
+                            <div style="font-size:1.1rem; font-weight:700; color:#0f766e;" id="modalStockUnitDisplay">Units</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Adjustment Mode *</label>
+                        <select id="stockModeSelect" class="form-control" onchange="toggleStockMode()">
+                            <option value="SET_ABSOLUTE">Set New Absolute Quantity</option>
+                            <option value="ADD_DELTA">Restock / Add Incoming (+)</option>
+                            <option value="SUB_DELTA">Deduct / Scrap (-)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" id="stockQtyInputLabel">New Total Quantity *</label>
+                        <input type="number" id="adjustStockQtyInput" class="form-control" min="0" step="0.5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Audit Note / Explanation *</label>
+                        <input type="text" id="adjustStockNotesInput" class="form-control" placeholder="e.g. Received shipment lot #B-40, physical audit count..." required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeAdjustStockModal()">Cancel</button>
+                    <button type="submit" id="saveStockBtn" class="btn btn-primary" style="background: var(--mat-primary); border-color: var(--mat-primary);">
+                        Save Stock Level
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Adjust Price Modal -->
+    <div class="modal-overlay" id="adjustPriceModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Update Price: <span id="modalPriceMatName" style="color:var(--mat-primary);"></span></h3>
+                <button class="modal-close-btn" onclick="closeAdjustPriceModal()">&times;</button>
+            </div>
+            <form onsubmit="handlePriceSubmit(event)" novalidate>
+                <input type="hidden" id="adjustPriceMatId">
+                <div class="modal-body">
+                    <div id="adjustPriceAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem;">
+                        <span style="font-size:0.75rem; color:#64748b; text-transform:uppercase; font-weight:700;">Current Unit Rate</span>
+                        <div style="font-size:1.35rem; font-weight:800; color:#0f766e;" id="modalPriceCurrentDisplay">$0.00</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">New Price per Unit ($) *</label>
+                        <input type="number" id="adjustPriceInput" class="form-control" min="0.01" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Revision Remarks</label>
+                        <input type="text" id="adjustPriceNotesInput" class="form-control" placeholder="e.g. Supplier factory price revision, seasonal discount...">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeAdjustPriceModal()">Cancel</button>
+                    <button type="submit" id="savePriceBtn" class="btn btn-primary" style="background: var(--mat-primary); border-color: var(--mat-primary);">
+                        Update Unit Price
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let myMaterials = [];
+        let filteredMaterials = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth(['MATERIAL_SUPPLIER', 'ADMIN'])) return;
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            await loadMyMaterials();
+        });
+
+        async function loadMyMaterials() {
+            const container = document.getElementById('stockListContainer');
+            container.innerHTML = '<div class="empty-state-box" style="padding: 3rem;"><span class="spinner"></span> Loading inventory...</div>';
+
+            try {
+                const data = await AuthService.apiFetch('/materials/my-materials');
+                myMaterials = Array.isArray(data) ? data : [];
+                filterMaterialsList();
+                updateKpis(myMaterials);
+
+            } catch (err) {
+                console.error('Failed to load supplier materials:', err);
+                container.innerHTML = `
+                    <div class="empty-state-box" style="padding: 3rem; color: var(--danger);">
+                        <p>Failed to load inventory: ${escapeHtml(err.message || 'API error')}</p>
+                        <button class="btn btn-outline" style="margin-top: 0.5rem;" onclick="loadMyMaterials()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateKpis(materials) {
+            document.getElementById('kpiTotalLines').innerText = materials.length;
+            document.getElementById('kpiInStock').innerText = materials.filter(m => (m.availability || 'IN_STOCK') === 'IN_STOCK').length;
+            document.getElementById('kpiLowStock').innerText = materials.filter(m => (m.availability || '') === 'LOW_STOCK').length;
+            document.getElementById('kpiOutOfStock').innerText = materials.filter(m => (m.availability || '') === 'OUT_OF_STOCK').length;
+        }
+
+        function filterMaterialsList() {
+            const keyword = document.getElementById('stockSearchInput').value.toLowerCase().trim();
+            const category = document.getElementById('stockCategoryFilter').value;
+            const status = document.getElementById('stockStatusFilter').value;
+
+            filteredMaterials = myMaterials.filter(m => {
+                const matchKeyword = !keyword || (m.name && m.name.toLowerCase().includes(keyword)) || (m.gradeSpecification && m.gradeSpecification.toLowerCase().includes(keyword));
+                const matchCategory = !category || m.category === category;
+                const matchStatus = !status || m.availability === status;
+                return matchKeyword && matchCategory && matchStatus;
+            });
+
+            renderStockList(filteredMaterials);
+        }
+
+        function resetStockFilters() {
+            document.getElementById('stockSearchInput').value = '';
+            document.getElementById('stockCategoryFilter').value = '';
+            document.getElementById('stockStatusFilter').value = '';
+            filterMaterialsList();
+        }
+
+        function renderStockList(materials) {
+            const container = document.getElementById('stockListContainer');
+
+            if (!materials || materials.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state-box" style="padding: 3rem;">
+                        <h4>No Materials In Inventory</h4>
+                        <p>No material items match the filter. Click "+ Add Material" to publish new stock.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = materials.map(m => {
+                const avail = (m.availability || 'IN_STOCK').toLowerCase();
+                let availPillClass = 'in_stock';
+                if (avail === 'low_stock') availPillClass = 'low_stock';
+                else if (avail === 'out_of_stock') availPillClass = 'out_of_stock';
+                else if (avail === 'unavailable') availPillClass = 'unavailable';
+
+                const category = m.category || 'OTHER';
+                const unit = m.unit || 'Units';
+
+                return `
+                    <div class="stock-control-row">
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
+                                <a href="material-details.html?id=${m.id}" style="color:#0f172a; text-decoration:none;">${escapeHtml(m.name)}</a>
+                            </div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.15rem;">
+                                ${escapeHtml(m.gradeSpecification || 'Standard Grade')} &bull; #${m.id}
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="category-badge ${category}">${category}</span>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 1.15rem; font-weight: 800; color: #0f172a;">${m.availableQuantity || 0}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">${escapeHtml(unit)}</div>
+                        </div>
+
+                        <div>
+                            <div style="font-size: 1.15rem; font-weight: 800; color: #0f766e;">$${m.price || 0}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">per ${escapeHtml(unit)}</div>
+                        </div>
+
+                        <div>
+                            <span class="availability-pill ${availPillClass}">
+                                ${avail.replace('_', ' ')}
+                            </span>
+                        </div>
+
+                        <div style="text-align: right; display: flex; gap: 0.4rem; justify-content: flex-end;">
+                            <button class="btn btn-sm btn-outline" style="border-color:#0f766e; color:#0f766e; font-size:0.775rem; padding:0.35rem 0.65rem;" onclick="openAdjustStockModal(${m.id}, '${escapeHtml(m.name)}', ${m.availableQuantity || 0}, '${escapeHtml(unit)}')">
+                                Stock
+                            </button>
+                            <button class="btn btn-sm btn-outline" style="border-color:#0284c7; color:#0284c7; font-size:0.775rem; padding:0.35rem 0.65rem;" onclick="openAdjustPriceModal(${m.id}, '${escapeHtml(m.name)}', ${m.price || 0}, '${escapeHtml(unit)}')">
+                                Price
+                            </button>
+                            <a href="add-material.html?id=${m.id}" class="btn btn-sm btn-outline" style="font-size:0.775rem; padding:0.35rem 0.65rem;" title="Edit full listing">
+                                Edit
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- Stock Modal Handling ---
+        let currentModalStock = 0;
+        function openAdjustStockModal(id, name, currentStock, unit) {
+            document.getElementById('adjustStockMatId').value = id;
+            document.getElementById('modalStockMatName').innerText = name;
+            document.getElementById('modalStockCurrentDisplay').innerText = `${currentStock} ${unit}`;
+            document.getElementById('modalStockUnitDisplay').innerText = unit;
+            currentModalStock = currentStock;
+
+            document.getElementById('stockModeSelect').value = 'SET_ABSOLUTE';
+            toggleStockMode();
+            document.getElementById('adjustStockQtyInput').value = currentStock;
+            document.getElementById('adjustStockNotesInput').value = '';
+
+            UI.clearAlert('adjustStockAlert');
+            document.getElementById('adjustStockModal').classList.add('active');
+        }
+
+        function closeAdjustStockModal() {
+            document.getElementById('adjustStockModal').classList.remove('active');
+        }
+
+        function toggleStockMode() {
+            const mode = document.getElementById('stockModeSelect').value;
+            const label = document.getElementById('stockQtyInputLabel');
+            const input = document.getElementById('adjustStockQtyInput');
+
+            if (mode === 'SET_ABSOLUTE') {
+                label.innerText = 'New Total Quantity *';
+                input.value = currentModalStock;
+            } else if (mode === 'ADD_DELTA') {
+                label.innerText = 'Quantity to Add (+) *';
+                input.value = '50';
+            } else if (mode === 'SUB_DELTA') {
+                label.innerText = 'Quantity to Deduct (-) *';
+                input.value = '10';
+            }
+        }
+
+        async function handleStockSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('adjustStockAlert');
+
+            const id = document.getElementById('adjustStockMatId').value;
+            const mode = document.getElementById('stockModeSelect').value;
+            let qty = parseFloat(document.getElementById('adjustStockQtyInput').value);
+            const notes = document.getElementById('adjustStockNotesInput').value.trim();
+
+            if (isNaN(qty) || !notes) {
+                UI.showAlert('adjustStockAlert', 'Please enter a valid quantity and audit note.', 'danger');
+                return;
+            }
+
+            let isDelta = false;
+            if (mode === 'ADD_DELTA') {
+                isDelta = true;
+                qty = Math.abs(qty);
+            } else if (mode === 'SUB_DELTA') {
+                isDelta = true;
+                qty = -Math.abs(qty);
+            }
+
+            UI.setLoading('saveStockBtn', true, 'Saving...');
+
+            try {
+                await AuthService.apiFetch(`/materials/${id}/stock`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        quantity: qty,
+                        isDelta: isDelta,
+                        notes: notes
+                    })
+                });
+
+                closeAdjustStockModal();
+                UI.showAlert('pageAlert', 'Stock level updated successfully!', 'success');
+                await loadMyMaterials();
+
+            } catch (err) {
+                console.error('Failed to update stock:', err);
+                UI.showAlert('adjustStockAlert', err.message || 'Failed to update stock', 'danger');
+            } finally {
+                UI.setLoading('saveStockBtn', false, 'Save Stock Level');
+            }
+        }
+
+        // --- Price Modal Handling ---
+        function openAdjustPriceModal(id, name, currentPrice, unit) {
+            document.getElementById('adjustPriceMatId').value = id;
+            document.getElementById('modalPriceMatName').innerText = name;
+            document.getElementById('modalPriceCurrentDisplay').innerText = `$${currentPrice} / ${unit}`;
+            document.getElementById('adjustPriceInput').value = currentPrice;
+            document.getElementById('adjustPriceNotesInput').value = '';
+
+            UI.clearAlert('adjustPriceAlert');
+            document.getElementById('adjustPriceModal').classList.add('active');
+        }
+
+        function closeAdjustPriceModal() {
+            document.getElementById('adjustPriceModal').classList.remove('active');
+        }
+
+        async function handlePriceSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('adjustPriceAlert');
+
+            const id = document.getElementById('adjustPriceMatId').value;
+            const price = parseFloat(document.getElementById('adjustPriceInput').value);
+            const notes = document.getElementById('adjustPriceNotesInput').value.trim();
+
+            if (isNaN(price) || price <= 0) {
+                UI.showAlert('adjustPriceAlert', 'Please enter a price greater than zero.', 'danger');
+                return;
+            }
+
+            UI.setLoading('savePriceBtn', true, 'Updating...');
+
+            try {
+                await AuthService.apiFetch(`/materials/${id}/price`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        price: price,
+                        notes: notes || 'Supplier unit price update'
+                    })
+                });
+
+                closeAdjustPriceModal();
+                UI.showAlert('pageAlert', 'Unit price updated successfully!', 'success');
+                await loadMyMaterials();
+
+            } catch (err) {
+                console.error('Failed to update price:', err);
+                UI.showAlert('adjustPriceAlert', err.message || 'Failed to update price', 'danger');
+            } finally {
+                UI.setLoading('savePriceBtn', false, 'Update Unit Price');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

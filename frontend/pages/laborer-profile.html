@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Laborer Profile & Skill Settings - E2E Construction Management System">
+    <title>My Laborer Profile - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-dashboard.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Laborer Profile</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="laborer-dashboard.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Dashboard</a>
+                <a href="labor-requests.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work Requests</a>
+                <a href="labor-history.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work History</a>
+                <a href="attendance.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Attendance</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="max-width: 900px; margin: 2rem auto;">
+        <!-- Page Alert -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Top Profile Overview Card -->
+        <div class="content-card" style="padding: 2rem; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1.25rem;">
+                    <div class="laborer-avatar" id="profileAvatar" style="width: 72px; height: 72px; font-size: 1.85rem;">L</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <h2 style="font-size: 1.5rem; color: #0f172a; margin-bottom: 0.2rem;" id="profileFullName">Loading Profile...</h2>
+                            <span class="availability-pill available" id="profileAvailabilityPill">AVAILABLE</span>
+                        </div>
+                        <div style="color: #64748b; font-size: 0.9rem;" id="profileEmail">laborer@example.com</div>
+                        <div style="margin-top: 0.4rem; display: flex; align-items: center; gap: 0.5rem;">
+                            <span class="badge badge-warning" id="profileVerificationBadge">PENDING VERIFICATION</span>
+                            <span style="font-size: 0.8rem; color: #94a3b8;" id="profileLocationTag">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fast Availability Switcher -->
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; min-width: 260px;">
+                    <div style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem;">
+                        Quick Availability Status
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <select id="quickAvailabilitySelect" class="form-control" style="font-size: 0.875rem;">
+                            <option value="AVAILABLE">AVAILABLE (Open for Work)</option>
+                            <option value="WORKING">WORKING (Currently On Site)</option>
+                            <option value="UNAVAILABLE">UNAVAILABLE (Off-Duty)</option>
+                        </select>
+                        <button id="quickAvailabilityBtn" class="btn btn-primary" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; white-space: nowrap;">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Form Card -->
+        <div class="content-card" style="padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;">
+                <div>
+                    <h3 style="font-size: 1.25rem; color: #0f172a; margin-bottom: 0.25rem;">Trade Skills &amp; Rate Configuration</h3>
+                    <p style="color: #64748b; font-size: 0.875rem;">Keep your wage and trades accurate so contractors can discover and hire you.</p>
+                </div>
+                <span id="profileStatusIndicator" style="font-size: 0.8rem; color: #16a34a; font-weight: 600;"></span>
+            </div>
+
+            <form id="profileForm" onsubmit="handleProfileSubmit(event)" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="skillsInput">Primary Trade Skills *</label>
+                        <input type="text" id="skillsInput" name="skills" class="form-control" placeholder="e.g. Mason, Bar Bender, Tile Layer" required>
+                        <small style="color: #64748b; font-size: 0.75rem;">Separate multiple skills with commas (e.g. Mason, Electrician, Carpenter)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="dailyWageInput">Expected Daily Wage ($) *</label>
+                        <input type="number" id="dailyWageInput" name="dailyWage" class="form-control" placeholder="150" min="1" step="0.5" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="expInput">Years of Construction Experience *</label>
+                        <input type="number" id="expInput" name="yearsOfExperience" class="form-control" placeholder="5" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phoneInput">Contact Phone Number</label>
+                        <input type="tel" id="phoneInput" name="phone" class="form-control" placeholder="+1 (555) 000-0000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="locationInput">Base Location / Address *</label>
+                        <input type="text" id="locationInput" name="location" class="form-control" placeholder="Downtown Industrial Park" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cityInput">City</label>
+                        <input type="text" id="cityInput" name="city" class="form-control" placeholder="Dallas">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="stateInput">State / Region</label>
+                        <input type="text" id="stateInput" name="state" class="form-control" placeholder="TX">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="descInput">Professional Bio &amp; Certifications</label>
+                    <textarea id="descInput" name="description" class="form-control" rows="4" placeholder="Detail your certifications, OSHA cards, previous large-scale commercial or residential projects..."></textarea>
+                </div>
+
+                <div class="form-row" style="align-items: center; margin-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label" for="formAvailabilitySelect">Default Availability</label>
+                        <select id="formAvailabilitySelect" name="availabilityStatus" class="form-control">
+                            <option value="AVAILABLE">AVAILABLE</option>
+                            <option value="WORKING">WORKING</option>
+                            <option value="UNAVAILABLE">UNAVAILABLE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1.5rem;">
+                    <button type="submit" id="saveProfileBtn" class="btn btn-primary" style="padding: 0.65rem 1.8rem; font-weight: 700;">
+                        Save Profile
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let existingProfile = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth(['LABORER', 'ADMIN'])) return;
+
+            const user = AuthService.getUser();
+            if (user) {
+                document.getElementById('profileFullName').innerText = `${user.firstName || ''} ${user.lastName || ''}`.trim() || 'Worker Profile';
+                document.getElementById('profileEmail').innerText = user.email || '';
+                document.getElementById('profileAvatar').innerText = (user.firstName || 'L')[0].toUpperCase();
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            document.getElementById('quickAvailabilityBtn').addEventListener('click', handleQuickAvailabilityUpdate);
+
+            await loadLaborerProfile();
+        });
+
+        async function loadLaborerProfile() {
+            try {
+                const profile = await AuthService.apiFetch('/laborers/profile');
+                existingProfile = profile;
+                renderProfileData(profile);
+            } catch (err) {
+                if (err.status === 404 || (err.message && err.message.toLowerCase().includes('not found'))) {
+                    // Profile has not been created yet
+                    existingProfile = null;
+                    document.getElementById('profileStatusIndicator').innerText = 'New profile: Please fill in details below';
+                    document.getElementById('profileStatusIndicator').style.color = 'var(--primary)';
+                } else {
+                    console.error('Error fetching profile:', err);
+                    UI.showAlert('pageAlert', 'Could not load existing profile: ' + (err.message || 'Error'), 'danger');
+                }
+            }
+        }
+
+        function renderProfileData(p) {
+            document.getElementById('profileFullName').innerText = p.fullName || `${AuthService.getUser()?.firstName || ''} ${AuthService.getUser()?.lastName || ''}`;
+            document.getElementById('profileEmail').innerText = p.email || AuthService.getUser()?.email || '';
+            document.getElementById('profileAvatar').innerText = (p.fullName || 'L')[0].toUpperCase();
+
+            // Verification badge
+            const verBadge = document.getElementById('profileVerificationBadge');
+            const vStatus = p.verificationStatus || 'PENDING';
+            verBadge.innerText = vStatus.replace('_', ' ');
+            if (vStatus === 'VERIFIED') {
+                verBadge.className = 'badge badge-success';
+            } else if (vStatus === 'REJECTED') {
+                verBadge.className = 'badge badge-danger';
+            } else {
+                verBadge.className = 'badge badge-warning';
+            }
+
+            // Location tag
+            const locText = [p.city, p.state].filter(Boolean).join(', ') || p.location || 'Location unassigned';
+            document.getElementById('profileLocationTag').innerText = locText;
+
+            // Availability pill
+            const avail = (p.availabilityStatus || 'AVAILABLE').toUpperCase();
+            const pill = document.getElementById('profileAvailabilityPill');
+            pill.className = `availability-pill ${avail === 'AVAILABLE' ? 'available' : (avail === 'WORKING' ? 'working' : 'unavailable')}`;
+            pill.innerText = avail;
+
+            document.getElementById('quickAvailabilitySelect').value = avail;
+            document.getElementById('formAvailabilitySelect').value = avail;
+
+            // Form Fields
+            document.getElementById('skillsInput').value = p.skills || '';
+            document.getElementById('dailyWageInput').value = p.dailyWage || '';
+            document.getElementById('expInput').value = p.yearsOfExperience !== undefined ? p.yearsOfExperience : '';
+            document.getElementById('phoneInput').value = p.phone || '';
+            document.getElementById('locationInput').value = p.location || '';
+            document.getElementById('cityInput').value = p.city || '';
+            document.getElementById('stateInput').value = p.state || '';
+            document.getElementById('descInput').value = p.description || '';
+
+            document.getElementById('profileStatusIndicator').innerText = 'Profile active & up-to-date';
+            document.getElementById('profileStatusIndicator').style.color = '#16a34a';
+        }
+
+        async function handleQuickAvailabilityUpdate() {
+            const btn = document.getElementById('quickAvailabilityBtn');
+            const select = document.getElementById('quickAvailabilitySelect');
+            const newStatus = select.value;
+
+            btn.disabled = true;
+            btn.innerText = '...';
+
+            try {
+                await AuthService.apiFetch('/laborers/availability', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ availabilityStatus: newStatus })
+                });
+
+                UI.showAlert('pageAlert', `Availability successfully updated to: ${newStatus}`, 'success');
+                await loadLaborerProfile();
+            } catch (err) {
+                console.error('Failed to change availability:', err);
+                UI.showAlert('pageAlert', err.message || 'Failed to update availability status', 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Update';
+            }
+        }
+
+        async function handleProfileSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('pageAlert');
+
+            const form = e.target;
+            const skills = form.skills.value.trim();
+            const dailyWage = form.dailyWage.value;
+            const yearsOfExperience = form.yearsOfExperience.value;
+            const location = form.location.value.trim();
+            const city = form.city.value.trim();
+            const state = form.state.value.trim();
+            const phone = form.phone.value.trim();
+            const description = form.description.value.trim();
+            const availabilityStatus = form.availabilityStatus.value;
+
+            if (!skills || !dailyWage || yearsOfExperience === '' || !location) {
+                UI.showAlert('pageAlert', 'Please complete all required fields (*)', 'danger');
+                return;
+            }
+
+            const payload = {
+                skills,
+                dailyWage: Number(dailyWage),
+                yearsOfExperience: Number(yearsOfExperience),
+                location,
+                city,
+                state,
+                phone,
+                description,
+                availabilityStatus
+            };
+
+            UI.setLoading('saveProfileBtn', true, 'Saving...');
+
+            try {
+                // If existingProfile exists, use PUT, else POST
+                const method = existingProfile ? 'PUT' : 'POST';
+                const saved = await AuthService.apiFetch('/laborers/profile', {
+                    method: method,
+                    body: JSON.stringify(payload)
+                });
+
+                existingProfile = saved;
+                renderProfileData(saved);
+                UI.showAlert('pageAlert', 'Profile saved successfully!', 'success');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            } catch (err) {
+                console.error('Error saving profile:', err);
+                UI.showAlert('pageAlert', err.message || 'Failed to save profile. Please check validation requirements.', 'danger');
+            } finally {
+                UI.setLoading('saveProfileBtn', false, 'Save Profile');
+            }
+        }
+    </script>
+</body>
+</html>

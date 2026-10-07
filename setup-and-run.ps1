@@ -38,8 +38,12 @@ $env:DB_PORT = "3306"
 $env:DB_NAME = "e2e_construction_db"
 $env:DB_USERNAME = "root"
 $env:DB_PASSWORD = $password
+if ([string]::IsNullOrEmpty($env:JWT_SECRET)) {
+    $env:JWT_SECRET = "local_dev_only_jwt_secret_change_for_production_use_256bits_key"
+}
+$env:APP_CORS_ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:5500,http://127.0.0.1:5500"
 
-Write-Host "Environment variables configured for MySQL." -ForegroundColor Green
+Write-Host "Environment variables configured for local session." -ForegroundColor Green
 
 # 4. Start Spring Boot backend
 Write-Host "`n[Step 3/3] Starting Spring Boot application..." -ForegroundColor Yellow

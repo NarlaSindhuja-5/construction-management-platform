@@ -4,6 +4,7 @@ import com.e2e.construction.dto.MachineryImageResponse;
 import com.e2e.construction.entity.Machinery;
 import com.e2e.construction.entity.MachineryImage;
 import com.e2e.construction.entity.MachineryImageType;
+import com.e2e.construction.exception.BadRequestException;
 import com.e2e.construction.exception.ResourceNotFoundException;
 import com.e2e.construction.repository.MachineryImageRepository;
 import com.e2e.construction.repository.MachineryRepository;
@@ -48,6 +49,12 @@ public class MachineryImageService {
         // Strict ownership check
         if (!machine.getOwner().getUser().getEmail().equalsIgnoreCase(userEmail.trim())) {
             throw new AccessDeniedException("Access denied: You can only upload images for your own machinery.");
+        }
+
+        // Enforce image MIME type
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.toLowerCase().startsWith("image/")) {
+            throw new BadRequestException("Invalid file format. Only image files (JPEG, PNG, WEBP) are allowed for machine photographs.");
         }
 
         // Validate, sanitize, and store file on disk

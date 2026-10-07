@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Machinery Maintenance & Service Records - E2E Construction Management System">
+    <title>Machine Maintenance - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/machinery.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="machinery-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Maintenance Log</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a id="backToDetailsBtn" href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">&larr; Machine Details</a>
+                <a href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="max-width: 950px; margin: 2rem auto;">
+        <!-- Header Summary Card -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h2 id="machineHeaderTitle">Machinery Maintenance &amp; Repair History</h2>
+                    <p id="machineHeaderSub">Chronological record of certified service events, part replacements &amp; expenses</p>
+                </div>
+                <button class="btn btn-primary" onclick="openNewRecordModal()">+ Log Service Event</button>
+            </div>
+        </div>
+
+        <!-- Feedback Alert Container -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Maintenance History Table & Receipt Uploads -->
+        <div class="content-card">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h3>Service &amp; Repair Audit Trail</h3>
+                    <p>Verified logs fetched from backend database</p>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Service Type</th>
+                            <th>Provider</th>
+                            <th>Cost</th>
+                            <th>Hours</th>
+                            <th>Next Service Due</th>
+                            <th>Description</th>
+                            <th>Receipts</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="maintenanceTableBody">
+                        <tr><td colspan="9" class="empty-state-box"><span class="spinner"></span> Loading service history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add New Maintenance Event -->
+    <div class="modal-overlay" id="addMaintenanceModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Log Maintenance Event</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form onsubmit="handleCreateMaintenance(event)" novalidate>
+                <div class="modal-body">
+                    <div id="modalAlert" style="display: none; margin-bottom: 1rem;"></div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Service Date *</label>
+                            <input type="date" name="maintenanceDate" id="maintDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Maintenance Classification *</label>
+                            <select name="maintenanceType" class="form-control" required>
+                                <option value="GENERAL_SERVICE" selected>General Routine Service</option>
+                                <option value="ENGINE_SERVICE">Engine Overhaul / Tune-up</option>
+                                <option value="OIL_CHANGE">Oil &amp; Filter Change</option>
+                                <option value="HYDRAULIC_SERVICE">Hydraulic Cylinder &amp; Line Service</option>
+                                <option value="BRAKE_SERVICE">Braking System Relining</option>
+                                <option value="TYRE_REPLACEMENT">Tyre / Track Replacement</option>
+                                <option value="ELECTRICAL_SERVICE">Electrical &amp; Alternator</option>
+                                <option value="OTHER">Other Custom Repair</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Authorized Service Provider *</label>
+                            <input type="text" name="serviceProvider" class="form-control" placeholder="e.g. Caterpillar Regional Workshop" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Service Cost ($) *</label>
+                            <input type="number" step="0.01" min="0" name="cost" class="form-control" placeholder="e.g. 1250.00" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Engine Operating Hours</label>
+                            <input type="number" step="0.1" min="0" name="engineHours" class="form-control" placeholder="e.g. 1540">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Next Service Date Due</label>
+                            <input type="date" name="nextServiceDate" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Work Completed Description *</label>
+                        <textarea name="description" class="form-control" rows="3" placeholder="Replaced primary diesel filters, flushed hydraulic lines, checked pressure valves..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Technician Remarks</label>
+                        <input type="text" name="remarks" class="form-control" placeholder="e.g. Machine passed standard pressure tests">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+                    <button type="submit" id="saveMaintenanceBtn" class="btn btn-primary">Save Service Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Upload Invoice/Receipt Image for Maintenance -->
+    <div class="modal-overlay" id="uploadReceiptModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Upload Service Invoice / Work Receipt</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form onsubmit="handleReceiptUpload(event)" enctype="multipart/form-data">
+                <input type="hidden" id="receiptMaintenanceId" name="maintenanceId">
+                <div class="modal-body">
+                    <div id="receiptAlert" style="display: none; margin-bottom: 1rem;"></div>
+                    <div class="form-group">
+                        <label class="form-label">Choose Invoice Image File (JPG, PNG) *</label>
+                        <input type="file" id="receiptFileInput" accept="image/*" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+                    <button type="submit" id="uploadReceiptBtn" class="btn btn-primary">Upload Receipt</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Machine Maintenance Records.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const machineId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            if (!machineId) {
+                UI.showAlert('pageAlert', 'No machine ID specified. Please select a machine first.', 'danger');
+                return;
+            }
+
+            document.getElementById('backToDetailsBtn').href = `machinery-details.html?id=${machineId}`;
+            document.getElementById('maintDate').value = new Date().toISOString().split('T')[0];
+
+            // Modal backdrop close
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay || e.target.classList.contains('modal-close-btn')) {
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
+            await loadMachineHeader();
+            await loadMaintenanceHistory();
+        });
+
+        async function loadMachineHeader() {
+            try {
+                const mach = await AuthService.apiFetch(`/machinery/${machineId}`);
+                document.getElementById('machineHeaderTitle').innerText = `${mach.name} (#${mach.id}) Maintenance History`;
+                document.getElementById('machineHeaderSub').innerText = `${mach.manufacturer || ''} ${mach.model || ''} &bull; ${mach.category || 'EQUIPMENT'}`;
+            } catch (err) {
+                console.warn('Could not load machine header:', err);
+            }
+        }
+
+        async function loadMaintenanceHistory() {
+            const tbody = document.getElementById('maintenanceTableBody');
+            tbody.innerHTML = '<tr><td colspan="9" class="empty-state-box"><span class="spinner"></span> Loading service history...</td></tr>';
+
+            try {
+                // Fetch chronological history from GET /api/machinery/{id}/maintenance
+                const history = await AuthService.apiFetch(`/machinery/${machineId}/maintenance?sort=desc`);
+
+                if (!history || history.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="9" class="empty-state-box">
+                                <div class="empty-state-title">No Service Records Logged</div>
+                                <div class="empty-state-desc">Click "+ Log Service Event" to record initial service, oil change, or parts overhaul.</div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = history.map(item => `
+                    <tr>
+                        <td><strong>${formatDate(item.maintenanceDate)}</strong></td>
+                        <td><span class="status-badge available">${escapeHtml(item.maintenanceType || 'GENERAL')}</span></td>
+                        <td>${escapeHtml(item.serviceProvider || '--')}</td>
+                        <td><strong>$${Number(item.cost || 0).toLocaleString()}</strong></td>
+                        <td>${item.engineHours ? item.engineHours + ' hrs' : '--'}</td>
+                        <td>${formatDate(item.nextServiceDate)}</td>
+                        <td><small>${escapeHtml(item.description || '')}</small></td>
+                        <td>
+                            ${item.images && item.images.length > 0 ? `
+                                <a href="${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/maintenance/images/${item.images[0].storedFileName || item.images[0]}" target="_blank" class="btn btn-outline" style="padding:0.25rem 0.5rem; font-size:0.75rem;">
+                                    View Receipt
+                                </a>
+                            ` : `
+                                <button class="btn btn-outline" style="padding:0.25rem 0.5rem; font-size:0.75rem;" onclick="openReceiptModal(${item.id})">
+                                    + Attach Receipt
+                                </button>
+                            `}
+                        </td>
+                        <td>
+                            <button class="btn btn-outline" style="padding:0.25rem 0.5rem; font-size:0.75rem; color:var(--danger);" onclick="deleteMaintenanceRecord(${item.id})">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                console.error('Error fetching maintenance:', err);
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state-box" style="color:var(--danger);">Error loading maintenance records.</td></tr>';
+            }
+        }
+
+        function openNewRecordModal() {
+            document.getElementById('addMaintenanceModal').classList.add('active');
+            UI.clearAlert('modalAlert');
+        }
+
+        function openReceiptModal(maintId) {
+            document.getElementById('receiptMaintenanceId').value = maintId;
+            document.getElementById('uploadReceiptModal').classList.add('active');
+            UI.clearAlert('receiptAlert');
+        }
+
+        async function handleCreateMaintenance(e) {
+            e.preventDefault();
+            const form = e.target;
+            UI.clearAlert('modalAlert');
+
+            const maintenanceDate = form.maintenanceDate.value;
+            const maintenanceType = form.maintenanceType.value;
+            const serviceProvider = form.serviceProvider.value.trim();
+            const cost = form.cost.value;
+            const description = form.description.value.trim();
+            const engineHours = form.engineHours.value ? Number(form.engineHours.value) : null;
+            const nextServiceDate = form.nextServiceDate.value || null;
+            const remarks = form.remarks.value.trim();
+
+            const payload = {
+                maintenanceDate,
+                maintenanceType,
+                serviceProvider,
+                cost: Number(cost),
+                description,
+                engineHours,
+                nextServiceDate,
+                remarks,
+                images: []
+            };
+
+            UI.setLoading('saveMaintenanceBtn', true, 'Saving...');
+
+            try {
+                await AuthService.apiFetch(`/machinery/${machineId}/maintenance`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('modalAlert', 'Maintenance event saved successfully!', 'success');
+                form.reset();
+                setTimeout(() => {
+                    document.getElementById('addMaintenanceModal').classList.remove('active');
+                    loadMaintenanceHistory();
+                }, 600);
+
+            } catch (err) {
+                UI.setLoading('saveMaintenanceBtn', false, 'Save Service Record');
+                UI.showAlert('modalAlert', err.message || 'Failed to save maintenance log', 'danger');
+            }
+        }
+
+        async function handleReceiptUpload(e) {
+            e.preventDefault();
+            const maintId = document.getElementById('receiptMaintenanceId').value;
+            const fileInput = document.getElementById('receiptFileInput');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                UI.showAlert('receiptAlert', 'Please select an invoice image file', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            UI.setLoading('uploadReceiptBtn', true, 'Uploading...');
+
+            try {
+                const token = AuthService.getToken();
+                const response = await fetch(`${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/maintenance/${maintId}/images`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.message || 'Receipt upload failed');
+                }
+
+                UI.showAlert('receiptAlert', 'Receipt attached successfully!', 'success');
+                setTimeout(() => {
+                    document.getElementById('uploadReceiptModal').classList.remove('active');
+                    loadMaintenanceHistory();
+                }, 600);
+
+            } catch (err) {
+                UI.setLoading('uploadReceiptBtn', false, 'Upload Receipt');
+                UI.showAlert('receiptAlert', err.message || 'Upload failed', 'danger');
+            }
+        }
+
+        async function deleteMaintenanceRecord(maintId) {
+            if (!confirm('Are you sure you want to delete this maintenance record?')) return;
+            try {
+                await AuthService.apiFetch(`/machinery/maintenance/${maintId}`, { method: 'DELETE' });
+                loadMaintenanceHistory();
+            } catch (err) {
+                alert(err.message || 'Failed to delete record');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(str) {
+            if (!str) return '--';
+            try {
+                const d = new Date(str);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                return str;
+            }
+        }
+    </script>
+</body>
+</html>

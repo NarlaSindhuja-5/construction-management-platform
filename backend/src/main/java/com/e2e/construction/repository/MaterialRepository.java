@@ -3,6 +3,7 @@ package com.e2e.construction.repository;
 import com.e2e.construction.entity.Material;
 import com.e2e.construction.entity.MaterialAvailability;
 import com.e2e.construction.entity.MaterialCategory;
+import com.e2e.construction.entity.VerificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +16,7 @@ import java.util.List;
 public interface MaterialRepository extends JpaRepository<Material, Long> {
 
     @Query("SELECT m FROM Material m WHERE " +
+            "m.verificationStatus = com.e2e.construction.entity.VerificationStatus.VERIFIED AND " +
             "(:search IS NULL OR LOWER(m.name) LIKE LOWER(CONCAT('%', :search, '%')) " +
             " OR LOWER(m.gradeSpecification) LIKE LOWER(CONCAT('%', :search, '%')) " +
             " OR LOWER(m.description) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
@@ -35,4 +37,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long> {
     List<Material> findBySupplierUserEmailOrderByCreatedAtDesc(String email);
 
     List<Material> findByCategoryOrderByCreatedAtDesc(MaterialCategory category);
+
+    List<Material> findByVerificationStatusOrderByCreatedAtDesc(VerificationStatus status);
+
+    List<Material> findAllByOrderByCreatedAtDesc();
 }

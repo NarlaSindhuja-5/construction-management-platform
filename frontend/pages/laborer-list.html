@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hire Verified Skilled Construction Labor - E2E Construction Management System">
+    <title>Skilled Labor Marketplace - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Labor Workforce</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="contractor-dashboard.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Contractor Portal</a>
+                <a href="labor-requests.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work Requests</a>
+                <a href="attendance.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Attendance</a>
+                <a href="labor-history.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Assignments</a>
+                <a href="laborer-profile.html" class="btn btn-primary" id="laborerProfileBtn" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">My Profile</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="labor-hero">
+        <div class="container labor-hero-content">
+            <div class="labor-hero-title">
+                <h1>Hire Verified Skilled Construction Workers</h1>
+                <p>Masons, carpenters, electricians, plumbers, welders, and site crew ready for project mobilization.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="labor-requests.html" class="btn btn-primary" style="background: var(--labor-accent); border: none; font-weight: 700;">
+                    Manage Work Requests
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Search & Filter Card -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div style="padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between; background: #ffffff;">
+                <div style="display: flex; flex-wrap: wrap; gap: 0.85rem; flex: 1;">
+                    <select id="skillFilter" class="form-control" style="width: 220px;">
+                        <option value="">All Trades / Skills</option>
+                        <option value="Mason">Mason (Brickwork &amp; Plastering)</option>
+                        <option value="Carpenter">Carpenter</option>
+                        <option value="Electrician">Electrician</option>
+                        <option value="Plumber">Plumber</option>
+                        <option value="Painter">Painter</option>
+                        <option value="Welder">Welder</option>
+                        <option value="Bar Bender">Bar Bender (Rebar)</option>
+                        <option value="General">General Construction Labor</option>
+                    </select>
+
+                    <input type="text" id="locationFilter" class="form-control" placeholder="City or location..." style="width: 180px;">
+
+                    <select id="availabilityFilter" class="form-control" style="width: 170px;">
+                        <option value="">All Availability</option>
+                        <option value="AVAILABLE">Available Now</option>
+                        <option value="WORKING">Currently On Site</option>
+                        <option value="UNAVAILABLE">Unavailable</option>
+                    </select>
+
+                    <input type="number" id="minExpFilter" class="form-control" placeholder="Min Experience (yrs)" style="width: 170px;">
+                    <input type="number" id="maxWageFilter" class="form-control" placeholder="Max Daily Wage ($)" style="width: 160px;">
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button id="searchBtn" class="btn btn-primary" style="padding: 0.6rem 1.4rem;">Search</button>
+                    <button id="resetBtn" class="btn btn-outline" style="padding: 0.6rem 1rem;">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Container -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Laborer Grid -->
+        <div class="laborer-grid" id="laborerGrid">
+            <div class="empty-state-box" style="grid-column: 1 / -1;">
+                <span class="spinner"></span> Loading verified skilled laborers...
+            </div>
+        </div>
+    </main>
+
+    <!-- Quick Hire Modal -->
+    <div class="modal-overlay" id="quickHireModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Send Work Request: <span id="quickHireName" style="color:var(--primary);"></span></h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form onsubmit="handleQuickHireSubmit(event)" novalidate>
+                <input type="hidden" id="quickHireLaborerId" name="laborerId">
+                <div class="modal-body">
+                    <div id="quickHireAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">Assign To Project *</label>
+                        <select id="quickHireProjectSelect" name="projectId" class="form-control" required>
+                            <option value="" disabled selected>-- Select Project --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Start Date *</label>
+                            <input type="date" id="quickHireStartDate" name="startDate" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">End Date *</label>
+                            <input type="date" id="quickHireEndDate" name="endDate" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Agreed Daily Wage ($) *</label>
+                        <input type="number" step="0.01" id="quickHireWage" name="dailyWage" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Job Assignment Details *</label>
+                        <textarea name="jobDescription" class="form-control" rows="2" placeholder="Describe the on-site tasks, trade responsibilities, and site location..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contractor Notes (Optional)</label>
+                        <textarea name="contractorNotes" class="form-control" rows="2" placeholder="Reporting timings, site supervisor contact details..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+                    <button type="submit" id="submitQuickHireBtn" class="btn btn-primary">Dispatch Work Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Skilled Labor Workforce.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let cachedProjects = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            // Set up modal listeners
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay || e.target.classList.contains('modal-close-btn')) {
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
+            // Date setup
+            const today = new Date().toISOString().split('T')[0];
+            const startInput = document.getElementById('quickHireStartDate');
+            const endInput = document.getElementById('quickHireEndDate');
+            startInput.min = today;
+            endInput.min = today;
+            startInput.addEventListener('change', () => { endInput.min = startInput.value; });
+
+            // Fetch contractor projects for dropdown
+            try {
+                cachedProjects = await AuthService.apiFetch('/projects/my-projects');
+                const pSelect = document.getElementById('quickHireProjectSelect');
+                pSelect.innerHTML = '<option value="" disabled selected>-- Select Project --</option>';
+                cachedProjects.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = `${p.name} (${p.city || p.location})`;
+                    pSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.warn('Could not load projects for hire dropdown:', e);
+            }
+
+            // Bind filter buttons
+            document.getElementById('searchBtn').addEventListener('click', loadLaborers);
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                document.getElementById('skillFilter').value = '';
+                document.getElementById('locationFilter').value = '';
+                document.getElementById('availabilityFilter').value = '';
+                document.getElementById('minExpFilter').value = '';
+                document.getElementById('maxWageFilter').value = '';
+                loadLaborers();
+            });
+
+            await loadLaborers();
+        });
+
+        async function loadLaborers() {
+            const grid = document.getElementById('laborerGrid');
+            grid.innerHTML = '<div class="empty-state-box" style="grid-column:1/-1;"><span class="spinner"></span> Loading skilled laborers...</div>';
+
+            const params = new URLSearchParams();
+            const skill = document.getElementById('skillFilter').value;
+            const location = document.getElementById('locationFilter').value.trim();
+            const availability = document.getElementById('availabilityFilter').value;
+            const minExp = document.getElementById('minExpFilter').value;
+            const maxWage = document.getElementById('maxWageFilter').value;
+
+            if (skill) params.append('skill', skill);
+            if (location) params.append('location', location);
+            if (availability) params.append('availability', availability);
+            if (minExp) params.append('minExperience', minExp);
+            if (maxWage) params.append('maxDailyWage', maxWage);
+
+            try {
+                const query = params.toString() ? `?${params.toString()}` : '';
+                const laborers = await AuthService.apiFetch(`/laborers/search${query}`);
+
+                if (!laborers || laborers.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state-box" style="grid-column:1/-1;">
+                            <div class="empty-state-icon">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857"/></svg>
+                            </div>
+                            <h3 class="empty-state-title">No Workers Found</h3>
+                            <p class="empty-state-desc">Try loosening your trade skill or wage filters to discover active personnel.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = laborers.map(l => {
+                    const avail = (l.availability || l.availabilityStatus || 'AVAILABLE').toUpperCase();
+                    const availClass = avail === 'AVAILABLE' ? 'available' : (avail === 'WORKING' ? 'working' : 'unavailable');
+                    const initial = (l.fullName || l.laborerName || 'L')[0].toUpperCase();
+                    const skillsList = (l.skills || l.skill || 'General Construction').split(',').map(s => s.trim());
+
+                    return `
+                        <div class="laborer-card">
+                            <div>
+                                <div class="laborer-card-header">
+                                    <div class="laborer-avatar">${initial}</div>
+                                    <div class="laborer-info">
+                                        <h3 class="laborer-name">${escapeHtml(l.fullName || l.laborerName || 'Skilled Worker')}</h3>
+                                        <div class="laborer-location">
+                                            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                                            <span>${escapeHtml(l.city || l.location || 'Site Base')}</span>
+                                        </div>
+                                    </div>
+                                    <span class="availability-pill ${availClass}">${avail}</span>
+                                </div>
+
+                                <div class="laborer-skill-tags">
+                                    ${skillsList.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('')}
+                                </div>
+
+                                <div class="laborer-metrics">
+                                    <div class="laborer-metric-item">
+                                        <span class="laborer-metric-label">Experience</span>
+                                        <span class="laborer-metric-value">${l.yearsOfExperience || 0} years</span>
+                                    </div>
+                                    <div class="laborer-metric-item">
+                                        <span class="laborer-metric-label">Status</span>
+                                        <span class="laborer-metric-value" style="color:var(--success);">&check; Verified</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="laborer-card-footer">
+                                <div class="daily-wage-box">
+                                    <div class="wage">$${l.dailyWage || 150}</div>
+                                    <div class="unit">per day</div>
+                                </div>
+                                <div style="display:flex; gap:0.5rem;">
+                                    <a href="laborer-details.html?id=${l.id}" class="btn btn-outline" style="padding:0.45rem 0.85rem; font-size:0.85rem;">
+                                        Profile
+                                    </a>
+                                    <button class="btn btn-primary" style="padding:0.45rem 1rem; font-size:0.85rem;" onclick="openQuickHireModal(${l.id}, '${escapeHtml(l.fullName || l.laborerName || 'Laborer')}', ${l.dailyWage || 150})">
+                                        Hire
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.error('Error loading laborers:', err);
+                grid.innerHTML = '<div class="empty-state-box" style="grid-column:1/-1; color:var(--danger);">Failed to load labor directory. Ensure Spring Boot is running.</div>';
+            }
+        }
+
+        function openQuickHireModal(laborerId, laborerName, dailyWage) {
+            document.getElementById('quickHireLaborerId').value = laborerId;
+            document.getElementById('quickHireName').innerText = laborerName;
+            document.getElementById('quickHireWage').value = dailyWage || 150;
+            document.getElementById('quickHireModal').classList.add('active');
+            UI.clearAlert('quickHireAlert');
+        }
+
+        async function handleQuickHireSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            UI.clearAlert('quickHireAlert');
+
+            const laborerId = form.laborerId.value;
+            const projectId = form.projectId.value;
+            const startDate = form.startDate.value;
+            const endDate = form.endDate.value;
+            const dailyWage = form.dailyWage.value;
+            const jobDescription = form.jobDescription.value.trim();
+            const contractorNotes = form.contractorNotes.value.trim();
+
+            if (!projectId) {
+                UI.showAlert('quickHireAlert', 'Please select a project for this assignment', 'danger');
+                return;
+            }
+
+            const payload = {
+                laborerId: Number(laborerId),
+                projectId: Number(projectId),
+                startDate,
+                endDate,
+                dailyWage: Number(dailyWage),
+                jobDescription,
+                contractorNotes
+            };
+
+            UI.setLoading('submitQuickHireBtn', true, 'Dispatching...');
+
+            try {
+                await AuthService.apiFetch(`/laborers/${laborerId}/work-requests`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('quickHireAlert', 'Work request dispatched successfully! You can track this in Work Requests.', 'success');
+                form.reset();
+                setTimeout(() => {
+                    document.getElementById('quickHireModal').classList.remove('active');
+                }, 800);
+
+            } catch (err) {
+                UI.setLoading('submitQuickHireBtn', false, 'Dispatch Work Request');
+                UI.showAlert('quickHireAlert', err.message || 'Failed to dispatch work request', 'danger');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

@@ -2,9 +2,13 @@ package com.e2e.construction.repository;
 
 import com.e2e.construction.entity.Laborer;
 import com.e2e.construction.entity.LaborerAvailability;
+import com.e2e.construction.entity.VerificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +23,11 @@ public interface LaborerRepository extends JpaRepository<Laborer, Long> {
 
     List<Laborer> findByAvailabilityStatus(LaborerAvailability availabilityStatus);
 
-    @org.springframework.data.jpa.repository.Query("SELECT l FROM Laborer l WHERE l.verificationStatus = com.e2e.construction.entity.VerificationStatus.VERIFIED AND " +
+    List<Laborer> findByVerificationStatusOrderByCreatedAtDesc(VerificationStatus status);
+
+    List<Laborer> findAllByOrderByCreatedAtDesc();
+
+    @Query("SELECT l FROM Laborer l WHERE l.verificationStatus = com.e2e.construction.entity.VerificationStatus.VERIFIED AND " +
             "(:location IS NULL OR LOWER(l.location) LIKE LOWER(CONCAT('%', :location, '%')) " +
             " OR LOWER(l.city) LIKE LOWER(CONCAT('%', :location, '%')) " +
             " OR LOWER(l.state) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +
@@ -29,9 +37,9 @@ public interface LaborerRepository extends JpaRepository<Laborer, Long> {
             "(:maxDailyWage IS NULL OR l.dailyWage <= :maxDailyWage) " +
             "ORDER BY l.createdAt DESC")
     List<Laborer> searchVerifiedLaborers(
-            @org.springframework.data.repository.query.Param("location") String location,
-            @org.springframework.data.repository.query.Param("skill") String skill,
-            @org.springframework.data.repository.query.Param("minExperience") Integer minExperience,
-            @org.springframework.data.repository.query.Param("availability") LaborerAvailability availability,
-            @org.springframework.data.repository.query.Param("maxDailyWage") java.math.BigDecimal maxDailyWage);
+            @Param("location") String location,
+            @Param("skill") String skill,
+            @Param("minExperience") Integer minExperience,
+            @Param("availability") LaborerAvailability availability,
+            @Param("maxDailyWage") BigDecimal maxDailyWage);
 }

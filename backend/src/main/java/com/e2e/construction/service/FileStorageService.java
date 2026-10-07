@@ -25,14 +25,25 @@ public class FileStorageService {
             "image/jpeg",
             "image/jpg",
             "image/png",
-            "image/webp"
+            "image/webp",
+            "application/pdf",
+            "application/msword",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            "application/zip",
+            "application/x-zip-compressed",
+            "text/plain"
     );
 
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
             ".jpg",
             ".jpeg",
             ".png",
-            ".webp"
+            ".webp",
+            ".pdf",
+            ".doc",
+            ".docx",
+            ".zip",
+            ".txt"
     );
 
     // 10 MB maximum file size limit

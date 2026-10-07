@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Machine Technical Condition & Inspection - E2E Construction Management System">
+    <title>Machine Condition - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/machinery.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="machinery-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Equipment Diagnostics</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a id="backToDetailsBtn" href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">&larr; Machine Details</a>
+                <a href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="max-width: 950px; margin: 2rem auto;">
+        <!-- Header Summary -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h2 id="machineHeaderTitle">Mechanical Condition & Diagnostics</h2>
+                    <p id="machineHeaderSub">Loading machinery specification...</p>
+                </div>
+                <div>
+                    <span class="badge badge-primary" id="currentHealthBadge">Active Inspection</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="alertContainer" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Form Panel -->
+        <div class="content-card">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h3>Log / Update Machine Condition Report</h3>
+                    <p>Enter certified diagnostic assessments across all critical vehicle subsystems</p>
+                </div>
+            </div>
+
+            <form id="conditionForm" style="padding: 1.75rem;" novalidate>
+                <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 1rem;">
+                    Powertrain &amp; Mechanical Subsystems
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condEngine">Engine Overall *</label>
+                        <select id="condEngine" name="engine" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - Optimal Power &amp; Compression</option>
+                            <option value="GOOD" selected>GOOD - Normal Operation</option>
+                            <option value="FAIR">FAIR - Wear Detected</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE - Maintenance Required</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condOil">Engine Oil Level &amp; Quality *</label>
+                        <select id="condOil" name="engineOil" class="form-control" required>
+                            <option value="NORMAL" selected>NORMAL - Clean &amp; Full</option>
+                            <option value="GOOD">GOOD</option>
+                            <option value="LOW">LOW - Needs Top-Up</option>
+                            <option value="NEEDS_CHANGE">NEEDS_CHANGE - Degraded</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condCoolant">Coolant Condition *</label>
+                        <select id="condCoolant" name="coolant" class="form-control" required>
+                            <option value="NORMAL" selected>NORMAL - Adequate Level &amp; Flow</option>
+                            <option value="GOOD">GOOD</option>
+                            <option value="LOW">LOW</option>
+                            <option value="NEEDS_TOPUP">NEEDS_TOPUP</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condTransmission">Transmission &amp; Gearbox *</label>
+                        <select id="condTransmission" name="transmission" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - Smooth Shifting</option>
+                            <option value="GOOD" selected>GOOD</option>
+                            <option value="FAIR">FAIR</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condHydraulic">Hydraulic System &amp; Pressure *</label>
+                        <select id="condHydraulic" name="hydraulicSystem" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - Full Working Pressure</option>
+                            <option value="GOOD" selected>GOOD - Operational</option>
+                            <option value="FAIR">FAIR</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condBattery">Battery &amp; Electrical Starter *</label>
+                        <select id="condBattery" name="battery" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - 100% Charge Retention</option>
+                            <option value="GOOD" selected>GOOD - Healthy Voltage</option>
+                            <option value="FAIR">FAIR</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condBrakes">Braking System *</label>
+                        <select id="condBrakes" name="brakes" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - High Stopping Force</option>
+                            <option value="GOOD" selected>GOOD</option>
+                            <option value="FAIR">FAIR</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condTyres">Tyre / Track Wear Condition *</label>
+                        <select id="condTyres" name="tyres" class="form-control" required>
+                            <option value="100%">100% - Brand New Tread</option>
+                            <option value="80%" selected>80% - Good Grip</option>
+                            <option value="60%">60% - Moderate Wear</option>
+                            <option value="40%">40% - Near Replacement</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin: 1.5rem 0 1rem 0;">
+                    Chassis, Safety &amp; Usage Metrics
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condLights">Lighting &amp; Signals *</label>
+                        <select id="condLights" name="lights" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - All Work Lights Functional</option>
+                            <option value="GOOD" selected>GOOD</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condBody">Cabin &amp; Exterior Body *</label>
+                        <select id="condBody" name="body" class="form-control" required>
+                            <option value="EXCELLENT">EXCELLENT - Clean Paint &amp; Glass</option>
+                            <option value="GOOD" selected>GOOD</option>
+                            <option value="FAIR">FAIR</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condLeakage">Fluid Leakage Status *</label>
+                        <select id="condLeakage" name="leakage" class="form-control" required>
+                            <option value="NONE" selected>NONE - Zero Fluid Leaks</option>
+                            <option value="MINOR">MINOR - Seepage Monitored</option>
+                            <option value="MAJOR">MAJOR - Attention Required</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condStart">Cold Start Performance *</label>
+                        <select id="condStart" name="startingCondition" class="form-control" required>
+                            <option value="EXCELLENT" selected>EXCELLENT - Instant Ignition</option>
+                            <option value="GOOD">GOOD</option>
+                            <option value="FAIR">FAIR</option>
+                            <option value="NEEDS_SERVICE">NEEDS_SERVICE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condHours">Total Engine Hours</label>
+                        <input type="number" step="0.1" min="0" id="condHours" name="engineHours" class="form-control" placeholder="e.g. 1420.5">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condOdometer">Odometer (km / miles)</label>
+                        <input type="number" step="0.1" min="0" id="condOdometer" name="odometer" class="form-control" placeholder="e.g. 32000">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="condInspDate">Inspection Date</label>
+                        <input type="date" id="condInspDate" name="inspectionDate" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condLastServDate">Last Service Date</label>
+                        <input type="date" id="condLastServDate" name="lastServiceDate" class="form-control">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="condNextServDate">Next Service Due</label>
+                        <input type="date" id="condNextServDate" name="nextServiceDate" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="condRemarksInput">Inspector Remarks &amp; Certification Notes</label>
+                    <textarea id="condRemarksInput" name="remarks" class="form-control" rows="3" placeholder="Notes on hydraulic hoses, filter replacements, or safety gear..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <a id="cancelBtn" href="machinery-list.html" class="btn btn-outline">Cancel</a>
+                    <button type="submit" id="saveConditionBtn" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                        Save Condition Report
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Historical Condition Reports -->
+        <div class="content-card" style="margin-top: 2rem;">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h3>Diagnostic Inspection History</h3>
+                    <p>Chronological audit log of previous equipment condition assessments</p>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Inspection Date</th>
+                            <th>Engine</th>
+                            <th>Hydraulics</th>
+                            <th>Brakes</th>
+                            <th>Tyres</th>
+                            <th>Engine Hours</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody id="conditionHistoryTbody">
+                        <tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading inspection history...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Machine Condition & Inspection.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const machineId = urlParams.get('id');
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            if (!machineId) {
+                UI.showAlert('alertContainer', 'No machine ID specified. Please select a machine first.', 'danger');
+                return;
+            }
+
+            document.getElementById('backToDetailsBtn').href = `machinery-details.html?id=${machineId}`;
+            document.getElementById('cancelBtn').href = `machinery-details.html?id=${machineId}`;
+
+            // Set default inspection date to today
+            document.getElementById('condInspDate').value = new Date().toISOString().split('T')[0];
+
+            await loadMachineAndCondition();
+        });
+
+        async function loadMachineAndCondition() {
+            try {
+                // Fetch basic machine info
+                const mach = await AuthService.apiFetch(`/machinery/${machineId}`);
+                document.getElementById('machineHeaderTitle').innerText = `${mach.name} (#${mach.id})`;
+                document.getElementById('machineHeaderSub').innerText = `${mach.manufacturer || ''} ${mach.model || ''} &bull; ${mach.category || 'EQUIPMENT'} &bull; ${mach.location || ''}`;
+
+                // Fetch current latest condition
+                try {
+                    const cond = await AuthService.apiFetch(`/machinery/${machineId}/condition`);
+                    if (cond) {
+                        populateForm(cond);
+                    }
+                } catch (condErr) {
+                    console.log('No condition report logged yet. Form ready for initial submission.');
+                }
+
+                // Fetch history
+                await loadHistory();
+
+            } catch (err) {
+                console.error('Error fetching machine:', err);
+                UI.showAlert('alertContainer', 'Failed to load machinery information: ' + (err.message || 'Error'), 'danger');
+            }
+        }
+
+        function populateForm(cond) {
+            const form = document.getElementById('conditionForm');
+            if (cond.engine) form.engine.value = cond.engine;
+            if (cond.engineOil) form.engineOil.value = cond.engineOil;
+            if (cond.coolant) form.coolant.value = cond.coolant;
+            if (cond.transmission) form.transmission.value = cond.transmission;
+            if (cond.hydraulicSystem) form.hydraulicSystem.value = cond.hydraulicSystem;
+            if (cond.battery) form.battery.value = cond.battery;
+            if (cond.brakes) form.brakes.value = cond.brakes;
+            if (cond.tyres) form.tyres.value = cond.tyres;
+            if (cond.lights) form.lights.value = cond.lights;
+            if (cond.body) form.body.value = cond.body;
+            if (cond.leakage) form.leakage.value = cond.leakage;
+            if (cond.startingCondition) form.startingCondition.value = cond.startingCondition;
+            if (cond.engineHours) form.engineHours.value = cond.engineHours;
+            if (cond.odometer) form.odometer.value = cond.odometer;
+            if (cond.inspectionDate) form.inspectionDate.value = cond.inspectionDate;
+            if (cond.lastServiceDate) form.lastServiceDate.value = cond.lastServiceDate;
+            if (cond.nextServiceDate) form.nextServiceDate.value = cond.nextServiceDate;
+            if (cond.remarks) form.remarks.value = cond.remarks;
+        }
+
+        async function loadHistory() {
+            const tbody = document.getElementById('conditionHistoryTbody');
+            try {
+                const history = await AuthService.apiFetch(`/machinery/${machineId}/conditions/history`);
+                if (!history || history.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box">No historical condition logs on file.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = history.map(h => `
+                    <tr>
+                        <td><strong>${formatDate(h.inspectionDate || h.createdAt)}</strong></td>
+                        <td><span class="condition-status-pill status-${(h.engine || 'good').toLowerCase()}">${h.engine}</span></td>
+                        <td><span class="condition-status-pill status-${(h.hydraulicSystem || 'good').toLowerCase()}">${h.hydraulicSystem}</span></td>
+                        <td><span class="condition-status-pill status-${(h.brakes || 'good').toLowerCase()}">${h.brakes}</span></td>
+                        <td>${h.tyres || '80%'}</td>
+                        <td>${h.engineHours ? h.engineHours + ' hrs' : '--'}</td>
+                        <td><small>${escapeHtml(h.remarks || '--')}</small></td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box" style="color:var(--danger);">Error loading history.</td></tr>';
+            }
+        }
+
+        document.getElementById('conditionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            UI.clearAlert('alertContainer');
+            const form = e.target;
+
+            const payload = {
+                engine: form.engine.value,
+                engineOil: form.engineOil.value,
+                coolant: form.coolant.value,
+                transmission: form.transmission.value,
+                hydraulicSystem: form.hydraulicSystem.value,
+                battery: form.battery.value,
+                brakes: form.brakes.value,
+                tyres: form.tyres.value,
+                lights: form.lights.value,
+                body: form.body.value,
+                leakage: form.leakage.value,
+                startingCondition: form.startingCondition.value,
+                engineHours: form.engineHours.value ? Number(form.engineHours.value) : null,
+                odometer: form.odometer.value ? Number(form.odometer.value) : null,
+                inspectionDate: form.inspectionDate.value || null,
+                lastServiceDate: form.lastServiceDate.value || null,
+                nextServiceDate: form.nextServiceDate.value || null,
+                remarks: form.remarks.value.trim()
+            };
+
+            UI.setLoading('saveConditionBtn', true, 'Saving...');
+
+            try {
+                // Submit condition report to POST /api/machinery/{machineId}/condition
+                await AuthService.apiFetch(`/machinery/${machineId}/condition`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('alertContainer', 'Machine condition report successfully saved and certified!', 'success');
+                UI.setLoading('saveConditionBtn', false, 'Save Condition Report');
+                loadHistory();
+
+            } catch (err) {
+                UI.setLoading('saveConditionBtn', false, 'Save Condition Report');
+                UI.showAlert('alertContainer', err.message || 'Failed to save condition report. Ensure you own this machine.', 'danger');
+            }
+        });
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(str) {
+            if (!str) return '--';
+            try {
+                const d = new Date(str);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                return str;
+            }
+        }
+    </script>
+</body>
+</html>

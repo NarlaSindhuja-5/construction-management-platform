@@ -1,0 +1,565 @@
+/* ==========================================================================
+   E2E Construction Management System - Machinery Marketplace Styles
+   Professional • Classic • Clean • Heavy Equipment & Construction Focused
+   ========================================================================== */
+
+:root {
+    --mach-primary: #0f172a;
+    --mach-primary-dark: #0a1120;
+    --mach-accent: #f59e0b;
+    --mach-accent-hover: #d97706;
+    --mach-card-bg: #ffffff;
+    --mach-border: #e2e8f0;
+}
+
+/* Marketplace Header & Banner */
+.market-hero {
+    background: 
+        radial-gradient(circle at 90% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 40%),
+        linear-gradient(135deg, #0b1329 0%, #1e293b 100%);
+    color: #ffffff;
+    padding: 3.25rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid #f59e0b;
+    position: relative;
+}
+
+.market-hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.market-hero-title h1 {
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+}
+
+.market-hero-title p {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    max-width: 650px;
+}
+
+/* Machine Listing Cards */
+.machinery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin-bottom: 3rem;
+}
+
+.machine-card {
+    background: #ffffff;
+    border: 1px solid var(--mach-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.machine-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.12);
+    border-color: #cbd5e1;
+}
+
+.machine-card-media {
+    position: relative;
+    width: 100%;
+    height: 210px;
+    background-color: #0f172a;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.machine-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.35s ease;
+}
+
+.machine-card:hover .machine-card-img {
+    transform: scale(1.04);
+}
+
+.machine-card-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    gap: 0.5rem;
+    text-align: center;
+    padding: 1rem;
+}
+
+.machine-card-placeholder svg {
+    width: 48px;
+    height: 48px;
+    color: #475569;
+}
+
+.machine-card-badge {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 2;
+}
+
+.machine-category-pill {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    background: rgba(15, 23, 42, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.machine-card-content {
+    padding: 1.35rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.machine-card-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+    letter-spacing: -0.01em;
+}
+
+.machine-card-owner {
+    font-size: 0.825rem;
+    color: #64748b;
+    margin-bottom: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.machine-specs-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+    padding: 0.85rem 0;
+    margin-bottom: 0.85rem;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.85rem;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.spec-label {
+    color: #94a3b8;
+    font-size: 0.725rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.spec-value {
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.machine-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.75rem;
+}
+
+.rental-price {
+    display: flex;
+    flex-direction: column;
+}
+
+.rental-price .amount {
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+    font-family: var(--font-main);
+}
+
+.rental-price .unit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* ==========================================================================
+   Machinery Details Page Styles
+   ========================================================================== */
+
+.details-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+@media (max-width: 992px) {
+    .details-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Image Gallery */
+.gallery-container {
+    background: #ffffff;
+    border: 1px solid var(--mach-border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+.gallery-main-view {
+    width: 100%;
+    height: 440px;
+    background-color: #0b1329;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.gallery-main-img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-thumbnails {
+    display: flex;
+    gap: 0.75rem;
+    padding: 1rem;
+    background-color: #f8fafc;
+    overflow-x: auto;
+    border-top: 1px solid var(--mach-border);
+    -webkit-overflow-scrolling: touch;
+}
+
+.gallery-thumb {
+    width: 84px;
+    height: 64px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+    background-color: #e2e8f0;
+    transition: border-color 0.15s, transform 0.15s;
+}
+
+.gallery-thumb.active {
+    border-color: #f59e0b;
+    transform: scale(1.05);
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+}
+
+.gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Details Section Panels */
+.details-panel {
+    background: #ffffff;
+    border: 1px solid var(--mach-border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+}
+
+.details-panel-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+/* Technical Specification Grid */
+.specs-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+}
+
+.spec-detail-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem 1.15rem;
+}
+
+.spec-detail-box .title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 0.3rem;
+}
+
+.spec-detail-box .value {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* Condition Diagnostics Card Grid */
+.condition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.condition-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.condition-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 6px -2px rgba(15, 23, 42, 0.06);
+}
+
+.condition-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.condition-name {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.condition-status-pill {
+    font-size: 0.725rem;
+    font-weight: 800;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.status-excellent, .status-good, .status-normal {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.status-fair, .status-minor, .status-low {
+    background-color: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.status-needs_service, .status-needs_change, .status-needs_topup, .status-major {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.status-not_available {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Maintenance Timeline */
+.timeline {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-top: 1rem;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background-color: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -1.5rem;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #0284c7;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 1px #cbd5e1;
+}
+
+.timeline-content {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 1.15rem;
+}
+
+.timeline-date {
+    font-size: 0.775rem;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 0.25rem;
+}
+
+.timeline-title {
+    font-size: 0.975rem;
+    font-weight: 800;
+    color: #0f172a;
+    display: flex;
+    justify-content: space-between;
+}
+
+.timeline-desc {
+    font-size: 0.85rem;
+    color: #475569;
+    margin-top: 0.35rem;
+}
+
+/* Sidebar Booking Box */
+.booking-box {
+    background: #ffffff;
+    border: 2px solid var(--mach-border);
+    border-radius: 14px;
+    padding: 1.75rem;
+    box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08);
+    position: sticky;
+    top: 90px;
+}
+
+.booking-price-header {
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.booking-price-header .price {
+    font-size: 2.25rem;
+    font-weight: 900;
+    color: #0f172a;
+    font-family: var(--font-main);
+}
+
+.booking-price-header .sub {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Verification Banner */
+.verification-card {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    border-radius: 10px;
+    padding: 1.15rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    color: #065f46;
+}
+
+.verification-card.pending {
+    background: #fffbeb;
+    border-color: #fde68a;
+    color: #92400e;
+}
+
+.verification-card.rejected {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+/* Mobile Responsive Galleries & Details */
+@media (max-width: 640px) {
+    .gallery-main-view {
+        height: 260px;
+    }
+    .gallery-thumb {
+        width: 64px;
+        height: 48px;
+    }
+    .details-layout {
+        gap: 1.25rem;
+    }
+    .booking-box {
+        position: static;
+        padding: 1.25rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .gallery-main-view {
+        height: 200px;
+    }
+    .gallery-thumb {
+        width: 52px;
+        height: 40px;
+    }
+    .booking-box {
+        padding: 1rem 0.75rem;
+    }
+    .booking-price-header .price {
+        font-size: 1.75rem;
+    }
+}

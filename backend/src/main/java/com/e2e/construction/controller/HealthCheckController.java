@@ -31,8 +31,9 @@ public class HealthCheckController {
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> getHealth() {
         Map<String, Object> response = new LinkedHashMap<>();
-        response.put("application", "E2E Construction Management System");
         response.put("status", "UP");
+        response.put("message", "E2E Construction Management Backend is running");
+        response.put("application", "E2E Construction Management System");
         response.put("timestamp", Instant.now().toString());
 
         Map<String, Object> dbHealth = new LinkedHashMap<>();

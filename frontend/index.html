@@ -3,33 +3,328 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="E2E Construction Management System - Initial Project Setup">
+    <meta name="description" content="E2E Construction Management System - Complete Operating Platform for Infrastructure & Building Projects">
     <title>E2E Construction Management System</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .home-hero {
+            padding: 4.5rem 0 3.5rem;
+            background: 
+                radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+                linear-gradient(180deg, #ffffff 0%, #f4f6f9 100%);
+            border-bottom: 2px solid var(--border);
+            text-align: center;
+        }
+        .home-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 0.95rem;
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: var(--radius-full);
+            color: #b45309;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin-bottom: 1.25rem;
+            transition: all 0.3s ease;
+        }
+        .home-hero-badge.status-connected {
+            background: #ecfdf5;
+            border-color: #a7f3d0;
+            color: #065f46;
+        }
+        .home-hero-badge.status-disconnected {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #991b1b;
+        }
+        .home-hero h1 {
+            font-size: 2.75rem;
+            font-weight: 900;
+            color: var(--primary);
+            letter-spacing: -0.035em;
+            line-height: 1.15;
+            max-width: 850px;
+            margin: 0 auto 1.25rem;
+        }
+        .home-hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 680px;
+            margin: 0 auto 2.25rem;
+            line-height: 1.6;
+        }
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.75rem;
+            margin: 3rem 0;
+        }
+        .portal-card {
+            background: #ffffff;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-xs);
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .portal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+            border-color: #cbd5e1;
+        }
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #cbd5e1;
+            border-top-left-radius: var(--radius-md);
+            border-top-right-radius: var(--radius-md);
+            transition: background 0.2s;
+        }
+        .portal-card:hover::before {
+            background: #f59e0b;
+        }
+        .portal-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem;
+            font-size: 1.25rem;
+        }
+        .portal-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .portal-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+    </style>
 </head>
 <body>
     <header class="header">
-        <div class="container">
-            <h1 class="logo">E2E Construction Management System</h1>
-            <span class="badge">Project Initialized</span>
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Construction System</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links" id="navLinks">
+                <a href="login.html">Sign In</a>
+                <a href="register.html" class="btn btn-primary" style="padding: 0.45rem 1.15rem; color: #ffffff;">Get Started</a>
+            </div>
         </div>
     </header>
 
-    <main class="main-content">
-        <div class="card">
-            <h2>E2E Construction Management System</h2>
-            <p class="subtitle">Full-Stack Architecture & Project Scaffold</p>
-            <div class="status-indicator">
-                <span class="dot"></span>
-                <span>Frontend Ready</span>
+    <section class="home-hero">
+        <div class="container">
+            <div id="backendStatusIndicator" class="home-hero-badge">
+                <span id="backendStatusDot">&#9679;</span>
+                <span id="backendStatusText">Checking Backend Connectivity...</span>
+            </div>
+            <h1>E2E Construction Management System</h1>
+            <p>
+                A centralized platform for managing construction projects, labor, machinery, materials, tenders and daily site operations.
+            </p>
+
+            <div id="authStatusBanner" style="max-width: 680px; margin: 0 auto 2rem; display: none;"></div>
+
+            <div id="ctaButtons" style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+                <a href="login.html" class="btn btn-primary btn-lg">Sign In to Platform &rarr;</a>
+                <a href="register.html" class="btn btn-secondary btn-lg">Create Verified Account</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container" style="padding: 3rem 1.5rem 5rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em;">
+                Integrated Industry Workflows
+            </h2>
+            <p style="color: var(--text-secondary); font-size: 1rem; max-width: 600px; margin: 0.5rem auto 0;">
+                All operational modules share real-time transaction integrity, inventory auto-deduction, and conflict prevention.
+            </p>
+        </div>
+
+        <div class="portal-grid">
+            <!-- Contractor Hub -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #eff6ff; color: #1d4ed8;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    </div>
+                    <h3 class="portal-title">Contractor Operations</h3>
+                    <p class="portal-desc">
+                        Project tracking, labor mobilization, heavy machinery rentals, material orders, daily site logs &amp; labor attendance muster rolls.
+                    </p>
+                </div>
+                <a href="pages/contractor-dashboard.html" class="btn btn-outline btn-block">Open Contractor Portal &rarr;</a>
+            </div>
+
+            <!-- Skilled Labor -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #fffbeb; color: #b45309;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                    </div>
+                    <h3 class="portal-title">Labor Workforce</h3>
+                    <p class="portal-desc">
+                        Verified profiles for masons, carpenters, electricians, plumbers, and rebar crews with daily wage rates and work request scheduling.
+                    </p>
+                </div>
+                <a href="pages/laborer-list.html" class="btn btn-outline btn-block">Explore Workforce Directory &rarr;</a>
+            </div>
+
+            <!-- Machinery Marketplace -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #fef2f2; color: #dc2626;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+                    </div>
+                    <h3 class="portal-title">Machinery &amp; Equipment</h3>
+                    <p class="portal-desc">
+                        Excavators, cranes, tippers, and loaders with real image uploads, diagnostic condition reports, and double-booking conflict prevention.
+                    </p>
+                </div>
+                <a href="pages/machinery-list.html" class="btn btn-outline btn-block">Browse Fleet Catalog &rarr;</a>
+            </div>
+
+            <!-- Materials Marketplace -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #ccfbf1; color: #0f766e;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                    </div>
+                    <h3 class="portal-title">Raw Materials Supply</h3>
+                    <p class="portal-desc">
+                        Bulk cement, structural steel, aggregates, bitumen, and bricks with live warehouse stock tracking and auto-deducting purchase orders.
+                    </p>
+                </div>
+                <a href="pages/materials-list.html" class="btn btn-outline btn-block">Order Construction Materials &rarr;</a>
+            </div>
+
+            <!-- Client Oversight -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #ecfdf5; color: #059669;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    <h3 class="portal-title">Client Governance</h3>
+                    <p class="portal-desc">
+                        Oversee project milestones, verify progress percentages, review multi-image daily work site logs, and inspect expense breakdowns.
+                    </p>
+                </div>
+                <a href="pages/client-dashboard.html" class="btn btn-outline btn-block">Client Dashboard &rarr;</a>
+            </div>
+
+            <!-- Administration & Tenders -->
+            <div class="portal-card">
+                <div>
+                    <div class="portal-icon" style="background: #f1f5f9; color: #0f172a;">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    </div>
+                    <h3 class="portal-title">Admin &amp; Public Tenders</h3>
+                    <p class="portal-desc">
+                        Multi-entity verification review, deadline-enforced tender bidding, and system health governance.
+                    </p>
+                </div>
+                <a href="pages/admin-dashboard.html" class="btn btn-outline btn-block">Admin &amp; Governance &rarr;</a>
             </div>
         </div>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 E2E Construction Management System. All rights reserved.</p>
+        <div class="container">
+            <p>&copy; 2026 <strong>E2E Construction Management System</strong>. Enterprise Spring Boot Backend &amp; Vanilla JavaScript Frontend.</p>
+        </div>
     </footer>
 
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
+    <script>
+        async function checkBackendHealth() {
+            const indicator = document.getElementById('backendStatusIndicator');
+            const statusText = document.getElementById('backendStatusText');
+            if (!indicator || !statusText) return;
+            try {
+                const response = await fetch(`${E2E_AUTH_CONFIG.API_BASE_URL}/health`);
+                if (response.ok) {
+                    const data = await response.json();
+                    indicator.className = 'home-hero-badge status-connected';
+                    statusText.innerHTML = `Backend Status: <strong>Connected</strong>`;
+                } else {
+                    indicator.className = 'home-hero-badge status-disconnected';
+                    statusText.innerHTML = `Backend Status: <strong>Not Connected</strong> (HTTP ${response.status})`;
+                }
+            } catch (err) {
+                indicator.className = 'home-hero-badge status-disconnected';
+                statusText.innerHTML = 'Backend Status: <strong>Not Connected</strong>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkBackendHealth();
+
+            if (AuthService.isAuthenticated()) {
+                const user = AuthService.getUser();
+                if (user) {
+                    const dashboardUrl = AuthService.getDashboardUrlByRole(user.role);
+
+                    // Update navigation links
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.innerHTML = `
+                        <span style="font-size: 0.885rem; color: var(--text-secondary);">Logged in as <strong>${user.firstName}</strong> (${user.role})</span>
+                        <a href="${dashboardUrl}" class="btn btn-primary" style="padding: 0.45rem 1rem; color: #fff;">Go to Dashboard</a>
+                        <button id="homeLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+                    `;
+
+                    document.getElementById('homeLogoutBtn').addEventListener('click', () => {
+                        AuthService.logout();
+                    });
+
+                    // Update banner
+                    const banner = document.getElementById('authStatusBanner');
+                    banner.style.display = 'block';
+                    banner.innerHTML = `
+                        <div class="alert alert-success" style="text-align: left; margin: 0 auto;">
+                            <div>
+                                <strong>Active Session:</strong> Logged in as ${user.firstName} ${user.lastName} (Role: ${user.role}).
+                            </div>
+                        </div>
+                    `;
+
+                    // Update CTA buttons
+                    const ctaButtons = document.getElementById('ctaButtons');
+                    ctaButtons.innerHTML = `
+                        <a href="${dashboardUrl}" class="btn btn-primary btn-lg">
+                            Open ${user.role.replace('_', ' ')} Dashboard &rarr;
+                        </a>
+                    `;
+                }
+            }
+        });
+    </script>
 </body>
 </html>

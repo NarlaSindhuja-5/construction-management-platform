@@ -105,7 +105,7 @@ public class MachineryController {
      * GET /api/machinery
      * Search and filter machines by category, availability, location, or keyword search.
      */
-    @GetMapping
+    @GetMapping({ "", "/search" })
     public ResponseEntity<List<MachineryResponse>> searchMachines(
             @RequestParam(required = false) MachineryCategory category,
             @RequestParam(required = false) MachineryAvailability availability,

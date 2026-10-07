@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Material Purchase Orders Management - E2E Construction Management System">
+    <title>Material Orders - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/material.css">
+    <style>
+        .order-card {
+            background: #ffffff;
+            border: 1px solid var(--mat-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .order-card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 0.85rem;
+        }
+        .order-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .order-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.2rem;
+        }
+        .order-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .order-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .order-field-label {
+            font-size: 0.725rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 0.2rem;
+        }
+        .order-field-val {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .order-notes-box {
+            background: #f8fafc;
+            border-left: 3px solid #0f766e;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+        .order-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .role-switch-tab {
+            display: inline-flex;
+            background: #e2e8f0;
+            padding: 0.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .role-switch-btn {
+            padding: 0.45rem 1.1rem;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .role-switch-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="materials-list.html" class="logo">
+                <span class="logo-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">E2E</span>
+                <span>Material Orders</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="materials-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <a href="stock.html" class="btn btn-outline" id="navStockLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; display: none;">Stock Manager</a>
+                <a href="contractor-dashboard.html" class="btn btn-outline" id="navDashboardLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Dashboard</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        <!-- Page Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Header Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;" id="pageHeading">
+                    Material Purchase Orders
+                </h1>
+                <p style="color: #64748b; font-size: 0.95rem;" id="pageSubtitle">
+                    Review and process bulk material orders, delivery schedules, and fulfillment status.
+                </p>
+            </div>
+
+            <!-- Role View Switcher (for Admins or dual viewing) -->
+            <div id="roleSwitcherContainer" style="display: none;">
+                <div class="role-switch-tab">
+                    <button class="role-switch-btn active" id="viewSupplierBtn" onclick="switchOrderView('SUPPLIER')">Incoming Orders</button>
+                    <button class="role-switch-btn" id="viewContractorBtn" onclick="switchOrderView('CONTRACTOR')">Placed Orders</button>
+                </div>
+            </div>
+
+            <div>
+                <a href="materials-list.html" class="btn btn-primary" id="browseMaterialsBtn" style="background: var(--mat-primary); border-color: var(--mat-primary);">
+                    + Browse Catalog to Order
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
+            <button class="btn btn-sm btn-primary filter-tab active" data-status="" onclick="setFilterStatus('')">All Orders</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="PENDING" onclick="setFilterStatus('PENDING')">Pending</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="ACCEPTED" onclick="setFilterStatus('ACCEPTED')">Accepted</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="REJECTED" onclick="setFilterStatus('REJECTED')">Rejected</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="CANCELLED" onclick="setFilterStatus('CANCELLED')">Cancelled</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="DELIVERED" onclick="setFilterStatus('DELIVERED')">Delivered</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="COMPLETED" onclick="setFilterStatus('COMPLETED')">Completed</button>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="mat-kpi-grid">
+            <div class="mat-kpi-card">
+                <span class="label">Total Orders</span>
+                <span class="val" id="kpiTotalOrders">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #f59e0b;">
+                <span class="label">Pending Action</span>
+                <span class="val" style="color: #b45309;" id="kpiPendingOrders">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #10b981;">
+                <span class="label">Accepted / Active</span>
+                <span class="val" style="color: #15803d;" id="kpiAcceptedOrders">0</span>
+            </div>
+            <div class="mat-kpi-card" style="border-left: 3px solid #0f766e;">
+                <span class="label">Total Value ($)</span>
+                <span class="val" style="color: #0f766e; font-size: 1.5rem;" id="kpiTotalValue">$0</span>
+            </div>
+        </div>
+
+        <!-- Orders Container -->
+        <div id="ordersContainer">
+            <div class="empty-state-box">
+                <span class="spinner"></span> Loading material orders...
+            </div>
+        </div>
+    </main>
+
+    <!-- Order Action Modal (Accept / Reject / Cancel) -->
+    <div class="modal-overlay" id="orderActionModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="orderModalTitle">Process Order</h3>
+                <button class="modal-close-btn" onclick="closeOrderActionModal()">&times;</button>
+            </div>
+            <form onsubmit="handleOrderActionSubmit(event)" novalidate>
+                <input type="hidden" id="actionOrderId">
+                <input type="hidden" id="actionOrderType">
+                <div class="modal-body">
+                    <div id="orderActionAlert" style="display:none; margin-bottom: 1rem;"></div>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 1rem;" id="orderModalPrompt">
+                        Provide comments for this action.
+                    </p>
+
+                    <div class="form-group">
+                        <label class="form-label" id="actionInputLabel">Notes / Comments</label>
+                        <textarea id="actionInputNotes" class="form-control" rows="3" placeholder="Enter dispatch notes, delivery vehicle info, or explanation..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeOrderActionModal()">Cancel</button>
+                    <button type="submit" id="submitActionBtn" class="btn btn-primary">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let currentUser = null;
+        let activeView = 'CONTRACTOR'; // 'CONTRACTOR' or 'SUPPLIER'
+        let currentStatusFilter = '';
+        let allOrders = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            currentUser = AuthService.getUser();
+            const role = currentUser ? currentUser.role : null;
+
+            if (role === 'MATERIAL_SUPPLIER') {
+                activeView = 'SUPPLIER';
+                document.getElementById('pageHeading').innerText = 'Incoming Purchase Orders';
+                document.getElementById('pageSubtitle').innerText = 'Orders received from contractors for your warehouse stock.';
+                document.getElementById('navDashboardLink').href = 'supplier-dashboard.html';
+                document.getElementById('navDashboardLink').innerText = 'Supplier Portal';
+                document.getElementById('navStockLink').style.display = 'inline-block';
+            } else if (role === 'CONTRACTOR') {
+                activeView = 'CONTRACTOR';
+                document.getElementById('pageHeading').innerText = 'My Material Purchase Orders';
+                document.getElementById('pageSubtitle').innerText = 'Track delivery requests and orders dispatched to suppliers.';
+                document.getElementById('navDashboardLink').href = 'contractor-dashboard.html';
+                document.getElementById('navDashboardLink').innerText = 'Contractor Portal';
+            } else {
+                // ADMIN: show switcher
+                activeView = 'SUPPLIER';
+                document.getElementById('roleSwitcherContainer').style.display = 'block';
+                document.getElementById('navStockLink').style.display = 'inline-block';
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            await fetchOrders();
+        });
+
+        function switchOrderView(view) {
+            activeView = view;
+            document.getElementById('viewSupplierBtn').classList.toggle('active', view === 'SUPPLIER');
+            document.getElementById('viewContractorBtn').classList.toggle('active', view === 'CONTRACTOR');
+            fetchOrders();
+        }
+
+        function setFilterStatus(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                const match = tab.getAttribute('data-status') === status;
+                tab.classList.toggle('active', match);
+                tab.classList.toggle('btn-primary', match);
+                tab.classList.toggle('btn-outline', !match);
+            });
+            fetchOrders();
+        }
+
+        async function fetchOrders() {
+            const container = document.getElementById('ordersContainer');
+            container.innerHTML = '<div class="empty-state-box"><span class="spinner"></span> Loading orders...</div>';
+
+            try {
+                let endpoint = (activeView === 'SUPPLIER')
+                    ? '/material-orders/incoming'
+                    : '/material-orders/my-orders';
+
+                if (currentStatusFilter) {
+                    endpoint += `?status=${encodeURIComponent(currentStatusFilter)}`;
+                }
+
+                const data = await AuthService.apiFetch(endpoint);
+                allOrders = Array.isArray(data) ? data : [];
+                renderOrders(allOrders);
+                updateKpis(allOrders);
+
+            } catch (err) {
+                console.error('Failed to load orders:', err);
+                container.innerHTML = `
+                    <div class="empty-state-box" style="color: var(--danger);">
+                        <p>Failed to load orders: ${escapeHtml(err.message || 'API error')}</p>
+                        <button class="btn btn-outline" style="margin-top: 0.5rem;" onclick="fetchOrders()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateKpis(orders) {
+            document.getElementById('kpiTotalOrders').innerText = orders.length;
+            document.getElementById('kpiPendingOrders').innerText = orders.filter(o => o.status === 'PENDING').length;
+            document.getElementById('kpiAcceptedOrders').innerText = orders.filter(o => o.status === 'ACCEPTED').length;
+
+            const totalSum = orders.reduce((acc, o) => acc + (Number(o.totalAmount) || 0), 0);
+            document.getElementById('kpiTotalValue').innerText = `$${totalSum.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0})}`;
+        }
+
+        function renderOrders(orders) {
+            const container = document.getElementById('ordersContainer');
+
+            if (!orders || orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state-box">
+                        <svg style="width:48px;height:48px;color:#94a3b8;margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <h4 style="font-size:1.1rem;color:#1e293b;margin-bottom:0.25rem;">No Material Orders Found</h4>
+                        <p style="color:#64748b;font-size:0.9rem;">No orders match the selected criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => {
+                const status = ord.status || 'PENDING';
+                let statusBadgeClass = 'order-status-pending';
+                if (status === 'ACCEPTED') statusBadgeClass = 'order-status-accepted';
+                else if (status === 'REJECTED') statusBadgeClass = 'order-status-rejected';
+                else if (status === 'CANCELLED') statusBadgeClass = 'order-status-cancelled';
+                else if (status === 'DELIVERED') statusBadgeClass = 'order-status-delivered';
+                else if (status === 'COMPLETED') statusBadgeClass = 'order-status-completed';
+
+                const isSupplierView = (activeView === 'SUPPLIER');
+                const titleText = `${ord.materialName || 'Material'} &bull; ${ord.quantity} ${ord.unit || 'Units'}`;
+                const subtitleText = isSupplierView
+                    ? `Ordered By: <strong>${escapeHtml(ord.contractorCompanyName || ord.contractorName || 'Contractor')}</strong> &bull; Contact: ${escapeHtml(ord.contractorPhone || '--')}`
+                    : `Supplier: <strong>${escapeHtml(ord.supplierStoreName || 'Material Supplier')}</strong> &bull; Contact: ${escapeHtml(ord.supplierContactPhone || '--')}`;
+
+                let actionsHtml = '';
+                if (status === 'PENDING') {
+                    if (isSupplierView) {
+                        actionsHtml = `
+                            <button class="btn btn-outline" style="border-color:#ef4444; color:#ef4444;" onclick="openOrderActionModal(${ord.id}, 'REJECT')">
+                                Decline Order
+                            </button>
+                            <button class="btn btn-primary" style="background:#0f766e; border-color:#0f766e;" onclick="openOrderActionModal(${ord.id}, 'ACCEPT')">
+                                Accept &amp; Schedule Delivery
+                            </button>
+                        `;
+                    } else {
+                        // Contractor view
+                        actionsHtml = `
+                            <button class="btn btn-outline" style="border-color:#ef4444; color:#ef4444;" onclick="openOrderActionModal(${ord.id}, 'CANCEL')">
+                                Cancel Order
+                            </button>
+                        `;
+                    }
+                }
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-title">${escapeHtml(titleText)}</div>
+                                <div class="order-subtitle">${subtitleText}</div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="badge ${statusBadgeClass}" style="font-weight:700;">${status}</span>
+                                <span style="font-size:0.75rem; color:#94a3b8;">${ord.orderNumber || '#' + ord.id}</span>
+                            </div>
+                        </div>
+
+                        <div class="order-body">
+                            <div class="order-field">
+                                <span class="order-field-label">Quantity &amp; Rate</span>
+                                <span class="order-field-val">${ord.quantity} ${escapeHtml(ord.unit || 'Units')} @ $${ord.unitPrice || 0}</span>
+                            </div>
+                            <div class="order-field">
+                                <span class="order-field-label">Total Amount</span>
+                                <span class="order-field-val" style="color:var(--mat-primary); font-size:1.15rem;">$${Number(ord.totalAmount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+                            </div>
+                            <div class="order-field">
+                                <span class="order-field-label">Target Delivery Date</span>
+                                <span class="order-field-val">${ord.requestedDeliveryDate || 'Immediate'}</span>
+                            </div>
+                            <div class="order-field">
+                                <span class="order-field-label">Delivery Destination</span>
+                                <span class="order-field-val" title="${escapeHtml(ord.deliveryAddress || '')}">${escapeHtml(ord.deliveryAddress || 'Site Jobsite')}</span>
+                            </div>
+                        </div>
+
+                        ${ord.contractorNotes ? `
+                            <div class="order-notes-box">
+                                <strong>Contractor Quality / Gate Instructions:</strong> ${escapeHtml(ord.contractorNotes)}
+                            </div>
+                        ` : ''}
+
+                        ${ord.supplierNotes ? `
+                            <div class="order-notes-box" style="border-left-color: #3b82f6;">
+                                <strong>Supplier Delivery Notes:</strong> ${escapeHtml(ord.supplierNotes)}
+                            </div>
+                        ` : ''}
+
+                        ${ord.rejectionReason ? `
+                            <div class="order-notes-box" style="border-left-color: #ef4444; background: #fef2f2; color: #991b1b;">
+                                <strong>Decline / Cancellation Reason:</strong> ${escapeHtml(ord.rejectionReason)}
+                            </div>
+                        ` : ''}
+
+                        ${actionsHtml ? `
+                            <div class="order-actions">
+                                ${actionsHtml}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openOrderActionModal(orderId, action) {
+            document.getElementById('actionOrderId').value = orderId;
+            document.getElementById('actionOrderType').value = action;
+            document.getElementById('actionInputNotes').value = '';
+            UI.clearAlert('orderActionAlert');
+
+            const title = document.getElementById('orderModalTitle');
+            const prompt = document.getElementById('orderModalPrompt');
+            const label = document.getElementById('actionInputLabel');
+            const submitBtn = document.getElementById('submitActionBtn');
+
+            if (action === 'ACCEPT') {
+                title.innerText = 'Accept Material Order';
+                prompt.innerText = 'Accepting will confirm warehouse dispatch and notify the contractor of scheduled delivery.';
+                label.innerText = 'Dispatch Confirmation Notes / Vehicle Details (Optional)';
+                submitBtn.innerText = 'Confirm & Accept Order';
+                submitBtn.style.background = '#0f766e';
+                submitBtn.style.borderColor = '#0f766e';
+            } else if (action === 'REJECT') {
+                title.innerText = 'Decline Material Order';
+                prompt.innerText = 'Please specify a reason for declining so the contractor can adjust procurement.';
+                label.innerText = 'Rejection Reason *';
+                submitBtn.innerText = 'Decline Order';
+                submitBtn.style.background = '#ef4444';
+                submitBtn.style.borderColor = '#ef4444';
+            } else if (action === 'CANCEL') {
+                title.innerText = 'Cancel Purchase Order';
+                prompt.innerText = 'Are you sure you want to cancel this pending material order?';
+                label.innerText = 'Cancellation Reason (Optional)';
+                submitBtn.innerText = 'Cancel Order';
+                submitBtn.style.background = '#ef4444';
+                submitBtn.style.borderColor = '#ef4444';
+            }
+
+            document.getElementById('orderActionModal').classList.add('active');
+        }
+
+        function closeOrderActionModal() {
+            document.getElementById('orderActionModal').classList.remove('active');
+        }
+
+        async function handleOrderActionSubmit(e) {
+            e.preventDefault();
+            const orderId = document.getElementById('actionOrderId').value;
+            const action = document.getElementById('actionOrderType').value;
+            const notes = document.getElementById('actionInputNotes').value.trim();
+
+            UI.clearAlert('orderActionAlert');
+
+            if (action === 'REJECT' && !notes) {
+                UI.showAlert('orderActionAlert', 'Please provide a reason for declining the order.', 'danger');
+                return;
+            }
+
+            UI.setLoading('submitActionBtn', true, 'Processing...');
+
+            try {
+                let endpoint = '';
+                let payload = {};
+
+                if (action === 'ACCEPT') {
+                    endpoint = `/material-orders/${orderId}/accept`;
+                    payload = { notes: notes };
+                } else if (action === 'REJECT') {
+                    endpoint = `/material-orders/${orderId}/reject`;
+                    payload = { reason: notes, notes: notes };
+                } else if (action === 'CANCEL') {
+                    endpoint = `/material-orders/${orderId}/cancel`;
+                    payload = { reason: notes, notes: notes };
+                }
+
+                await AuthService.apiFetch(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                closeOrderActionModal();
+                UI.showAlert('pageAlert', `Order #${orderId} successfully updated (${action})`, 'success');
+                await fetchOrders();
+
+            } catch (err) {
+                console.error('Order action failed:', err);
+                UI.showAlert('orderActionAlert', err.message || 'Operation failed. Please try again.', 'danger');
+            } finally {
+                UI.setLoading('submitActionBtn', false, 'Confirm');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

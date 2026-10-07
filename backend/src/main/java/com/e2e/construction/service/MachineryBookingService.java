@@ -153,6 +153,10 @@ public class MachineryBookingService {
             throw new BadRequestException("Only verified machinery is available for booking. Current verification status: " + machine.getVerificationStatus());
         }
 
+        if (machine.getAvailabilityStatus() == MachineryAvailability.UNAVAILABLE) {
+            throw new BadRequestException("Machine is currently marked as UNAVAILABLE for rent.");
+        }
+
         // Date validation
         LocalDate startDate = request.getStartDate();
         LocalDate endDate = request.getEndDate();

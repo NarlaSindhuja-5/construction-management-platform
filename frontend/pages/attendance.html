@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Labor Attendance Management - E2E Construction Management System">
+    <title>Labor Attendance - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+    <style>
+        .att-table-wrapper {
+            background: #ffffff;
+            border: 1px solid var(--labor-border);
+            border-radius: 12px;
+            overflow-x: auto;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .att-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+        .att-table th {
+            background: #f8fafc;
+            padding: 0.9rem 1.25rem;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+            font-weight: 700;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .att-table td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            vertical-align: middle;
+        }
+        .att-table tr:last-child td {
+            border-bottom: none;
+        }
+        .att-table tr:hover td {
+            background: #f8fafc;
+        }
+        .status-badge-present {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .status-badge-absent {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .status-badge-half_day {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .status-badge-overtime {
+            background: #e0e7ff;
+            color: #4338ca;
+            border: 1px solid #c7d2fe;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Labor Attendance</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="laborer-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Labor Directory</a>
+                <a href="labor-requests.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work Requests</a>
+                <a href="labor-history.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Assignments</a>
+                <a href="contractor-dashboard.html" class="btn btn-outline" id="navContractorLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Dashboard</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        <!-- Page Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Header Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">
+                    Daily Labor Attendance
+                </h1>
+                <p style="color: #64748b; font-size: 0.95rem;">
+                    Log daily work hours, attendance status, and track real-time site muster rolls.
+                </p>
+            </div>
+
+            <!-- Primary Action: Record Attendance -->
+            <div id="attendanceActionBox">
+                <button class="btn btn-primary" id="openLogAttendanceBtn" onclick="openRecordModal()" style="display: none;">
+                    + Record Attendance
+                </button>
+            </div>
+        </div>
+
+        <!-- Filter Controls Card -->
+        <div class="content-card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;">
+                <div style="flex: 1; min-width: 220px;">
+                    <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase;">Project</label>
+                    <select id="filterProjectSelect" class="form-control" onchange="handleProjectFilterChange()">
+                        <option value="">-- All Projects --</option>
+                    </select>
+                </div>
+
+                <div style="width: 170px;">
+                    <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase;">Specific Date</label>
+                    <input type="date" id="filterDateInput" class="form-control">
+                </div>
+
+                <div style="width: 170px;">
+                    <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase;">Status</label>
+                    <select id="filterStatusSelect" class="form-control">
+                        <option value="">All Statuses</option>
+                        <option value="PRESENT">PRESENT</option>
+                        <option value="ABSENT">ABSENT</option>
+                        <option value="HALF_DAY">HALF DAY</option>
+                        <option value="OVERTIME">OVERTIME</option>
+                    </select>
+                </div>
+
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-primary" onclick="loadAttendanceData()" style="padding: 0.6rem 1.2rem;">Apply Filters</button>
+                    <button class="btn btn-outline" onclick="resetFilters()" style="padding: 0.6rem 1rem;">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Summary Cards -->
+        <div class="att-summary-grid">
+            <div class="att-summary-card">
+                <span class="label">Total Logs</span>
+                <span class="count" id="kpiTotalLogs">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #10b981;">
+                <span class="label">Present</span>
+                <span class="count" style="color: #15803d;" id="kpiPresentCount">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #ef4444;">
+                <span class="label">Absent</span>
+                <span class="count" style="color: #b91c1c;" id="kpiAbsentCount">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #f59e0b;">
+                <span class="label">Half Day</span>
+                <span class="count" style="color: #b45309;" id="kpiHalfDayCount">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #6366f1;">
+                <span class="label">Overtime</span>
+                <span class="count" style="color: #4338ca;" id="kpiOvertimeCount">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #0284c7;">
+                <span class="label">Total Hours</span>
+                <span class="count" style="color: #0369a1;" id="kpiTotalHours">0</span>
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div class="att-table-wrapper">
+            <table class="att-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Laborer</th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Hours</th>
+                        <th>Remarks</th>
+                        <th>Recorded By</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTbody">
+                    <tr>
+                        <td colspan="8" class="text-center" style="padding: 3rem;">
+                            <span class="spinner"></span> Loading attendance records...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Record Attendance Modal -->
+    <div class="modal-overlay" id="recordAttModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Record Labor Attendance</h3>
+                <button class="modal-close-btn" onclick="closeRecordModal()">&times;</button>
+            </div>
+            <form id="recordAttForm" onsubmit="handleRecordSubmit(event)" novalidate>
+                <div class="modal-body">
+                    <div id="recordModalAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="attModalProject">Project *</label>
+                        <select id="attModalProject" name="projectId" class="form-control" onchange="handleModalProjectChange()" required>
+                            <option value="" disabled selected>-- Select Project --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="attModalLaborer">Laborer *</label>
+                        <select id="attModalLaborer" name="laborerId" class="form-control" required>
+                            <option value="" disabled selected>-- Select Project First --</option>
+                        </select>
+                        <small style="color: #64748b; font-size: 0.75rem;">Showing workers assigned or available for this site.</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="attModalDate">Date *</label>
+                            <input type="date" id="attModalDate" name="date" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="attModalStatus">Attendance Status *</label>
+                            <select id="attModalStatus" name="status" class="form-control" onchange="autoFillHours()" required>
+                                <option value="PRESENT">PRESENT</option>
+                                <option value="ABSENT">ABSENT</option>
+                                <option value="HALF_DAY">HALF DAY</option>
+                                <option value="OVERTIME">OVERTIME</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="attModalHours">Working Hours *</label>
+                        <input type="number" id="attModalHours" name="workingHours" class="form-control" step="0.5" min="0" max="24" value="8.0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="attModalRemarks">Remarks / Activity Notes</label>
+                        <input type="text" id="attModalRemarks" name="remarks" class="form-control" placeholder="e.g. Masonry 2nd floor, completed slab shuttering...">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeRecordModal()">Cancel</button>
+                    <button type="submit" id="submitAttBtn" class="btn btn-primary">Save Attendance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let currentUser = null;
+        let isAuthorizedRecorder = false;
+        let projectsList = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            currentUser = AuthService.getUser();
+            const role = currentUser ? currentUser.role : '';
+
+            // Authorized roles to log attendance: CONTRACTOR, SITE_MANAGER, ADMIN
+            isAuthorizedRecorder = (role === 'CONTRACTOR' || role === 'SITE_MANAGER' || role === 'ADMIN');
+            if (isAuthorizedRecorder) {
+                document.getElementById('openLogAttendanceBtn').style.display = 'inline-block';
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            // Set default date picker to today
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('attModalDate').value = todayStr;
+
+            await loadProjectsDropdown();
+            await loadAttendanceData();
+        });
+
+        async function loadProjectsDropdown() {
+            try {
+                let projects = [];
+                if (currentUser && currentUser.role === 'CONTRACTOR') {
+                    projects = await AuthService.apiFetch('/projects/my-projects');
+                } else {
+                    projects = await AuthService.apiFetch('/projects');
+                }
+
+                projectsList = Array.isArray(projects) ? projects : [];
+
+                const filterSelect = document.getElementById('filterProjectSelect');
+                const modalSelect = document.getElementById('attModalProject');
+
+                const optionsHtml = projectsList.map(p => `
+                    <option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.location || 'Site')})</option>
+                `).join('');
+
+                filterSelect.innerHTML = '<option value="">-- All Projects --</option>' + optionsHtml;
+                modalSelect.innerHTML = '<option value="" disabled selected>-- Select Project --</option>' + optionsHtml;
+
+                // Check URL params for pre-selected project or laborer
+                const urlParams = new URLSearchParams(window.location.search);
+                const paramProj = urlParams.get('projectId');
+                if (paramProj) {
+                    filterSelect.value = paramProj;
+                    modalSelect.value = paramProj;
+                    handleModalProjectChange();
+                }
+
+            } catch (err) {
+                console.error('Failed to load projects list:', err);
+            }
+        }
+
+        async function handleProjectFilterChange() {
+            await loadAttendanceData();
+        }
+
+        async function handleModalProjectChange() {
+            const projId = document.getElementById('attModalProject').value;
+            const laborerSelect = document.getElementById('attModalLaborer');
+
+            if (!projId) {
+                laborerSelect.innerHTML = '<option value="" disabled selected>-- Select Project First --</option>';
+                return;
+            }
+
+            laborerSelect.innerHTML = '<option value="" disabled selected>Loading assigned laborers...</option>';
+
+            try {
+                // Fetch assigned laborers for this project
+                const assignments = await AuthService.apiFetch(`/labor-assignments/project/${projId}`);
+                let options = '';
+
+                if (Array.isArray(assignments) && assignments.length > 0) {
+                    options = assignments.map(a => `
+                        <option value="${a.laborerId}">
+                            ${escapeHtml(a.laborerName || 'Worker #' + a.laborerId)} - ${escapeHtml(a.laborerSkills || 'Tradesman')} ($${a.dailyWage || 0}/day)
+                        </option>
+                    `).join('');
+                } else {
+                    // Fallback to verified laborers directory so contractor can log newly added worker
+                    const laborers = await AuthService.apiFetch('/laborers/search');
+                    if (Array.isArray(laborers) && laborers.length > 0) {
+                        options = laborers.map(l => `
+                            <option value="${l.id}">
+                                ${escapeHtml(l.fullName || 'Worker #' + l.id)} - ${escapeHtml(l.skills || 'Labor')} ($${l.dailyWage || 0}/day)
+                            </option>
+                        `).join('');
+                    }
+                }
+
+                if (!options) {
+                    laborerSelect.innerHTML = '<option value="" disabled selected>No laborers found</option>';
+                } else {
+                    laborerSelect.innerHTML = '<option value="" disabled selected>-- Choose Laborer --</option>' + options;
+
+                    // If laborerId was passed in query parameter, auto-select it
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const paramLaborer = urlParams.get('laborerId');
+                    if (paramLaborer) {
+                        laborerSelect.value = paramLaborer;
+                    }
+                }
+
+            } catch (err) {
+                console.error('Failed to load project laborers:', err);
+                laborerSelect.innerHTML = '<option value="" disabled selected>Error loading laborers</option>';
+            }
+        }
+
+        function autoFillHours() {
+            const status = document.getElementById('attModalStatus').value;
+            const hoursInput = document.getElementById('attModalHours');
+            if (status === 'PRESENT') {
+                hoursInput.value = '8.0';
+            } else if (status === 'ABSENT') {
+                hoursInput.value = '0.0';
+            } else if (status === 'HALF_DAY') {
+                hoursInput.value = '4.0';
+            } else if (status === 'OVERTIME') {
+                hoursInput.value = '10.0';
+            }
+        }
+
+        async function loadAttendanceData() {
+            const tbody = document.getElementById('attendanceTbody');
+            tbody.innerHTML = '<tr><td colspan="8" class="text-center" style="padding: 2.5rem;"><span class="spinner"></span> Loading attendance records...</td></tr>';
+
+            const projectId = document.getElementById('filterProjectSelect').value;
+            const date = document.getElementById('filterDateInput').value;
+            const status = document.getElementById('filterStatusSelect').value;
+
+            // Construct query params
+            const params = new URLSearchParams();
+            if (projectId) params.append('projectId', projectId);
+            if (date) params.append('date', date);
+            if (status) params.append('status', status);
+
+            // If user is LABORER, filter their own records
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramLaborerId = urlParams.get('laborerId');
+            if (paramLaborerId) params.append('laborerId', paramLaborerId);
+
+            try {
+                const endpoint = '/labor-attendance' + (params.toString() ? `?${params.toString()}` : '');
+                const history = await AuthService.apiFetch(endpoint);
+                const records = Array.isArray(history) ? history : [];
+
+                renderAttendanceTable(records);
+                updateAttendanceKpis(records, projectId, date);
+
+            } catch (err) {
+                console.error('Error fetching attendance:', err);
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center" style="color:var(--danger); padding:2rem;">Failed to load attendance: ${escapeHtml(err.message || 'Error')}</td></tr>`;
+            }
+        }
+
+        async function updateAttendanceKpis(records, projectId, date) {
+            // If project is chosen, fetch official summary API
+            if (projectId) {
+                try {
+                    let summaryUrl = `/labor-attendance/project/${projectId}/summary`;
+                    if (date) summaryUrl += `?date=${encodeURIComponent(date)}`;
+                    const summary = await AuthService.apiFetch(summaryUrl);
+                    if (summary) {
+                        document.getElementById('kpiTotalLogs').innerText = summary.totalRecords || 0;
+                        document.getElementById('kpiPresentCount').innerText = summary.presentCount || 0;
+                        document.getElementById('kpiAbsentCount').innerText = summary.absentCount || 0;
+                        document.getElementById('kpiHalfDayCount').innerText = summary.halfDayCount || 0;
+                        document.getElementById('kpiOvertimeCount').innerText = summary.overtimeCount || 0;
+                        document.getElementById('kpiTotalHours').innerText = `${summary.totalWorkingHours || 0}h`;
+                        return;
+                    }
+                } catch (e) {
+                    console.warn('Summary API fallback to client count:', e);
+                }
+            }
+
+            // Fallback: Compute KPIs client-side from loaded records
+            const total = records.length;
+            const present = records.filter(r => r.status === 'PRESENT').length;
+            const absent = records.filter(r => r.status === 'ABSENT').length;
+            const halfDay = records.filter(r => r.status === 'HALF_DAY').length;
+            const overtime = records.filter(r => r.status === 'OVERTIME').length;
+            const totalHours = records.reduce((acc, r) => acc + (Number(r.workingHours) || 0), 0);
+
+            document.getElementById('kpiTotalLogs').innerText = total;
+            document.getElementById('kpiPresentCount').innerText = present;
+            document.getElementById('kpiAbsentCount').innerText = absent;
+            document.getElementById('kpiHalfDayCount').innerText = halfDay;
+            document.getElementById('kpiOvertimeCount').innerText = overtime;
+            document.getElementById('kpiTotalHours').innerText = `${totalHours}h`;
+        }
+
+        function renderAttendanceTable(records) {
+            const tbody = document.getElementById('attendanceTbody');
+
+            if (!records || records.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" class="text-center" style="padding: 3rem; color: #64748b;">
+                            No attendance records found matching the filter criteria.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = records.map(r => {
+                const status = r.status || 'PRESENT';
+                let statusBadgeClass = 'status-badge-present';
+                if (status === 'ABSENT') statusBadgeClass = 'status-badge-absent';
+                else if (status === 'HALF_DAY') statusBadgeClass = 'status-badge-half_day';
+                else if (status === 'OVERTIME') statusBadgeClass = 'status-badge-overtime';
+
+                const canDelete = isAuthorizedRecorder;
+
+                return `
+                    <tr>
+                        <td style="font-weight: 600; white-space: nowrap;">
+                            ${r.date || '--'}
+                        </td>
+                        <td>
+                            <div style="font-weight: 700; color: #0f172a;">${escapeHtml(r.laborerName || 'Worker #' + r.laborerId)}</div>
+                            <div style="font-size: 0.775rem; color: #64748b;">${escapeHtml(r.laborerSkills || '--')}</div>
+                        </td>
+                        <td>
+                            <div style="font-weight: 600;">${escapeHtml(r.projectName || 'Project #' + r.projectId)}</div>
+                            <div style="font-size: 0.75rem; color: #64748b;">${escapeHtml(r.contractorCompanyName || '')}</div>
+                        </td>
+                        <td>
+                            <span class="badge ${statusBadgeClass}" style="font-weight: 700; font-size: 0.75rem;">
+                                ${status.replace('_', ' ')}
+                            </span>
+                        </td>
+                        <td style="font-weight: 700; color: #1e293b;">
+                            ${r.workingHours || 0} hrs
+                        </td>
+                        <td style="color: #64748b; font-size: 0.85rem; max-width: 200px;">
+                            ${escapeHtml(r.remarks || '--')}
+                        </td>
+                        <td style="font-size: 0.8rem; color: #64748b;">
+                            ${escapeHtml(r.recordedByName || 'System')}
+                        </td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            ${canDelete ? `
+                                <button class="btn btn-sm btn-outline" style="border-color:#ef4444; color:#ef4444; padding:0.3rem 0.6rem; font-size:0.75rem;" onclick="deleteAttendanceRecord(${r.id})">
+                                    Delete
+                                </button>
+                            ` : '--'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function resetFilters() {
+            document.getElementById('filterProjectSelect').value = '';
+            document.getElementById('filterDateInput').value = '';
+            document.getElementById('filterStatusSelect').value = '';
+            loadAttendanceData();
+        }
+
+        function openRecordModal() {
+            UI.clearAlert('recordModalAlert');
+            const form = document.getElementById('recordAttForm');
+            form.reset();
+            const todayStr = new Date().toISOString().split('T')[0];
+            document.getElementById('attModalDate').value = todayStr;
+            document.getElementById('attModalStatus').value = 'PRESENT';
+            document.getElementById('attModalHours').value = '8.0';
+
+            // Auto-trigger laborer dropdown population if project is selected
+            if (document.getElementById('attModalProject').value) {
+                handleModalProjectChange();
+            }
+
+            document.getElementById('recordAttModal').classList.add('active');
+        }
+
+        function closeRecordModal() {
+            document.getElementById('recordAttModal').classList.remove('active');
+        }
+
+        async function handleRecordSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('recordModalAlert');
+
+            const form = e.target;
+            const projectId = form.projectId.value;
+            const laborerId = form.laborerId.value;
+            const date = form.date.value;
+            const status = form.status.value;
+            const workingHours = form.workingHours.value;
+            const remarks = form.remarks.value.trim();
+
+            if (!projectId || !laborerId || !date || !status) {
+                UI.showAlert('recordModalAlert', 'Please complete all required fields (*)', 'danger');
+                return;
+            }
+
+            const payload = {
+                projectId: Number(projectId),
+                laborerId: Number(laborerId),
+                date: date,
+                status: status,
+                workingHours: Number(workingHours),
+                remarks: remarks
+            };
+
+            UI.setLoading('submitAttBtn', true, 'Recording...');
+
+            try {
+                await AuthService.apiFetch('/labor-attendance', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                closeRecordModal();
+                UI.showAlert('pageAlert', 'Attendance recorded successfully!', 'success');
+                await loadAttendanceData();
+
+            } catch (err) {
+                console.error('Failed to record attendance:', err);
+                // Clear indication if duplicate attendance error
+                UI.showAlert('recordModalAlert', err.message || 'Duplicate attendance entry detected or invalid parameters.', 'danger');
+            } finally {
+                UI.setLoading('submitAttBtn', false, 'Save Attendance');
+            }
+        }
+
+        async function deleteAttendanceRecord(id) {
+            if (!confirm(`Are you sure you want to delete attendance record #${id}?`)) {
+                return;
+            }
+
+            try {
+                await AuthService.apiFetch(`/labor-attendance/${id}`, {
+                    method: 'DELETE'
+                });
+
+                UI.showAlert('pageAlert', `Attendance record #${id} deleted successfully.`, 'success');
+                await loadAttendanceData();
+
+            } catch (err) {
+                console.error('Failed to delete attendance record:', err);
+                UI.showAlert('pageAlert', err.message || 'Failed to delete record', 'danger');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

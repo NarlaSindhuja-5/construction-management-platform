@@ -1,0 +1,338 @@
+/* ==========================================================================
+   E2E Construction Management System - Material Marketplace Styles
+   Professional • Classic • Clean • Raw Materials & Supply Chain Focused
+   ========================================================================== */
+
+:root {
+    --mat-primary: #0f766e;       /* Deep teal */
+    --mat-primary-hover: #115e59;
+    --mat-primary-light: #ccfbf1;
+    --mat-secondary: #0369a1;     /* Steel blue */
+    --mat-accent: #f59e0b;        /* Amber */
+    --mat-dark: #0f172a;
+    --mat-card-bg: #ffffff;
+    --mat-border: #e2e8f0;
+}
+
+/* Material Hero Banner */
+.material-hero {
+    background: 
+        radial-gradient(circle at 85% 25%, rgba(20, 184, 166, 0.15) 0%, transparent 40%),
+        linear-gradient(135deg, #042f2e 0%, #0f172a 100%);
+    color: #ffffff;
+    padding: 3.25rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid #f59e0b;
+}
+
+.material-hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.material-hero-title h1 {
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+}
+
+.material-hero-title p {
+    color: #99f6e4;
+    font-size: 1.05rem;
+    max-width: 650px;
+}
+
+/* Material Card Grid */
+.material-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.material-card {
+    background: #ffffff;
+    border: 1px solid var(--mat-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.material-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
+    border-color: #cbd5e1;
+}
+
+.material-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 0.85rem;
+}
+
+.material-title-group {
+    flex: 1;
+    min-width: 0;
+}
+
+.material-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+}
+
+.material-spec {
+    font-size: 0.825rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+/* Category Badges */
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.725rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.category-badge.CEMENT { background: #ede9fe; color: #5b21b6; border-color: #ddd6fe; }
+.category-badge.STEEL { background: #e0f2fe; color: #0369a1; border-color: #bae6fd; }
+.category-badge.SAND { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+.category-badge.AGGREGATE { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+.category-badge.CONCRETE { background: #ccfbf1; color: #0f766e; border-color: #99f6e4; }
+.category-badge.BITUMEN, .category-badge.DBM, .category-badge.BC { background: #fef2f2; color: #991b1b; border-color: #fecaca; }
+.category-badge.BRICKS { background: #ffedd5; color: #c2410c; border-color: #fed7aa; }
+.category-badge.PIPES { background: #e0e7ff; color: #4338ca; border-color: #c7d2fe; }
+.category-badge.ELECTRICAL { background: #fef9c3; color: #854d0e; border-color: #fef08a; }
+
+/* Availability Status Pills */
+.availability-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.725rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.availability-pill.in_stock {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.availability-pill.low_stock {
+    background-color: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
+}
+
+.availability-pill.out_of_stock {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+.availability-pill.unavailable {
+    background-color: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+/* Material Metrics Box */
+.material-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 1rem;
+}
+
+.material-metric-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.material-metric-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 0.15rem;
+    letter-spacing: 0.04em;
+}
+
+.material-metric-val {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+.material-supplier-info {
+    font-size: 0.825rem;
+    color: #475569;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.material-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.75rem;
+}
+
+.price-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-box .amount {
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: #0f766e;
+    line-height: 1.1;
+    font-family: var(--font-main);
+}
+
+.price-box .unit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Material Order Status Badges */
+.order-status-pending { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+.order-status-accepted { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.order-status-rejected { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.order-status-cancelled { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+.order-status-delivered { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+.order-status-completed { background: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+
+/* KPI Grid */
+.mat-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+}
+
+.mat-kpi-card {
+    background: #ffffff;
+    border: 1px solid var(--mat-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.mat-kpi-card .label {
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.05em;
+}
+
+.mat-kpi-card .val {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+/* Custom Table for Orders & Stock */
+.mat-table-wrapper {
+    background: #ffffff;
+    border: 1px solid var(--mat-border);
+    border-radius: 12px;
+    overflow-x: auto;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+    -webkit-overflow-scrolling: touch;
+}
+
+.mat-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.mat-table th {
+    background: #f8fafc;
+    padding: 0.9rem 1.25rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #475569;
+    font-weight: 800;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.mat-table td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: #334155;
+    vertical-align: middle;
+}
+
+.mat-table tr:last-child td {
+    border-bottom: none;
+}
+
+.mat-table tr:hover td {
+    background: #f8fafc;
+}
+
+@media (max-width: 640px) {
+    .mat-table {
+        min-width: 580px;
+    }
+    .mat-kpis {
+        grid-template-columns: 1fr;
+    }
+    .mat-kpi-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .mat-kpi-card .val {
+        font-size: 1.5rem;
+    }
+}

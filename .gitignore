@@ -2,6 +2,10 @@
 target/
 **/target/
 *.class
+*.jar
+*.war
+*.exe
+cloudflared*
 
 # IDE and Editor configurations
 .idea/
@@ -21,10 +25,19 @@ desktop.ini
 # Logs
 *.log
 logs/
+**/logs/
 
-# Environment files
+# Secrets and environment files
 .env
-.env.local
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+*.pkcs12
+*.p12
+*.jks
+*.keystore
 
 # Runtime uploads / media (leave directory structure intact via .gitkeep)
 uploads/*

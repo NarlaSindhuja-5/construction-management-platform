@@ -1,0 +1,277 @@
+/* ==========================================================================
+   E2E Construction Management System - Labor Management Styles
+   Professional • Classic • Clean • Skilled Workforce Focused
+   ========================================================================== */
+
+:root {
+    --labor-primary: #0f2b5c;
+    --labor-secondary: #0284c7;
+    --labor-accent: #f59e0b;
+    --labor-card-bg: #ffffff;
+    --labor-border: #e2e8f0;
+}
+
+/* Labor Hero */
+.labor-hero {
+    background: 
+        radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.12) 0%, transparent 40%),
+        linear-gradient(135deg, #0b1329 0%, #1e3a8a 100%);
+    color: #ffffff;
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 3px solid #f59e0b;
+}
+
+.labor-hero-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.labor-hero-title h1 {
+    font-size: 2.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.4rem;
+}
+
+.labor-hero-title p {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    max-width: 650px;
+}
+
+/* Laborer Grid */
+.laborer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.laborer-card {
+    background: #ffffff;
+    border: 1px solid var(--labor-border);
+    border-radius: 14px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+}
+
+.laborer-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -6px rgba(15, 23, 42, 0.1);
+    border-color: #cbd5e1;
+}
+
+.laborer-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.laborer-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #0f2b5c 0%, #0284c7 100%);
+    border: 2px solid #f59e0b;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(15, 43, 92, 0.25);
+}
+
+.laborer-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.laborer-name {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    letter-spacing: -0.01em;
+}
+
+.laborer-location {
+    font-size: 0.85rem;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.laborer-skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.skill-tag {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    border: 1px solid #bfdbfe;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.laborer-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 1rem;
+}
+
+.laborer-metric-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.laborer-metric-label {
+    font-size: 0.725rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #94a3b8;
+}
+
+.laborer-metric-value {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.laborer-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.5rem;
+}
+
+.daily-wage-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.daily-wage-box .wage {
+    font-size: 1.45rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+    font-family: var(--font-main);
+}
+
+.daily-wage-box .unit {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+/* Availability Pills */
+.availability-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.availability-pill.available {
+    background-color: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+}
+
+.availability-pill.working {
+    background-color: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.availability-pill.unavailable {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* Attendance Summary Row */
+.att-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.att-summary-card {
+    background: #ffffff;
+    border: 1px solid var(--labor-border);
+    border-radius: 10px;
+    padding: 1.15rem;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+}
+
+.att-summary-card .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    margin-bottom: 0.3rem;
+}
+
+.att-summary-card .count {
+    font-size: 1.85rem;
+    font-weight: 900;
+    color: #0f172a;
+    line-height: 1.1;
+}
+
+@media (max-width: 480px) {
+    .att-summary-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+    }
+    .att-summary-card {
+        padding: 0.85rem;
+    }
+    .att-summary-card .count {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .att-summary-grid {
+        grid-template-columns: 1fr;
+    }
+}

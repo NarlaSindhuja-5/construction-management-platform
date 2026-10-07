@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Labor Work Requests - E2E Construction Management System">
+    <title>Labor Work Requests - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+    <style>
+        .request-card {
+            background: #ffffff;
+            border: 1px solid var(--labor-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .request-card:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.07);
+        }
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 0.85rem;
+        }
+        .request-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .request-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 0.2rem;
+        }
+        .request-body {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+        .request-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .request-field-label {
+            font-size: 0.725rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #94a3b8;
+            margin-bottom: 0.2rem;
+        }
+        .request-field-val {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .request-notes-box {
+            background: #f8fafc;
+            border-left: 3px solid #3b82f6;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #334155;
+            margin-bottom: 1rem;
+        }
+        .request-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            padding-top: 0.85rem;
+            border-top: 1px solid #f1f5f9;
+        }
+        .status-badge-pending {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .status-badge-accepted {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .status-badge-rejected {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+        .status-badge-cancelled {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+        .role-switch-tab {
+            display: inline-flex;
+            background: #e2e8f0;
+            padding: 0.25rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .role-switch-btn {
+            padding: 0.45rem 1.1rem;
+            border: none;
+            background: transparent;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.2s;
+        }
+        .role-switch-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Labor Requests</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="laborer-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Labor Directory</a>
+                <a href="labor-history.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work History</a>
+                <a href="attendance.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Attendance</a>
+                <a href="laborer-profile.html" class="btn btn-outline" id="navProfileLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">My Profile</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        <!-- Page Alert -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Role View Toggles & Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;" id="pageHeading">
+                    Work Requests
+                </h1>
+                <p style="color: #64748b; font-size: 0.95rem;" id="pageSubtitle">
+                    Review and respond to construction project labor requests.
+                </p>
+            </div>
+
+            <!-- Role View Switcher (for Admins or dual viewing) -->
+            <div id="roleSwitcherContainer" style="display: none;">
+                <div class="role-switch-tab">
+                    <button class="role-switch-btn active" id="viewReceivedBtn" onclick="switchView('RECEIVED')">Received Requests</button>
+                    <button class="role-switch-btn" id="viewSentBtn" onclick="switchView('SENT')">Sent Requests</button>
+                </div>
+            </div>
+
+            <div id="newRequestActionBox">
+                <a href="laborer-list.html" class="btn btn-primary" id="hireMoreLaborersBtn" style="display: none;">
+                    + Find Laborers to Hire
+                </a>
+            </div>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
+            <button class="btn btn-sm btn-primary filter-tab active" data-status="" onclick="setFilterStatus('')">All Requests</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="PENDING" onclick="setFilterStatus('PENDING')">Pending</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="ACCEPTED" onclick="setFilterStatus('ACCEPTED')">Accepted</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="REJECTED" onclick="setFilterStatus('REJECTED')">Rejected</button>
+            <button class="btn btn-sm btn-outline filter-tab" data-status="CANCELLED" onclick="setFilterStatus('CANCELLED')">Cancelled</button>
+        </div>
+
+        <!-- KPI Metrics Grid -->
+        <div class="att-summary-grid">
+            <div class="att-summary-card">
+                <span class="label">Total In View</span>
+                <span class="count" id="countTotal">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #f59e0b;">
+                <span class="label">Pending Action</span>
+                <span class="count" style="color: #b45309;" id="countPending">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #10b981;">
+                <span class="label">Accepted</span>
+                <span class="count" style="color: #15803d;" id="countAccepted">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #ef4444;">
+                <span class="label">Rejected / Cancelled</span>
+                <span class="count" style="color: #b91c1c;" id="countClosed">0</span>
+            </div>
+        </div>
+
+        <!-- Requests Container -->
+        <div id="requestsListContainer">
+            <div class="empty-state-box">
+                <span class="spinner"></span> Loading requests from server...
+            </div>
+        </div>
+    </main>
+
+    <!-- Action Modal (Accept / Reject / Cancel) -->
+    <div class="modal-overlay" id="actionModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="actionModalTitle">Process Request</h3>
+                <button class="modal-close-btn" onclick="closeActionModal()">&times;</button>
+            </div>
+            <form onsubmit="handleActionSubmit(event)" novalidate>
+                <input type="hidden" id="actionRequestId">
+                <input type="hidden" id="actionType">
+                <div class="modal-body">
+                    <div id="actionModalAlert" style="display:none; margin-bottom: 1rem;"></div>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 1rem;" id="actionModalPrompt">
+                        Provide comments for this action.
+                    </p>
+
+                    <div class="form-group" id="actionReasonGroup">
+                        <label class="form-label" id="actionInputLabel">Notes / Comments</label>
+                        <textarea id="actionInputNotes" class="form-control" rows="3" placeholder="Enter notes or explanation..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeActionModal()">Cancel</button>
+                    <button type="submit" id="submitActionBtn" class="btn btn-primary">Confirm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let currentRole = null;
+        let currentView = 'RECEIVED'; // 'RECEIVED' or 'SENT'
+        let currentStatusFilter = '';
+        let allRequests = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            const user = AuthService.getUser();
+            currentRole = user ? user.role : null;
+
+            // Route default views based on role
+            if (currentRole === 'LABORER') {
+                currentView = 'RECEIVED';
+                document.getElementById('pageHeading').innerText = 'Incoming Work Requests';
+                document.getElementById('pageSubtitle').innerText = 'Requests from contractors offering project site employment.';
+            } else if (currentRole === 'CONTRACTOR') {
+                currentView = 'SENT';
+                document.getElementById('pageHeading').innerText = 'Dispatched Labor Requests';
+                document.getElementById('pageSubtitle').innerText = 'Work requests you have dispatched to skilled laborers.';
+                document.getElementById('hireMoreLaborersBtn').style.display = 'inline-block';
+                document.getElementById('navProfileLink').style.display = 'none';
+            } else {
+                // ADMIN or other role: show switcher
+                currentView = 'RECEIVED';
+                document.getElementById('roleSwitcherContainer').style.display = 'block';
+                document.getElementById('hireMoreLaborersBtn').style.display = 'inline-block';
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            await fetchRequests();
+        });
+
+        function switchView(view) {
+            currentView = view;
+            document.getElementById('viewReceivedBtn').classList.toggle('active', view === 'RECEIVED');
+            document.getElementById('viewSentBtn').classList.toggle('active', view === 'SENT');
+            fetchRequests();
+        }
+
+        function setFilterStatus(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.filter-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.getAttribute('data-status') === status);
+                tab.classList.toggle('btn-primary', tab.getAttribute('data-status') === status);
+                tab.classList.toggle('btn-outline', tab.getAttribute('data-status') !== status);
+            });
+            fetchRequests();
+        }
+
+        async function fetchRequests() {
+            const container = document.getElementById('requestsListContainer');
+            container.innerHTML = '<div class="empty-state-box"><span class="spinner"></span> Loading requests...</div>';
+
+            try {
+                let endpoint = '';
+                if (currentView === 'RECEIVED') {
+                    endpoint = '/labor-requests/my-requests';
+                } else {
+                    endpoint = '/labor-requests/sent';
+                }
+
+                if (currentStatusFilter) {
+                    endpoint += `?status=${encodeURIComponent(currentStatusFilter)}`;
+                }
+
+                const data = await AuthService.apiFetch(endpoint);
+                allRequests = Array.isArray(data) ? data : [];
+                renderRequests(allRequests);
+                updateKpis(allRequests);
+
+            } catch (err) {
+                console.error('Error fetching labor requests:', err);
+                container.innerHTML = `
+                    <div class="empty-state-box" style="color: var(--danger);">
+                        <p>Failed to load requests: ${escapeHtml(err.message || 'API error')}</p>
+                        <button class="btn btn-outline" style="margin-top: 0.5rem;" onclick="fetchRequests()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateKpis(requests) {
+            document.getElementById('countTotal').innerText = requests.length;
+            document.getElementById('countPending').innerText = requests.filter(r => r.status === 'PENDING').length;
+            document.getElementById('countAccepted').innerText = requests.filter(r => r.status === 'ACCEPTED').length;
+            document.getElementById('countClosed').innerText = requests.filter(r => r.status === 'REJECTED' || r.status === 'CANCELLED').length;
+        }
+
+        function renderRequests(requests) {
+            const container = document.getElementById('requestsListContainer');
+
+            if (!requests || requests.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state-box">
+                        <svg style="width:48px;height:48px;color:#94a3b8;margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                        <h4 style="font-size:1.1rem;color:#1e293b;margin-bottom:0.25rem;">No labor requests found</h4>
+                        <p style="color:#64748b;font-size:0.9rem;">No requests match the selected status filter.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = requests.map(req => {
+                const status = req.status || 'PENDING';
+                let statusBadgeClass = 'status-badge-pending';
+                if (status === 'ACCEPTED') statusBadgeClass = 'status-badge-accepted';
+                else if (status === 'REJECTED') statusBadgeClass = 'status-badge-rejected';
+                else if (status === 'CANCELLED') statusBadgeClass = 'status-badge-cancelled';
+
+                const isLaborerView = (currentView === 'RECEIVED');
+                const titleText = isLaborerView
+                    ? (req.projectName || 'Construction Project')
+                    : (req.laborerName || `Laborer #${req.laborerId}`);
+
+                const subtitleText = isLaborerView
+                    ? `From: <strong>${escapeHtml(req.contractorCompanyName || req.contractorName || 'Contractor')}</strong> &bull; Contact: ${escapeHtml(req.contractorPhone || '--')}`
+                    : `Project: <strong>${escapeHtml(req.projectName || 'Project #' + req.projectId)}</strong> &bull; Skills: ${escapeHtml(req.laborerSkills || '--')}`;
+
+                let actionsHtml = '';
+                if (status === 'PENDING') {
+                    if (isLaborerView) {
+                        actionsHtml = `
+                            <button class="btn btn-outline" style="border-color:#ef4444; color:#ef4444;" onclick="openActionModal(${req.id}, 'REJECT')">
+                                Decline / Reject
+                            </button>
+                            <button class="btn btn-primary" style="background:#16a34a; border-color:#16a34a;" onclick="openActionModal(${req.id}, 'ACCEPT')">
+                                Accept Work Request
+                            </button>
+                        `;
+                    } else {
+                        // Contractor view: can cancel
+                        actionsHtml = `
+                            <button class="btn btn-outline" style="border-color:#ef4444; color:#ef4444;" onclick="openActionModal(${req.id}, 'CANCEL')">
+                                Cancel Request
+                            </button>
+                        `;
+                    }
+                } else if (status === 'ACCEPTED' && req.assignmentId) {
+                    actionsHtml = `
+                        <a href="labor-history.html" class="btn btn-outline" style="font-size:0.85rem;">
+                            View Active Assignment &rarr;
+                        </a>
+                    `;
+                }
+
+                return `
+                    <div class="request-card">
+                        <div class="request-header">
+                            <div>
+                                <div class="request-title">${escapeHtml(titleText)}</div>
+                                <div class="request-subtitle">${subtitleText}</div>
+                            </div>
+                            <div style="display:flex; align-items:center; gap:0.5rem;">
+                                <span class="badge ${statusBadgeClass}" style="font-weight:700;">${status}</span>
+                                <span style="font-size:0.75rem; color:#94a3b8;">#${req.id}</span>
+                            </div>
+                        </div>
+
+                        <div class="request-body">
+                            <div class="request-field">
+                                <span class="request-field-label">Duration</span>
+                                <span class="request-field-val">${req.startDate || '--'} &rarr; ${req.endDate || '--'}</span>
+                                <span style="font-size:0.75rem; color:#64748b;">${req.totalDays || 1} day(s)</span>
+                            </div>
+                            <div class="request-field">
+                                <span class="request-field-label">Agreed Daily Wage</span>
+                                <span class="request-field-val">$${req.dailyWage || 0} / day</span>
+                            </div>
+                            <div class="request-field">
+                                <span class="request-field-label">Total Compensation</span>
+                                <span class="request-field-val" style="color:var(--primary); font-size:1.05rem;">$${req.totalEstimatedCost || (req.dailyWage * (req.totalDays || 1)) || 0}</span>
+                            </div>
+                            <div class="request-field">
+                                <span class="request-field-label">Project Location</span>
+                                <span class="request-field-val">${escapeHtml(req.projectLocation || 'Job Site')}</span>
+                            </div>
+                        </div>
+
+                        ${req.jobDescription ? `
+                            <div style="font-size: 0.875rem; color:#334155; margin-bottom: 0.85rem;">
+                                <strong>Job Scope:</strong> ${escapeHtml(req.jobDescription)}
+                            </div>
+                        ` : ''}
+
+                        ${req.contractorNotes ? `
+                            <div class="request-notes-box">
+                                <strong>Contractor Notes:</strong> ${escapeHtml(req.contractorNotes)}
+                            </div>
+                        ` : ''}
+
+                        ${req.rejectionReason ? `
+                            <div class="request-notes-box" style="border-left-color: #ef4444; background: #fef2f2; color: #991b1b;">
+                                <strong>Reason:</strong> ${escapeHtml(req.rejectionReason)}
+                            </div>
+                        ` : ''}
+
+                        ${actionsHtml ? `
+                            <div class="request-actions">
+                                ${actionsHtml}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openActionModal(requestId, action) {
+            document.getElementById('actionRequestId').value = requestId;
+            document.getElementById('actionType').value = action;
+            document.getElementById('actionInputNotes').value = '';
+            UI.clearAlert('actionModalAlert');
+
+            const title = document.getElementById('actionModalTitle');
+            const prompt = document.getElementById('actionModalPrompt');
+            const label = document.getElementById('actionInputLabel');
+            const submitBtn = document.getElementById('submitActionBtn');
+
+            if (action === 'ACCEPT') {
+                title.innerText = 'Accept Labor Request';
+                prompt.innerText = 'Accepting will mobilize your assignment to this project and update your status to WORKING.';
+                label.innerText = 'Acceptance Notes / Confirmation (Optional)';
+                submitBtn.innerText = 'Confirm & Accept';
+                submitBtn.style.background = '#16a34a';
+                submitBtn.style.borderColor = '#16a34a';
+            } else if (action === 'REJECT') {
+                title.innerText = 'Decline Labor Request';
+                prompt.innerText = 'Please specify a reason for declining so the contractor can plan accordingly.';
+                label.innerText = 'Rejection Reason *';
+                submitBtn.innerText = 'Confirm Rejection';
+                submitBtn.style.background = '#ef4444';
+                submitBtn.style.borderColor = '#ef4444';
+            } else if (action === 'CANCEL') {
+                title.innerText = 'Cancel Dispatched Request';
+                prompt.innerText = 'Are you sure you want to cancel this labor request?';
+                label.innerText = 'Cancellation Reason (Optional)';
+                submitBtn.innerText = 'Cancel Request';
+                submitBtn.style.background = '#ef4444';
+                submitBtn.style.borderColor = '#ef4444';
+            }
+
+            document.getElementById('actionModal').classList.add('active');
+        }
+
+        function closeActionModal() {
+            document.getElementById('actionModal').classList.remove('active');
+        }
+
+        async function handleActionSubmit(e) {
+            e.preventDefault();
+            const requestId = document.getElementById('actionRequestId').value;
+            const action = document.getElementById('actionType').value;
+            const notes = document.getElementById('actionInputNotes').value.trim();
+            const submitBtn = document.getElementById('submitActionBtn');
+
+            UI.clearAlert('actionModalAlert');
+
+            if (action === 'REJECT' && !notes) {
+                UI.showAlert('actionModalAlert', 'Please provide a reason for rejecting the request.', 'danger');
+                return;
+            }
+
+            UI.setLoading('submitActionBtn', true, 'Processing...');
+
+            try {
+                let endpoint = '';
+                let payload = {};
+
+                if (action === 'ACCEPT') {
+                    endpoint = `/labor-requests/${requestId}/accept`;
+                    payload = { notes: notes };
+                } else if (action === 'REJECT') {
+                    endpoint = `/labor-requests/${requestId}/reject`;
+                    payload = { reason: notes, notes: notes };
+                } else if (action === 'CANCEL') {
+                    endpoint = `/labor-requests/${requestId}/cancel`;
+                    payload = { reason: notes, notes: notes };
+                }
+
+                await AuthService.apiFetch(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                closeActionModal();
+                UI.showAlert('pageAlert', `Request #${requestId} successfully updated (${action})`, 'success');
+                await fetchRequests();
+
+            } catch (err) {
+                console.error('Action failed:', err);
+                UI.showAlert('actionModalAlert', err.message || 'Operation failed. Please try again.', 'danger');
+            } finally {
+                UI.setLoading('submitActionBtn', false, 'Confirm');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

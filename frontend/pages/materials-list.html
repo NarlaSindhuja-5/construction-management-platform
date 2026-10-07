@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Construction Material Marketplace - E2E Construction Management System">
+    <title>Raw Materials Marketplace - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/material.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="materials-list.html" class="logo">
+                <span class="logo-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">E2E</span>
+                <span>Materials Marketplace</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="materials-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <a href="material-orders.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Orders</a>
+                <a href="stock.html" class="btn btn-outline" id="navStockLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; display: none;">Stock &amp; Pricing</a>
+                <a href="add-material.html" class="btn btn-primary" id="navAddMaterialBtn" style="padding: 0.4rem 0.9rem; font-size: 0.85rem; background: var(--mat-primary); border-color: var(--mat-primary); display: none;">+ Add Material</a>
+                <a href="contractor-dashboard.html" class="btn btn-outline" id="navDashboardLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Dashboard</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="material-hero">
+        <div class="container material-hero-content">
+            <div class="material-hero-title">
+                <h1>Source Quality Construction Materials</h1>
+                <p>Bulk cement, structural steel, aggregates, bitumen, sand, bricks &amp; MEP supplies from verified distributors.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="material-orders.html" class="btn btn-primary" style="background: var(--mat-accent); color: #0f172a; border: none; font-weight: 700;">
+                    Track Material Orders &rarr;
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="container">
+        <!-- Search & Filter Card -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div style="padding: 1.5rem; background: #ffffff;">
+                <div style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 0.85rem; flex: 1;">
+                        <!-- Keyword Search -->
+                        <div style="flex: 1; min-width: 220px;">
+                            <input type="text" id="keywordSearch" class="form-control" placeholder="Search by material name, grade, brand...">
+                        </div>
+
+                        <!-- Category Filter -->
+                        <select id="categoryFilter" class="form-control" style="width: 200px;">
+                            <option value="">All Categories</option>
+                            <option value="CEMENT">Cement (OPC / PPC)</option>
+                            <option value="STEEL">Steel &amp; Rebar (TMT)</option>
+                            <option value="SAND">River Sand &amp; M-Sand</option>
+                            <option value="AGGREGATE">Aggregates (10mm / 20mm / 40mm)</option>
+                            <option value="CONCRETE">Ready-Mix Concrete (RMC)</option>
+                            <option value="BRICKS">Bricks &amp; Flyash Blocks</option>
+                            <option value="BITUMEN">Bitumen (VG-30 / VG-40)</option>
+                            <option value="PIPES">Pipes &amp; Fittings (PVC/HDPE)</option>
+                            <option value="ELECTRICAL">Electrical &amp; Wiring</option>
+                            <option value="PLUMBING">Plumbing Fixtures</option>
+                            <option value="FUEL_OIL">Diesel &amp; Lubricants</option>
+                            <option value="OTHER">Other Construction Items</option>
+                        </select>
+
+                        <!-- Location Filter -->
+                        <input type="text" id="locationFilter" class="form-control" placeholder="City or Warehouse Location..." style="width: 200px;">
+
+                        <!-- Max Price Filter -->
+                        <input type="number" id="maxPriceFilter" class="form-control" placeholder="Max Price ($)" min="1" step="0.5" style="width: 150px;">
+
+                        <!-- Availability Filter -->
+                        <select id="availabilityFilter" class="form-control" style="width: 170px;">
+                            <option value="">All Availability</option>
+                            <option value="IN_STOCK">In Stock</option>
+                            <option value="LOW_STOCK">Low Stock</option>
+                            <option value="OUT_OF_STOCK">Out of Stock</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button id="searchBtn" class="btn btn-primary" style="background: var(--mat-primary); border-color: var(--mat-primary); padding: 0.6rem 1.4rem;">
+                            Search
+                        </button>
+                        <button id="resetBtn" class="btn btn-outline" style="padding: 0.6rem 1rem;">
+                            Reset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Material Card Grid -->
+        <div class="material-grid" id="materialGrid">
+            <div class="empty-state-box" style="grid-column: 1 / -1;">
+                <span class="spinner"></span> Loading construction materials catalog...
+            </div>
+        </div>
+    </main>
+
+    <!-- Quick Purchase Order Modal -->
+    <div class="modal-overlay" id="quickOrderModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Request Material Order: <span id="orderMaterialName" style="color:var(--mat-primary);"></span></h3>
+                <button class="modal-close-btn" onclick="closeOrderModal()">&times;</button>
+            </div>
+            <form onsubmit="handleQuickOrderSubmit(event)" novalidate>
+                <input type="hidden" id="orderMaterialId">
+                <input type="hidden" id="orderUnitPrice">
+                <div class="modal-body">
+                    <div id="orderAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <!-- Material Summary Snapshot -->
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a;" id="orderSummaryTitle">Material Details</div>
+                            <div style="font-size: 0.8rem; color: #64748b;" id="orderSummarySupplier">Supplier: --</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 1.15rem; font-weight: 800; color: var(--mat-primary);" id="orderSummaryPrice">$0</div>
+                            <div style="font-size: 0.75rem; color: #64748b;" id="orderSummaryStock">In Stock: --</div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Order Quantity (<span id="orderUnitLabel">Units</span>) *</label>
+                            <input type="number" id="orderQuantityInput" name="quantity" class="form-control" min="1" step="0.01" required oninput="calculateOrderTotal()">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Estimated Total Amount</label>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #0f766e; padding-top: 0.4rem;" id="orderTotalAmountDisplay">
+                                $0.00
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Deliver To Project Site (Optional)</label>
+                        <select id="orderProjectSelect" name="projectId" class="form-control">
+                            <option value="">-- Direct Delivery (No Project Linked) --</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Site Delivery Address *</label>
+                        <textarea id="orderDeliveryAddress" name="deliveryAddress" class="form-control" rows="2" placeholder="e.g. Gate 3, Sector 14 Metro Construction Yard, East Wing Depot..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Requested Delivery Date *</label>
+                        <input type="date" id="orderDeliveryDate" name="requestedDeliveryDate" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Contractor Notes / Quality Instructions</label>
+                        <input type="text" id="orderContractorNotes" name="contractorNotes" class="form-control" placeholder="e.g. Include test batch certificate with delivery truck...">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeOrderModal()">Cancel</button>
+                    <button type="submit" id="submitOrderBtn" class="btn btn-primary" style="background: var(--mat-primary); border-color: var(--mat-primary);">
+                        Submit Purchase Order
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let allMaterials = [];
+        let contractorProjects = [];
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            currentUser = AuthService.getUser();
+            setupRoleNavigation(currentUser);
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            // Set default delivery date to 2 days ahead
+            const futureDate = new Date();
+            futureDate.setDate(futureDate.getDate() + 2);
+            document.getElementById('orderDeliveryDate').value = futureDate.toISOString().split('T')[0];
+
+            document.getElementById('searchBtn').addEventListener('click', loadMaterials);
+            document.getElementById('resetBtn').addEventListener('click', resetFilters);
+
+            // Allow enter key to trigger search
+            document.getElementById('keywordSearch').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') loadMaterials();
+            });
+
+            await Promise.all([
+                loadMaterials(),
+                loadProjectsForContractor()
+            ]);
+        });
+
+        function setupRoleNavigation(user) {
+            if (!user) return;
+            const role = user.role;
+
+            const dashLink = document.getElementById('navDashboardLink');
+            if (role === 'MATERIAL_SUPPLIER') {
+                dashLink.href = 'supplier-dashboard.html';
+                dashLink.innerText = 'Supplier Portal';
+                document.getElementById('navAddMaterialBtn').style.display = 'inline-block';
+                document.getElementById('navStockLink').style.display = 'inline-block';
+            } else if (role === 'CONTRACTOR') {
+                dashLink.href = 'contractor-dashboard.html';
+                dashLink.innerText = 'Contractor Portal';
+            } else if (role === 'ADMIN') {
+                dashLink.href = 'admin-dashboard.html';
+                dashLink.innerText = 'Admin Portal';
+                document.getElementById('navAddMaterialBtn').style.display = 'inline-block';
+                document.getElementById('navStockLink').style.display = 'inline-block';
+            }
+        }
+
+        async function loadProjectsForContractor() {
+            if (!currentUser || currentUser.role !== 'CONTRACTOR') return;
+            try {
+                const projects = await AuthService.apiFetch('/projects/my-projects');
+                contractorProjects = Array.isArray(projects) ? projects : [];
+
+                const select = document.getElementById('orderProjectSelect');
+                if (contractorProjects.length > 0) {
+                    select.innerHTML = '<option value="">-- Direct Delivery (No Project Linked) --</option>' +
+                        contractorProjects.map(p => `
+                            <option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.location || 'Site')})</option>
+                        `).join('');
+                }
+            } catch (err) {
+                console.warn('Could not load contractor projects:', err);
+            }
+        }
+
+        async function loadMaterials() {
+            const grid = document.getElementById('materialGrid');
+            grid.innerHTML = '<div class="empty-state-box" style="grid-column: 1 / -1;"><span class="spinner"></span> Loading materials catalog...</div>';
+
+            const search = document.getElementById('keywordSearch').value.trim();
+            const category = document.getElementById('categoryFilter').value;
+            const location = document.getElementById('locationFilter').value.trim();
+            const maxPrice = document.getElementById('maxPriceFilter').value;
+            const availability = document.getElementById('availabilityFilter').value;
+
+            const params = new URLSearchParams();
+            if (search) params.append('search', search);
+            if (category) params.append('category', category);
+            if (location) params.append('location', location);
+            if (maxPrice) params.append('maxPrice', maxPrice);
+            if (availability) params.append('availability', availability);
+
+            try {
+                const queryStr = params.toString() ? `?${params.toString()}` : '';
+                const data = await AuthService.apiFetch(`/materials/search${queryStr}`);
+                allMaterials = Array.isArray(data) ? data : [];
+                renderMaterialCards(allMaterials);
+            } catch (err) {
+                console.error('Error fetching materials:', err);
+                grid.innerHTML = `
+                    <div class="empty-state-box" style="grid-column: 1 / -1; color: var(--danger);">
+                        <p>Failed to load materials: ${escapeHtml(err.message || 'API error')}</p>
+                        <button class="btn btn-outline" style="margin-top: 0.5rem;" onclick="loadMaterials()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('keywordSearch').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('locationFilter').value = '';
+            document.getElementById('maxPriceFilter').value = '';
+            document.getElementById('availabilityFilter').value = '';
+            loadMaterials();
+        }
+
+        function renderMaterialCards(materials) {
+            const grid = document.getElementById('materialGrid');
+
+            if (!materials || materials.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state-box" style="grid-column: 1 / -1; padding: 3.5rem 1rem;">
+                        <svg style="width:52px;height:52px;color:#94a3b8;margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                        <h3 style="font-size: 1.2rem; color: #1e293b; margin-bottom: 0.35rem;">No Materials Found</h3>
+                        <p style="color: #64748b; font-size: 0.9rem;">Try adjusting your search criteria, category filters, or location radius.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = materials.map(m => {
+                const avail = (m.availability || 'IN_STOCK').toLowerCase();
+                let availPillClass = 'in_stock';
+                if (avail === 'low_stock') availPillClass = 'low_stock';
+                else if (avail === 'out_of_stock') availPillClass = 'out_of_stock';
+                else if (avail === 'unavailable') availPillClass = 'unavailable';
+
+                const category = m.category || 'OTHER';
+                const unit = m.unit || 'Unit';
+                const isContractor = (currentUser && currentUser.role === 'CONTRACTOR');
+
+                return `
+                    <div class="material-card">
+                        <div class="material-card-header">
+                            <div class="material-title-group">
+                                <h3 class="material-name" title="${escapeHtml(m.name)}">${escapeHtml(m.name)}</h3>
+                                <div class="material-spec">${escapeHtml(m.gradeSpecification || 'Commercial Standard Grade')}</div>
+                            </div>
+                            <span class="category-badge ${category}">${category}</span>
+                        </div>
+
+                        <div class="material-metrics">
+                            <div class="material-metric-item">
+                                <span class="material-metric-label">Warehouse Stock</span>
+                                <span class="material-metric-val">${m.availableQuantity || 0} <span style="font-size:0.75rem;font-weight:500;color:#64748b;">${escapeHtml(unit)}</span></span>
+                            </div>
+                            <div class="material-metric-item">
+                                <span class="material-metric-label">Status</span>
+                                <div>
+                                    <span class="availability-pill ${availPillClass}">
+                                        ${avail.replace('_', ' ')}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="material-supplier-info">
+                            <svg style="width:16px;height:16px;color:#0f766e;flex-shrink:0;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                            <span style="font-weight:600; color:#1e293b;">${escapeHtml(m.supplierStoreName || 'Verified Supplier')}</span>
+                            <span style="color:#94a3b8;">&bull;</span>
+                            <span style="color:#64748b;">${escapeHtml(m.location || 'Depot')}</span>
+                        </div>
+
+                        <div class="material-card-footer">
+                            <div class="price-box">
+                                <span class="amount">$${m.price || 0}</span>
+                                <span class="unit">per ${escapeHtml(unit)}</span>
+                            </div>
+
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="material-details.html?id=${m.id}" class="btn btn-outline" style="padding: 0.45rem 0.85rem; font-size: 0.825rem;">
+                                    Details &rarr;
+                                </a>
+                                ${isContractor ? `
+                                    <button class="btn btn-primary" style="padding: 0.45rem 0.95rem; font-size: 0.825rem; background: var(--mat-primary); border-color: var(--mat-primary);" onclick="openOrderModal(${m.id}, '${escapeHtml(m.name)}', ${m.price || 0}, '${escapeHtml(unit)}', ${m.availableQuantity || 0}, '${escapeHtml(m.supplierStoreName || 'Supplier')}', '${escapeHtml(m.location || '')}')">
+                                        Request Order
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openOrderModal(materialId, name, price, unit, stock, supplier, location) {
+            document.getElementById('orderMaterialId').value = materialId;
+            document.getElementById('orderUnitPrice').value = price;
+            document.getElementById('orderMaterialName').innerText = name;
+            document.getElementById('orderSummaryTitle').innerText = `${name} ($${price}/${unit})`;
+            document.getElementById('orderSummarySupplier').innerText = `Supplier: ${supplier} &bull; ${location}`;
+            document.getElementById('orderSummaryPrice').innerText = `$${price} / ${unit}`;
+            document.getElementById('orderSummaryStock').innerText = `In Stock: ${stock} ${unit}`;
+            document.getElementById('orderUnitLabel').innerText = unit;
+
+            document.getElementById('orderQuantityInput').value = '10';
+            calculateOrderTotal();
+
+            UI.clearAlert('orderAlert');
+            document.getElementById('quickOrderModal').classList.add('active');
+        }
+
+        function closeOrderModal() {
+            document.getElementById('quickOrderModal').classList.remove('active');
+        }
+
+        function calculateOrderTotal() {
+            const qty = parseFloat(document.getElementById('orderQuantityInput').value) || 0;
+            const price = parseFloat(document.getElementById('orderUnitPrice').value) || 0;
+            const total = qty * price;
+            document.getElementById('orderTotalAmountDisplay').innerText = `$${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        async function handleQuickOrderSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('orderAlert');
+
+            const form = e.target;
+            const materialId = document.getElementById('orderMaterialId').value;
+            const quantity = form.quantity.value;
+            const projectId = form.projectId.value;
+            const deliveryAddress = form.deliveryAddress.value.trim();
+            const requestedDeliveryDate = form.requestedDeliveryDate.value;
+            const contractorNotes = form.contractorNotes.value.trim();
+
+            if (!quantity || !deliveryAddress || !requestedDeliveryDate) {
+                UI.showAlert('orderAlert', 'Please fill in quantity, delivery address, and requested delivery date.', 'danger');
+                return;
+            }
+
+            const payload = {
+                materialId: Number(materialId),
+                projectId: projectId ? Number(projectId) : null,
+                quantity: Number(quantity),
+                deliveryAddress: deliveryAddress,
+                requestedDeliveryDate: requestedDeliveryDate,
+                contractorNotes: contractorNotes
+            };
+
+            UI.setLoading('submitOrderBtn', true, 'Placing Order...');
+
+            try {
+                await AuthService.apiFetch(`/materials/${materialId}/orders`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('orderAlert', 'Material purchase order placed successfully! You can track this in Orders.', 'success');
+                setTimeout(() => {
+                    closeOrderModal();
+                    window.location.href = 'material-orders.html';
+                }, 1000);
+
+            } catch (err) {
+                console.error('Failed to submit order:', err);
+                UI.showAlert('orderAlert', err.message || 'Failed to submit purchase order', 'danger');
+            } finally {
+                UI.setLoading('submitOrderBtn', false, 'Submit Purchase Order');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

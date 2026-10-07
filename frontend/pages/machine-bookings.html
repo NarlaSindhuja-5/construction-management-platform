@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Machinery Bookings & Reservations Management - E2E Construction Management System">
+    <title>Machinery Bookings - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/machinery.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="machinery-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Machinery Bookings</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Marketplace Catalog</a>
+                <a href="contractor-dashboard.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Dashboard</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="max-width: 1050px; margin: 2rem auto;">
+        <!-- Header Summary -->
+        <div class="content-card" style="margin-bottom: 2rem;">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h2>Equipment Reservations &amp; Rental Orders</h2>
+                    <p>Track contractor booking requests, equipment dispatch schedules, and rental statuses</p>
+                </div>
+                <a href="machinery-list.html" class="btn btn-primary">+ Browse &amp; Book Machinery</a>
+            </div>
+        </div>
+
+        <!-- Alert Notification Box -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Booking Tabs & Tables -->
+        <div class="content-card">
+            <div class="subtabs" id="bookingTabContainer">
+                <button class="subtab-btn active" data-tab="contractorTab">My Outgoing Bookings</button>
+                <button class="subtab-btn" data-tab="incomingTab" id="ownerIncomingTabBtn" style="display:none;">Owner: Incoming Requests</button>
+                <button class="subtab-btn" data-tab="activeTab" id="ownerActiveTabBtn" style="display:none;">Owner: Active Rentals</button>
+                <button class="subtab-btn" data-tab="historyTab" id="ownerHistoryTabBtn" style="display:none;">Owner: Rental History</button>
+            </div>
+
+            <!-- Tab 1: Contractor's Outgoing Bookings -->
+            <div id="contractorTab" class="tab-pane active" style="padding: 0;">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Booking #</th>
+                                <th>Equipment</th>
+                                <th>Site Project</th>
+                                <th>Rental Period</th>
+                                <th>Total Estimate</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="contractorBookingsTbody">
+                            <tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading your bookings...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 2: Owner's Incoming Requests -->
+            <div id="incomingTab" class="tab-pane" style="display: none; padding: 0;">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Request #</th>
+                                <th>Equipment</th>
+                                <th>Renter / Project</th>
+                                <th>Delivery Location</th>
+                                <th>Dates</th>
+                                <th>Estimated Amount</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerIncomingTbody">
+                            <tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading requests...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 3: Owner's Active Bookings -->
+            <div id="activeTab" class="tab-pane" style="display: none; padding: 0;">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Booking #</th>
+                                <th>Equipment</th>
+                                <th>Project Name</th>
+                                <th>Rental Period</th>
+                                <th>Total Value</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerActiveTbody">
+                            <tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading active rentals...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tab 4: Owner's Booking History -->
+            <div id="historyTab" class="tab-pane" style="display: none; padding: 0;">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Booking #</th>
+                                <th>Equipment</th>
+                                <th>Project</th>
+                                <th>Dates</th>
+                                <th>Revenue</th>
+                                <th>Final Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ownerHistoryTbody">
+                            <tr><td colspan="6" class="empty-state-box"><span class="spinner"></span> Loading history...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Machinery Bookings Management.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            const currentUser = AuthService.getUser();
+            const isOwner = currentUser && (currentUser.role === 'MACHINERY_OWNER' || currentUser.role === 'ADMIN');
+
+            if (isOwner) {
+                document.getElementById('ownerIncomingTabBtn').style.display = 'inline-block';
+                document.getElementById('ownerActiveTabBtn').style.display = 'inline-block';
+                document.getElementById('ownerHistoryTabBtn').style.display = 'inline-block';
+            }
+
+            // Bind tab buttons
+            document.querySelectorAll('#bookingTabContainer .subtab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('#bookingTabContainer .subtab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const targetTab = btn.dataset.tab;
+                    document.querySelectorAll('.tab-pane').forEach(p => {
+                        p.style.display = p.id === targetTab ? 'block' : 'none';
+                    });
+
+                    // Trigger data fetch for chosen tab
+                    if (targetTab === 'contractorTab') loadContractorBookings();
+                    else if (targetTab === 'incomingTab') loadOwnerIncoming();
+                    else if (targetTab === 'activeTab') loadOwnerActive();
+                    else if (targetTab === 'historyTab') loadOwnerHistory();
+                });
+            });
+
+            // Initial load
+            loadContractorBookings();
+            if (isOwner) {
+                loadOwnerIncoming();
+            }
+        });
+
+        // 1. Contractor Bookings
+        async function loadContractorBookings() {
+            const tbody = document.getElementById('contractorBookingsTbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading your bookings...</td></tr>';
+
+            try {
+                const list = await AuthService.apiFetch('/machinery/bookings/my-bookings');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box">No machinery bookings found. Browse the catalog to book equipment.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(b => `
+                    <tr>
+                        <td>#${b.id}</td>
+                        <td>
+                            <strong>${escapeHtml(b.machineName || 'Machinery #' + b.machineId)}</strong><br>
+                            <a href="machinery-details.html?id=${b.machineId}" style="font-size:0.75rem; color:#2563eb;">View Spec</a>
+                        </td>
+                        <td>${escapeHtml(b.projectName || '--')}</td>
+                        <td>${formatDate(b.startDate)} &rarr; ${formatDate(b.endDate)}</td>
+                        <td><strong>$${Number(b.totalAmount || 0).toLocaleString()}</strong></td>
+                        <td><span class="status-badge ${(b.status || '').toLowerCase()}">${b.status}</span></td>
+                        <td>
+                            ${b.status === 'PENDING' || b.status === 'ACCEPTED' ? `
+                                <button class="btn btn-outline" style="padding:0.25rem 0.55rem; font-size:0.75rem; color:var(--danger);" onclick="cancelBooking(${b.id})">
+                                    Cancel
+                                </button>
+                            ` : '--'}
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box" style="color:var(--danger);">Error loading bookings.</td></tr>';
+            }
+        }
+
+        // 2. Owner Incoming Requests
+        async function loadOwnerIncoming() {
+            const tbody = document.getElementById('ownerIncomingTbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading incoming requests...</td></tr>';
+
+            try {
+                const list = await AuthService.apiFetch('/machinery/bookings/owner-requests');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box">No incoming pending booking requests.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(b => `
+                    <tr>
+                        <td>#${b.id}</td>
+                        <td><strong>${escapeHtml(b.machineName || 'Machinery #' + b.machineId)}</strong></td>
+                        <td>${escapeHtml(b.contractorName || 'Contractor')}<br><small style="color:#64748b;">${escapeHtml(b.projectName || '')}</small></td>
+                        <td>${escapeHtml(b.deliveryLocation || '--')}</td>
+                        <td>${formatDate(b.startDate)} &rarr; ${formatDate(b.endDate)}</td>
+                        <td><strong>$${Number(b.totalAmount || 0).toLocaleString()}</strong></td>
+                        <td>
+                            <div style="display:flex; gap:0.4rem;">
+                                <button class="btn btn-primary" style="padding:0.25rem 0.6rem; font-size:0.75rem;" onclick="acceptBooking(${b.id})">Accept</button>
+                                <button class="btn btn-outline" style="padding:0.25rem 0.6rem; font-size:0.75rem; color:var(--danger);" onclick="rejectBooking(${b.id})">Reject</button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box" style="color:var(--danger);">Error loading incoming requests.</td></tr>';
+            }
+        }
+
+        // 3. Owner Active Bookings
+        async function loadOwnerActive() {
+            const tbody = document.getElementById('ownerActiveTbody');
+            tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box"><span class="spinner"></span> Loading active rentals...</td></tr>';
+
+            try {
+                const list = await AuthService.apiFetch('/machinery/bookings/owner-current');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box">No machines currently out on rental.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(b => `
+                    <tr>
+                        <td>#${b.id}</td>
+                        <td><strong>${escapeHtml(b.machineName || 'Machinery #' + b.machineId)}</strong></td>
+                        <td>${escapeHtml(b.projectName || '--')}</td>
+                        <td>${formatDate(b.startDate)} &rarr; ${formatDate(b.endDate)}</td>
+                        <td>$${Number(b.totalAmount || 0).toLocaleString()}</td>
+                        <td><span class="status-badge accepted">Active</span></td>
+                        <td>
+                            <button class="btn btn-primary" style="padding:0.25rem 0.6rem; font-size:0.75rem;" onclick="completeBooking(${b.id})">
+                                Mark Completed
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state-box" style="color:var(--danger);">Error loading active rentals.</td></tr>';
+            }
+        }
+
+        // 4. Owner History
+        async function loadOwnerHistory() {
+            const tbody = document.getElementById('ownerHistoryTbody');
+            tbody.innerHTML = '<tr><td colspan="6" class="empty-state-box"><span class="spinner"></span> Loading rental history...</td></tr>';
+
+            try {
+                const list = await AuthService.apiFetch('/machinery/bookings/owner-history');
+                if (!list || list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="empty-state-box">No booking history logged.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(b => `
+                    <tr>
+                        <td>#${b.id}</td>
+                        <td><strong>${escapeHtml(b.machineName || 'Machinery #' + b.machineId)}</strong></td>
+                        <td>${escapeHtml(b.projectName || '--')}</td>
+                        <td>${formatDate(b.startDate)} &rarr; ${formatDate(b.endDate)}</td>
+                        <td>$${Number(b.totalAmount || 0).toLocaleString()}</td>
+                        <td><span class="status-badge ${(b.status || '').toLowerCase()}">${b.status}</span></td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state-box" style="color:var(--danger);">Error loading history.</td></tr>';
+            }
+        }
+
+        // Actions
+        async function acceptBooking(id) {
+            try {
+                await AuthService.apiFetch(`/machinery/bookings/${id}/accept`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ notes: 'Owner confirmed equipment availability' })
+                });
+                alert('Booking accepted successfully!');
+                loadOwnerIncoming();
+            } catch (err) {
+                alert(err.message || 'Failed to accept booking');
+            }
+        }
+
+        async function rejectBooking(id) {
+            const reason = prompt('Please enter reason for rejecting booking:');
+            if (!reason) return;
+            try {
+                await AuthService.apiFetch(`/machinery/bookings/${id}/reject`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ rejectionReason: reason })
+                });
+                alert('Booking rejected');
+                loadOwnerIncoming();
+            } catch (err) {
+                alert(err.message || 'Failed to reject booking');
+            }
+        }
+
+        async function completeBooking(id) {
+            if (!confirm('Mark this equipment rental as completed and returned?')) return;
+            try {
+                await AuthService.apiFetch(`/machinery/bookings/${id}/complete`, { method: 'PUT' });
+                alert('Booking marked as completed!');
+                loadOwnerActive();
+            } catch (err) {
+                alert(err.message || 'Failed to complete booking');
+            }
+        }
+
+        async function cancelBooking(id) {
+            if (!confirm('Are you sure you want to cancel this booking request?')) return;
+            try {
+                await AuthService.apiFetch(`/machinery/bookings/${id}/cancel`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ reason: 'Contractor requested cancellation' })
+                });
+                alert('Booking cancelled successfully');
+                loadContractorBookings();
+            } catch (err) {
+                alert(err.message || 'Failed to cancel booking');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(str) {
+            if (!str) return '--';
+            try {
+                const d = new Date(str);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                return str;
+            }
+        }
+    </script>
+</body>
+</html>

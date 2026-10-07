@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Laborer Profile & Work Request - E2E Construction Management System">
+    <title>Laborer Profile - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Laborer Profile</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="laborer-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">&larr; Labor Directory</a>
+                <a href="labor-requests.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work Requests</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="max-width: 950px; margin: 2rem auto;">
+        <!-- Alert Notification Container -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Left Column: Comprehensive Profile & Skills -->
+            <div>
+                <div class="content-card" style="padding: 2rem;">
+                    <div style="display: flex; align-items: flex-start; gap: 1.25rem; margin-bottom: 1.5rem;">
+                        <div class="laborer-avatar" id="detailsAvatar" style="width: 68px; height: 68px; font-size: 1.75rem;">L</div>
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <h2 style="font-size: 1.5rem; color: #0f172a; margin-bottom: 0.25rem;" id="detailsFullName">Loading Worker...</h2>
+                                <span class="availability-pill available" id="detailsAvailabilityPill">AVAILABLE</span>
+                            </div>
+                            <div style="color: #64748b; font-size: 0.9rem;" id="detailsLocation">City &bull; State</div>
+                            <div style="margin-top: 0.4rem;">
+                                <span class="badge badge-success" id="detailsVerificationBadge">Verified Laborer</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Core Trade Skills</h4>
+                        <div class="laborer-skill-tags" id="detailsSkillTags">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600;">Experience</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: #0f172a;" id="detailsExperience">0 years</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 600;">Daily Wage Rate</div>
+                            <div style="font-size: 1.2rem; font-weight: 700; color: #0f172a;" id="detailsDailyWage">$0 / day</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Professional Summary</h4>
+                        <p style="color: #334155; line-height: 1.6;" id="detailsDescription">
+                            Loading experience bio...
+                        </p>
+                    </div>
+
+                    <div style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.875rem; color: #475569;">
+                        <div>Direct Phone: <strong id="detailsPhone">--</strong></div>
+                        <div>Email: <strong id="detailsEmail">--</strong></div>
+                        <div>System ID: <strong id="detailsId">#--</strong></div>
+                    </div>
+                </div>
+
+                <!-- Laborer Self-Management Tool (If viewing own profile) -->
+                <div class="content-card" id="laborerSelfPanel" style="display: none; padding: 1.5rem; background: #f0fdf4; border-color: #bbf7d0;">
+                    <h3 style="font-size: 1.1rem; color: #166534; margin-bottom: 0.5rem;">Availability Management</h3>
+                    <p style="font-size: 0.85rem; color: #15803d; margin-bottom: 1rem;">
+                        You are viewing your own profile. Keep your availability up to date so contractors know when you are open for site work.
+                    </p>
+                    <div style="display: flex; gap: 0.75rem; align-items: center;">
+                        <select id="selfAvailabilitySelect" class="form-control" style="width: 200px;">
+                            <option value="AVAILABLE">AVAILABLE</option>
+                            <option value="WORKING">WORKING (On Site)</option>
+                            <option value="UNAVAILABLE">UNAVAILABLE</option>
+                        </select>
+                        <button id="saveAvailabilityBtn" class="btn btn-primary" style="padding: 0.55rem 1.25rem;">
+                            Update Status
+                        </button>
+                        <a href="laborer-profile.html" class="btn btn-outline" style="border-color: #166534; color: #166534;">
+                            Full Profile Editor &rarr;
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Dispatch Work Request -->
+            <div>
+                <div class="content-card" style="padding: 1.5rem; position: sticky; top: 90px;">
+                    <div style="padding-bottom: 1rem; margin-bottom: 1rem; border-bottom: 1px solid #f1f5f9;">
+                        <h3 style="font-size: 1.2rem; color: #0f172a;">Send Work Request</h3>
+                        <p style="color: #64748b; font-size: 0.85rem;">Hire worker for your construction project site</p>
+                    </div>
+
+                    <form id="hireForm" onsubmit="handleHireSubmit(event)" novalidate>
+                        <div id="hireAlert" style="display: none; margin-bottom: 1rem;"></div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireProjectSelect">Project *</label>
+                            <select id="hireProjectSelect" name="projectId" class="form-control" required>
+                                <option value="" disabled selected>-- Select Project --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireStartDate">Start Date *</label>
+                            <input type="date" id="hireStartDate" name="startDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireEndDate">End Date *</label>
+                            <input type="date" id="hireEndDate" name="endDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireWageInput">Offered Daily Wage ($) *</label>
+                            <input type="number" step="0.01" id="hireWageInput" name="dailyWage" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireJobDesc">Job Assignment Details *</label>
+                            <textarea id="hireJobDesc" name="jobDescription" class="form-control" rows="2" placeholder="Specify on-site tasks and requirements..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="hireNotes">Contractor Notes</label>
+                            <textarea id="hireNotes" name="contractorNotes" class="form-control" rows="2" placeholder="Reporting timings, supervisor details..."></textarea>
+                        </div>
+
+                        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.85rem; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span>Estimated Days:</span>
+                                <strong id="calcHireDays">0</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; color: #0f172a;">
+                                <span>Total Estimated Cost:</span>
+                                <span id="calcHireTotal">$0</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="hireSubmitBtn" class="btn btn-primary btn-block" style="padding: 0.75rem; font-weight: 700;">
+                            Send Work Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Laborer Profile Details.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const laborerId = urlParams.get('id');
+        let currentLaborer = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            if (!laborerId) {
+                UI.showAlert('pageAlert', 'No laborer ID specified. Return to the labor marketplace.', 'danger');
+                return;
+            }
+
+            // Date setup
+            const today = new Date().toISOString().split('T')[0];
+            const startInput = document.getElementById('hireStartDate');
+            const endInput = document.getElementById('hireEndDate');
+            startInput.min = today;
+            endInput.min = today;
+
+            function updateCost() {
+                if (startInput.value && endInput.value && currentLaborer) {
+                    const start = new Date(startInput.value);
+                    const end = new Date(endInput.value);
+                    const wage = Number(document.getElementById('hireWageInput').value || currentLaborer.dailyWage || 150);
+                    if (end >= start) {
+                        const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                        document.getElementById('calcHireDays').innerText = days;
+                        document.getElementById('calcHireTotal').innerText = `$${Number(days * wage).toLocaleString()}`;
+                    } else {
+                        document.getElementById('calcHireDays').innerText = '0';
+                        document.getElementById('calcHireTotal').innerText = '$0';
+                    }
+                }
+            }
+
+            startInput.addEventListener('change', () => {
+                endInput.min = startInput.value;
+                updateCost();
+            });
+            endInput.addEventListener('change', updateCost);
+            document.getElementById('hireWageInput').addEventListener('input', updateCost);
+
+            // Fetch contractor projects
+            try {
+                const projects = await AuthService.apiFetch('/projects/my-projects');
+                const pSelect = document.getElementById('hireProjectSelect');
+                pSelect.innerHTML = '<option value="" disabled selected>-- Select Project --</option>';
+                projects.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = `${p.name} (${p.city || p.location})`;
+                    pSelect.appendChild(opt);
+                });
+            } catch (e) {
+                console.warn('Could not load projects for hire form:', e);
+            }
+
+            await loadLaborerProfile();
+        });
+
+        async function loadLaborerProfile() {
+            try {
+                const laborer = await AuthService.apiFetch(`/laborers/${laborerId}/profile`);
+                currentLaborer = laborer;
+
+                document.getElementById('detailsFullName').innerText = laborer.fullName || 'Skilled Construction Laborer';
+                document.getElementById('detailsAvatar').innerText = (laborer.fullName || 'L')[0].toUpperCase();
+                document.getElementById('detailsLocation').innerText = `${laborer.city || laborer.location || 'Site Base'} ${laborer.state ? '(' + laborer.state + ')' : ''}`;
+                document.getElementById('detailsExperience').innerText = `${laborer.yearsOfExperience || 0} years`;
+                document.getElementById('detailsDailyWage').innerText = `$${laborer.dailyWage || 150} / day`;
+                document.getElementById('detailsDescription').innerText = laborer.description || 'Verified construction tradesman.';
+                document.getElementById('detailsPhone').innerText = laborer.phone || '--';
+                document.getElementById('detailsEmail').innerText = laborer.email || '--';
+                document.getElementById('detailsId').innerText = `#${laborer.id}`;
+
+                // Pre-fill offered wage
+                document.getElementById('hireWageInput').value = laborer.dailyWage || 150;
+
+                // Availability pill
+                const avail = (laborer.availabilityStatus || 'AVAILABLE').toUpperCase();
+                const pill = document.getElementById('detailsAvailabilityPill');
+                pill.className = `availability-pill ${avail === 'AVAILABLE' ? 'available' : (avail === 'WORKING' ? 'working' : 'unavailable')}`;
+                pill.innerText = avail;
+
+                // Skills tags
+                const skillTags = document.getElementById('detailsSkillTags');
+                const skillsList = (laborer.skills || 'General Labor').split(',').map(s => s.trim());
+                skillTags.innerHTML = skillsList.map(s => `<span class="skill-tag">${escapeHtml(s)}</span>`).join('');
+
+                // Check if current user is this laborer
+                const currentUser = AuthService.getUser();
+                if (currentUser && currentUser.email && laborer.email && currentUser.email.toLowerCase() === laborer.email.toLowerCase()) {
+                    const selfPanel = document.getElementById('laborerSelfPanel');
+                    selfPanel.style.display = 'block';
+                    document.getElementById('selfAvailabilitySelect').value = avail;
+                    document.getElementById('saveAvailabilityBtn').addEventListener('click', updateSelfAvailability);
+                }
+
+            } catch (err) {
+                console.error('Error fetching laborer profile:', err);
+                UI.showAlert('pageAlert', 'Failed to load laborer profile: ' + (err.message || 'Error'), 'danger');
+            }
+        }
+
+        async function updateSelfAvailability() {
+            const newStatus = document.getElementById('selfAvailabilitySelect').value;
+            const btn = document.getElementById('saveAvailabilityBtn');
+            btn.disabled = true;
+            btn.innerText = 'Updating...';
+
+            try {
+                await AuthService.apiFetch('/laborers/availability', {
+                    method: 'PATCH',
+                    body: JSON.stringify({ availabilityStatus: newStatus })
+                });
+
+                alert('Availability updated successfully to ' + newStatus);
+                loadLaborerProfile();
+            } catch (err) {
+                alert(err.message || 'Failed to update availability');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Update Status';
+            }
+        }
+
+        async function handleHireSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            UI.clearAlert('hireAlert');
+
+            const projectId = form.projectId.value;
+            const startDate = form.startDate.value;
+            const endDate = form.endDate.value;
+            const dailyWage = form.dailyWage.value;
+            const jobDescription = form.jobDescription.value.trim();
+            const contractorNotes = form.contractorNotes.value.trim();
+
+            if (!projectId) {
+                UI.showAlert('hireAlert', 'Please select a project for this assignment', 'danger');
+                return;
+            }
+
+            const payload = {
+                laborerId: Number(laborerId),
+                projectId: Number(projectId),
+                startDate,
+                endDate,
+                dailyWage: Number(dailyWage),
+                jobDescription,
+                contractorNotes
+            };
+
+            UI.setLoading('hireSubmitBtn', true, 'Dispatching...');
+
+            try {
+                await AuthService.apiFetch(`/laborers/${laborerId}/work-requests`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('hireAlert', 'Work request dispatched successfully! You can track this in Work Requests.', 'success');
+                form.reset();
+
+            } catch (err) {
+                UI.setLoading('hireSubmitBtn', false, 'Send Work Request');
+                UI.showAlert('hireAlert', err.message || 'Failed to send work request', 'danger');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

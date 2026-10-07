@@ -28,19 +28,25 @@ public class JwtTokenProvider {
     private final SecretKey key;
 
     public JwtTokenProvider(
-            @Value("${app.jwt.secret}") String jwtSecret,
-            @Value("${app.jwt.expiration-ms}") long jwtExpirationMs) {
-        this.jwtSecret = jwtSecret;
+            @Value("${app.jwt.secret:}") String jwtSecret,
+            @Value("${app.jwt.expiration-ms:86400000}") long jwtExpirationMs) {
         this.jwtExpirationMs = jwtExpirationMs;
-        // Ensure secret has at least 256 bits for HMAC-SHA256
-        byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
-        if (keyBytes.length < 32) {
-            // Pad secret if shorter than 32 bytes (256 bits)
-            byte[] padded = new byte[32];
-            System.arraycopy(keyBytes, 0, padded, 0, keyBytes.length);
-            keyBytes = padded;
+        if (jwtSecret == null || jwtSecret.trim().isEmpty()) {
+            logger.warn("JWT_SECRET environment variable is not configured. Generating an ephemeral 256-bit secure signing key. Please configure JWT_SECRET in production.");
+            this.jwtSecret = "";
+            this.key = Jwts.SIG.HS256.key().build();
+        } else {
+            this.jwtSecret = jwtSecret;
+            // Ensure secret has at least 256 bits for HMAC-SHA256
+            byte[] keyBytes = jwtSecret.getBytes(StandardCharsets.UTF_8);
+            if (keyBytes.length < 32) {
+                // Pad secret if shorter than 32 bytes (256 bits)
+                byte[] padded = new byte[32];
+                System.arraycopy(keyBytes, 0, padded, 0, keyBytes.length);
+                keyBytes = padded;
+            }
+            this.key = Keys.hmacShaKeyFor(keyBytes);
         }
-        this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     /**

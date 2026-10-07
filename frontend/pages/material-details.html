@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Material Details & Technical Specifications - E2E Construction Management System">
+    <title>Material Details - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/material.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="materials-list.html" class="logo">
+                <span class="logo-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">E2E</span>
+                <span>Material Details</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="materials-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">&larr; Catalog</a>
+                <a href="material-orders.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Orders</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="max-width: 1000px; margin: 2rem auto;">
+        <!-- Page Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;" id="detailsLayout">
+            <!-- Left Column: Specs, Supplier, Stock Audit History -->
+            <div>
+                <!-- Primary Material Card -->
+                <div class="content-card" style="padding: 2rem; margin-bottom: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
+                        <div>
+                            <span class="category-badge" id="matCategoryBadge">CATEGORY</span>
+                            <h2 style="font-size: 1.6rem; color: #0f172a; margin: 0.5rem 0 0.2rem;" id="matName">Loading Material...</h2>
+                            <div style="font-size: 0.95rem; color: #64748b; font-weight: 500;" id="matGrade">Technical Specification / Grade</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <span class="availability-pill in_stock" id="matAvailPill">IN STOCK</span>
+                            <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.35rem;" id="matIdTag">#--</div>
+                        </div>
+                    </div>
+
+                    <!-- Metric Stats Grid -->
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1.5rem; background: #f8fafc; padding: 1.25rem; border-radius: 10px; border: 1px solid #e2e8f0;">
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Price per Unit</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #0f766e;" id="matPriceDisplay">$0.00</div>
+                            <div style="font-size: 0.8rem; color: #64748b;" id="matUnitDisplay">per unit</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #64748b; font-weight: 700;">Warehouse Inventory</div>
+                            <div style="font-size: 1.5rem; font-weight: 800; color: #0f172a;" id="matQuantityDisplay">0</div>
+                            <div style="font-size: 0.8rem; color: #64748b;" id="matWarehouseLocation">Depot Location</div>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div style="margin-bottom: 1.5rem;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Product Description &amp; Compliance</h4>
+                        <p style="color: #334155; line-height: 1.6;" id="matDescription">
+                            Loading product specification...
+                        </p>
+                    </div>
+
+                    <!-- Supplier Information Box -->
+                    <div style="padding-top: 1.25rem; border-top: 1px solid #f1f5f9;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; margin-bottom: 0.75rem;">Verified Distributor</h4>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; font-size: 0.875rem; color: #475569;">
+                            <div>Supplier Store: <strong id="matSupplierName" style="color: #0f172a;">--</strong></div>
+                            <div>Contact Phone: <strong id="matSupplierPhone">--</strong></div>
+                            <div>Email: <strong id="matSupplierEmail">--</strong></div>
+                            <div>Verification: <span class="badge badge-success" id="matSupplierVerification">Verified Supplier</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Audit History Table -->
+                <div class="content-card" style="padding: 1.5rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.1rem; color: #0f172a;">Stock Movement History</h3>
+                        <span style="font-size: 0.75rem; color: #64748b;">Recent adjustments &amp; order deductions</span>
+                    </div>
+
+                    <div class="mat-table-wrapper">
+                        <table class="mat-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Change Type</th>
+                                    <th>Quantity</th>
+                                    <th>Balance</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stockHistoryTbody">
+                                <tr>
+                                    <td colspan="5" class="text-center" style="padding: 2rem;">
+                                        <span class="spinner"></span> Loading stock history...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Contractor Order Form OR Supplier Controls -->
+            <div>
+                <!-- 1. Contractor Order Placement Panel -->
+                <div class="content-card" id="contractorOrderPanel" style="padding: 1.5rem; margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.15rem; color: #0f172a; margin-bottom: 0.25rem;">Request Material Order</h3>
+                    <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">Submit purchase order to the verified supplier.</p>
+
+                    <div id="orderPanelAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <form onsubmit="handleDetailsOrderSubmit(event)" novalidate>
+                        <div class="form-group">
+                            <label class="form-label">Order Quantity (<span id="formUnitLabel">Units</span>) *</label>
+                            <input type="number" id="formOrderQuantity" class="form-control" min="1" step="0.01" value="10" required oninput="calculateDetailsTotal()">
+                        </div>
+
+                        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 0.85rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <div style="font-size: 0.75rem; text-transform: uppercase; color: #166534; font-weight: 700;">Estimated Cost</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: #15803d;" id="formTotalAmountDisplay">$0.00</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Link Project Site</label>
+                            <select id="formOrderProject" class="form-control">
+                                <option value="">-- No Specific Project --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Delivery Address *</label>
+                            <textarea id="formOrderAddress" class="form-control" rows="2" placeholder="Full jobsite delivery address &amp; gate..." required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Requested Delivery Date *</label>
+                            <input type="date" id="formOrderDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Contractor Notes</label>
+                            <input type="text" id="formOrderNotes" class="form-control" placeholder="e.g. Needs flatbed truck delivery...">
+                        </div>
+
+                        <button type="submit" id="submitDetailsOrderBtn" class="btn btn-primary" style="width: 100%; padding: 0.75rem; background: var(--mat-primary); border-color: var(--mat-primary); font-weight: 700;">
+                            Place Purchase Order
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 2. Supplier Inventory Management Panel (if Supplier owns material) -->
+                <div class="content-card" id="supplierManagementPanel" style="display: none; padding: 1.5rem; background: #f0fdfa; border-color: #99f6e4;">
+                    <h3 style="font-size: 1.15rem; color: #0f766e; margin-bottom: 0.25rem;">Inventory Control</h3>
+                    <p style="font-size: 0.85rem; color: #115e59; margin-bottom: 1.25rem;">Quickly adjust warehouse inventory or price per unit.</p>
+
+                    <div id="supplierActionAlert" style="display:none; margin-bottom: 1rem;"></div>
+
+                    <!-- Quick Stock Update Form -->
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #ccfbf1;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #0f766e; margin-bottom: 0.5rem;">Update Stock Level</h4>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 0.8rem;">New Absolute Quantity</label>
+                            <input type="number" id="quickStockInput" class="form-control" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="quickStockNotes" class="form-control" placeholder="Reason (e.g. Restocked 50 tons, physical audit count)">
+                        </div>
+                        <button class="btn btn-primary" id="updateStockBtn" style="background: var(--mat-primary); border-color: var(--mat-primary); width: 100%; font-size: 0.85rem;" onclick="handleQuickStockUpdate()">
+                            Save Stock Quantity
+                        </button>
+                    </div>
+
+                    <!-- Quick Price Update Form -->
+                    <div style="margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #ccfbf1;">
+                        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: #0f766e; margin-bottom: 0.5rem;">Update Unit Price ($)</h4>
+                        <div class="form-group">
+                            <label class="form-label" style="font-size: 0.8rem;">Price per Unit ($)</label>
+                            <input type="number" id="quickPriceInput" class="form-control" min="0.01" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" id="quickPriceNotes" class="form-control" placeholder="Price revision notes (e.g. Steel tariff adjustment)">
+                        </div>
+                        <button class="btn btn-outline" id="updatePriceBtn" style="width: 100%; border-color: var(--mat-primary); color: var(--mat-primary); font-size: 0.85rem;" onclick="handleQuickPriceUpdate()">
+                            Update Price
+                        </button>
+                    </div>
+
+                    <a id="fullEditMaterialLink" href="add-material.html" class="btn btn-outline" style="display: block; text-align: center; width: 100%; font-size: 0.85rem;">
+                        Edit Full Listing &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let materialId = null;
+        let materialData = null;
+        let currentUser = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            currentUser = AuthService.getUser();
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            materialId = urlParams.get('id');
+
+            if (!materialId) {
+                window.location.href = 'materials-list.html';
+                return;
+            }
+
+            // Set default delivery date
+            const futureDate = new Date();
+            futureDate.setDate(futureDate.getDate() + 2);
+            document.getElementById('formOrderDate').value = futureDate.toISOString().split('T')[0];
+
+            await Promise.all([
+                loadMaterialDetails(),
+                loadStockHistory(),
+                loadContractorProjects()
+            ]);
+        });
+
+        async function loadContractorProjects() {
+            if (!currentUser || currentUser.role !== 'CONTRACTOR') return;
+            try {
+                const projects = await AuthService.apiFetch('/projects/my-projects');
+                const select = document.getElementById('formOrderProject');
+                if (Array.isArray(projects) && projects.length > 0) {
+                    select.innerHTML = '<option value="">-- Direct Delivery (No Project Linked) --</option>' +
+                        projects.map(p => `<option value="${p.id}">${escapeHtml(p.name)} (${escapeHtml(p.location || 'Site')})</option>`).join('');
+                }
+            } catch (e) {
+                console.warn('Could not load projects:', e);
+            }
+        }
+
+        async function loadMaterialDetails() {
+            try {
+                const m = await AuthService.apiFetch(`/materials/${materialId}`);
+                materialData = m;
+                renderDetails(m);
+            } catch (err) {
+                console.error('Failed to load material details:', err);
+                UI.showAlert('pageAlert', 'Failed to load material details: ' + (err.message || 'Error'), 'danger');
+            }
+        }
+
+        function renderDetails(m) {
+            document.getElementById('matName').innerText = m.name;
+            document.getElementById('matGrade').innerText = m.gradeSpecification || 'Commercial Standard';
+            document.getElementById('matCategoryBadge').innerText = m.category || 'OTHER';
+            document.getElementById('matCategoryBadge').className = `category-badge ${m.category || 'OTHER'}`;
+            document.getElementById('matIdTag').innerText = `#${m.id}`;
+
+            document.getElementById('matPriceDisplay').innerText = `$${m.price || 0}`;
+            document.getElementById('matUnitDisplay').innerText = `per ${m.unit || 'Unit'}`;
+            document.getElementById('matQuantityDisplay').innerText = `${m.availableQuantity || 0} ${m.unit || 'Units'}`;
+            document.getElementById('matWarehouseLocation').innerText = m.location || 'Warehouse Depot';
+            document.getElementById('matDescription').innerText = m.description || 'Verified industrial construction grade material.';
+
+            document.getElementById('formUnitLabel').innerText = m.unit || 'Units';
+
+            // Availability pill
+            const avail = (m.availability || 'IN_STOCK').toLowerCase();
+            const pill = document.getElementById('matAvailPill');
+            pill.className = `availability-pill ${avail}`;
+            pill.innerText = avail.replace('_', ' ');
+
+            // Supplier info
+            document.getElementById('matSupplierName').innerText = m.supplierStoreName || 'Verified Supplier';
+            document.getElementById('matSupplierPhone').innerText = m.supplierContactPhone || '--';
+            document.getElementById('matSupplierEmail').innerText = m.supplierEmail || '--';
+
+            calculateDetailsTotal();
+
+            // Role and ownership check
+            const isSupplier = (currentUser && (currentUser.role === 'MATERIAL_SUPPLIER' || currentUser.role === 'ADMIN'));
+            const isOwner = isSupplier && (currentUser.email && m.supplierEmail && currentUser.email.toLowerCase() === m.supplierEmail.toLowerCase());
+
+            if (isOwner || (currentUser && currentUser.role === 'ADMIN')) {
+                document.getElementById('supplierManagementPanel').style.display = 'block';
+                document.getElementById('quickStockInput').value = m.availableQuantity || 0;
+                document.getElementById('quickPriceInput').value = m.price || 0;
+                document.getElementById('fullEditMaterialLink').href = `add-material.html?id=${m.id}`;
+            }
+
+            if (currentUser && currentUser.role !== 'CONTRACTOR') {
+                document.getElementById('contractorOrderPanel').style.display = 'none';
+            }
+        }
+
+        function calculateDetailsTotal() {
+            if (!materialData) return;
+            const qty = parseFloat(document.getElementById('formOrderQuantity').value) || 0;
+            const price = parseFloat(materialData.price) || 0;
+            const total = qty * price;
+            document.getElementById('formTotalAmountDisplay').innerText = `$${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        async function loadStockHistory() {
+            const tbody = document.getElementById('stockHistoryTbody');
+            try {
+                const history = await AuthService.apiFetch(`/materials/${materialId}/stock-history`);
+                const list = Array.isArray(history) ? history : [];
+
+                if (list.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 2rem; color: #64748b;">No stock history records logged yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = list.map(h => {
+                    const changeVal = Number(h.changeQuantity) || 0;
+                    const changeColor = changeVal >= 0 ? '#15803d' : '#b91c1c';
+                    const changeSign = changeVal >= 0 ? `+${changeVal}` : `${changeVal}`;
+                    const dateStr = h.createdAt ? h.createdAt.replace('T', ' ').substring(0, 16) : '--';
+
+                    return `
+                        <tr>
+                            <td style="font-size: 0.8rem; white-space: nowrap;">${dateStr}</td>
+                            <td><span class="badge" style="font-size:0.75rem;">${h.changeType || 'ADJUSTMENT'}</span></td>
+                            <td style="font-weight: 700; color: ${changeColor};">${changeSign}</td>
+                            <td style="font-weight: 700; color: #0f172a;">${h.newQuantity || 0}</td>
+                            <td style="font-size: 0.825rem; color: #64748b;">${escapeHtml(h.notes || '--')}</td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (err) {
+                console.warn('Failed to load stock history:', err);
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="padding: 1.5rem; color: #94a3b8;">Stock history not available.</td></tr>';
+            }
+        }
+
+        async function handleDetailsOrderSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('orderPanelAlert');
+
+            const quantity = document.getElementById('formOrderQuantity').value;
+            const projectId = document.getElementById('formOrderProject').value;
+            const deliveryAddress = document.getElementById('formOrderAddress').value.trim();
+            const requestedDeliveryDate = document.getElementById('formOrderDate').value;
+            const contractorNotes = document.getElementById('formOrderNotes').value.trim();
+
+            if (!quantity || !deliveryAddress || !requestedDeliveryDate) {
+                UI.showAlert('orderPanelAlert', 'Please enter quantity, delivery address, and requested delivery date.', 'danger');
+                return;
+            }
+
+            const payload = {
+                materialId: Number(materialId),
+                projectId: projectId ? Number(projectId) : null,
+                quantity: Number(quantity),
+                deliveryAddress: deliveryAddress,
+                requestedDeliveryDate: requestedDeliveryDate,
+                contractorNotes: contractorNotes
+            };
+
+            UI.setLoading('submitDetailsOrderBtn', true, 'Placing Order...');
+
+            try {
+                await AuthService.apiFetch(`/materials/${materialId}/orders`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('orderPanelAlert', 'Order request placed successfully! Redirecting to orders...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'material-orders.html';
+                }, 1000);
+
+            } catch (err) {
+                console.error('Failed to submit order:', err);
+                UI.showAlert('orderPanelAlert', err.message || 'Failed to place purchase order', 'danger');
+            } finally {
+                UI.setLoading('submitDetailsOrderBtn', false, 'Place Purchase Order');
+            }
+        }
+
+        async function handleQuickStockUpdate() {
+            UI.clearAlert('supplierActionAlert');
+            const qty = document.getElementById('quickStockInput').value;
+            const notes = document.getElementById('quickStockNotes').value.trim();
+
+            if (qty === '') {
+                UI.showAlert('supplierActionAlert', 'Please enter new quantity.', 'danger');
+                return;
+            }
+
+            const btn = document.getElementById('updateStockBtn');
+            btn.disabled = true;
+            btn.innerText = 'Updating...';
+
+            try {
+                await AuthService.apiFetch(`/materials/${materialId}/stock`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        quantity: Number(qty),
+                        isDelta: false,
+                        notes: notes || 'Supplier direct inventory level update'
+                    })
+                });
+
+                UI.showAlert('supplierActionAlert', 'Stock level updated successfully!', 'success');
+                await Promise.all([loadMaterialDetails(), loadStockHistory()]);
+
+            } catch (err) {
+                console.error('Stock update failed:', err);
+                UI.showAlert('supplierActionAlert', err.message || 'Failed to update stock', 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Save Stock Quantity';
+            }
+        }
+
+        async function handleQuickPriceUpdate() {
+            UI.clearAlert('supplierActionAlert');
+            const price = document.getElementById('quickPriceInput').value;
+            const notes = document.getElementById('quickPriceNotes').value.trim();
+
+            if (!price || Number(price) <= 0) {
+                UI.showAlert('supplierActionAlert', 'Please enter a valid price greater than zero.', 'danger');
+                return;
+            }
+
+            const btn = document.getElementById('updatePriceBtn');
+            btn.disabled = true;
+            btn.innerText = 'Updating...';
+
+            try {
+                await AuthService.apiFetch(`/materials/${materialId}/price`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        price: Number(price),
+                        notes: notes || 'Supplier unit price revision'
+                    })
+                });
+
+                UI.showAlert('supplierActionAlert', 'Price per unit updated successfully!', 'success');
+                await loadMaterialDetails();
+
+            } catch (err) {
+                console.error('Price update failed:', err);
+                UI.showAlert('supplierActionAlert', err.message || 'Failed to update price', 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Update Price';
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

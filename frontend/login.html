@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to E2E Construction Management System">
+    <title>Login - E2E Construction Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Construction System</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="register.html">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Welcome Back</h1>
+                <p>Sign in with your email and password to continue</p>
+            </div>
+
+            <!-- Alert Notification Container -->
+            <div id="alertContainer" style="display: none;"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-control" 
+                        placeholder="e.g. contractor@example.com" 
+                        required 
+                        autocomplete="email"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-password-wrapper">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            name="password" 
+                            class="form-control" 
+                            placeholder="Enter your password" 
+                            required 
+                            autocomplete="current-password"
+                        >
+                        <button type="button" id="togglePasswordBtn" class="toggle-password-btn" aria-label="Toggle password visibility">Show</button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember email</span>
+                    </label>
+                </div>
+
+                <button type="submit" id="loginBtn" class="btn btn-primary btn-block">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Don't have an account yet? <a href="register.html">Create an Account</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Secure JWT Authentication.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // If user already holds a valid JWT token, redirect directly to their dashboard
+            AuthService.redirectIfLoggedIn();
+
+            const form = document.getElementById('loginForm');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const rememberMeCheckbox = document.getElementById('rememberMe');
+            const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+
+            // Restore remembered email if saved
+            const savedEmail = localStorage.getItem('e2e_remembered_email');
+            if (savedEmail) {
+                emailInput.value = savedEmail;
+                rememberMeCheckbox.checked = true;
+                passwordInput.focus();
+            } else {
+                emailInput.focus();
+            }
+
+            // Check URL query parameters for session events
+            const urlParams = new URLSearchParams(window.location.search);
+            const reason = urlParams.get('reason');
+            const registered = urlParams.get('registered');
+
+            if (reason === 'expired') {
+                UI.showAlert('alertContainer', 'Your session has expired. Please sign in again.', 'warning');
+            } else if (reason === 'logout') {
+                UI.showAlert('alertContainer', 'You have been successfully logged out.', 'info');
+            } else if (reason === 'unauthenticated') {
+                UI.showAlert('alertContainer', 'Please sign in to access that page.', 'warning');
+            } else if (registered === 'true') {
+                UI.showAlert('alertContainer', 'Account created successfully! Please sign in with your credentials.', 'success');
+            }
+
+            // Toggle Password Visibility
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                togglePasswordBtn.innerText = isPassword ? 'Hide' : 'Show';
+            });
+
+            // Form Submit Handler
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                UI.clearAlert('alertContainer');
+                UI.clearFieldErrors(form);
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value;
+
+                // Client-side quick checks
+                let hasError = false;
+                if (!email) {
+                    UI.showFieldError(emailInput, 'Email is required');
+                    hasError = true;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    UI.showFieldError(emailInput, 'Please enter a valid email address');
+                    hasError = true;
+                }
+
+                if (!password) {
+                    UI.showFieldError(passwordInput, 'Password is required');
+                    hasError = true;
+                }
+
+                if (hasError) return;
+
+                // Remember email preference
+                if (rememberMeCheckbox.checked) {
+                    localStorage.setItem('e2e_remembered_email', email);
+                } else {
+                    localStorage.removeItem('e2e_remembered_email');
+                }
+
+                UI.setLoading('loginBtn', true, 'Sign In');
+
+                try {
+                    const result = await AuthService.login(email, password);
+                    UI.showAlert('alertContainer', `Welcome back, ${result.user.firstName}! Redirecting to dashboard...`, 'success');
+
+                    // Role-based redirection
+                    setTimeout(() => {
+                        AuthService.redirectAfterLogin(result.user);
+                    }, 600);
+
+                } catch (error) {
+                    console.error('Login failed:', error);
+                    UI.setLoading('loginBtn', false, 'Sign In');
+
+                    if (error.status === 401) {
+                        UI.showAlert('alertContainer', 'Invalid email or password. Please check your credentials.', 'danger');
+                    } else if (error.status === 0) {
+                        UI.showAlert('alertContainer', error.message || 'Cannot reach server. Ensure backend is running.', 'danger');
+                    } else if (error.validationErrors) {
+                        // Display field errors if returned
+                        Object.keys(error.validationErrors).forEach(field => {
+                            const fieldEl = document.getElementById(field);
+                            if (fieldEl) {
+                                UI.showFieldError(fieldEl, error.validationErrors[field]);
+                            }
+                        });
+                        UI.showAlert('alertContainer', 'Please fix the errors below.', 'danger');
+                    } else {
+                        UI.showAlert('alertContainer', error.message || 'An unexpected server error occurred.', 'danger');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

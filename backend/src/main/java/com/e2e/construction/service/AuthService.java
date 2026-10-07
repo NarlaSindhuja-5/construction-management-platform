@@ -26,6 +26,7 @@ public class AuthService {
     private static final Set<String> ALLOWED_ROLES = Set.of(
             "ADMIN",
             "CONTRACTOR",
+            "SITE_MANAGER",
             "LABORER",
             "MACHINERY_OWNER",
             "MATERIAL_SUPPLIER",
@@ -58,9 +59,12 @@ public class AuthService {
     public AuthResponse register(RegisterRequest request) {
         String email = request.getEmail().trim().toLowerCase();
 
-        // 1. Prevent duplicate email registration
+        // 1. Prevent duplicate email & phone registration
         if (userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email is already registered: " + email);
+        }
+        if (request.getPhoneNumber() != null && !request.getPhoneNumber().trim().isEmpty() && userRepository.existsByPhoneNumber(request.getPhoneNumber().trim())) {
+            throw new BadRequestException("Phone number is already registered: " + request.getPhoneNumber());
         }
 
         // 2. Validate and resolve user role

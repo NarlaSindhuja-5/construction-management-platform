@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add or Edit Construction Material - E2E Construction Management System">
+    <title>Add Material Listing - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/material.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="materials-list.html" class="logo">
+                <span class="logo-icon" style="background: linear-gradient(135deg, #0f766e, #14b8a6);">E2E</span>
+                <span>Supplier Inventory</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="materials-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Catalog</a>
+                <a href="stock.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Stock Manager</a>
+                <a href="material-orders.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Incoming Orders</a>
+                <a href="supplier-dashboard.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Supplier Portal</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="max-width: 800px; margin: 2rem auto 4rem;">
+        <!-- Page Notification -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <div class="content-card" style="padding: 2.25rem;">
+            <div style="border-bottom: 1px solid #e2e8f0; padding-bottom: 1.25rem; margin-bottom: 1.75rem;">
+                <h1 style="font-size: 1.6rem; font-weight: 800; color: #0f172a; margin-bottom: 0.35rem;" id="formTitle">
+                    Publish New Construction Material
+                </h1>
+                <p style="color: #64748b; font-size: 0.9rem;" id="formSubtitle">
+                    Add raw materials to the marketplace with live warehouse inventory and pricing per unit.
+                </p>
+            </div>
+
+            <form id="materialForm" onsubmit="handleMaterialSubmit(event)" novalidate>
+                <!-- Material Title & Category -->
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label" for="matNameInput">Material Product Name *</label>
+                        <input type="text" id="matNameInput" name="name" class="form-control" placeholder="e.g. UltraTech OPC 53 Grade Cement" required>
+                    </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label" for="matCategorySelect">Category *</label>
+                        <select id="matCategorySelect" name="category" class="form-control" required>
+                            <option value="" disabled selected>-- Select --</option>
+                            <option value="CEMENT">CEMENT</option>
+                            <option value="STEEL">STEEL</option>
+                            <option value="SAND">SAND</option>
+                            <option value="AGGREGATE">AGGREGATE</option>
+                            <option value="CONCRETE">CONCRETE</option>
+                            <option value="BRICKS">BRICKS</option>
+                            <option value="BITUMEN">BITUMEN</option>
+                            <option value="DBM">DBM</option>
+                            <option value="BC">BC</option>
+                            <option value="WMM">WMM</option>
+                            <option value="GSB">GSB</option>
+                            <option value="PIPES">PIPES</option>
+                            <option value="ELECTRICAL">ELECTRICAL</option>
+                            <option value="PLUMBING">PLUMBING</option>
+                            <option value="FUEL_OIL">FUEL &amp; OIL</option>
+                            <option value="OTHER">OTHER</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Grade Spec & Measurement Unit -->
+                <div class="form-row">
+                    <div class="form-group" style="flex: 2;">
+                        <label class="form-label" for="matGradeInput">Grade / Technical Specification</label>
+                        <input type="text" id="matGradeInput" name="gradeSpecification" class="form-control" placeholder="e.g. Fe550D / IS 1786, M25 Design Mix, VG-30 Bulk">
+                    </div>
+
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label" for="matUnitInput">Unit of Measure *</label>
+                        <input type="text" id="matUnitInput" name="unit" class="form-control" placeholder="e.g. Bags, Tons, Cum, Truckload" required>
+                    </div>
+                </div>
+
+                <!-- Quantity & Price -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="matQtyInput">Available Stock Quantity *</label>
+                        <input type="number" id="matQtyInput" name="availableQuantity" class="form-control" min="0" step="0.5" placeholder="500" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="matPriceInput">Price per Unit ($) *</label>
+                        <input type="number" id="matPriceInput" name="price" class="form-control" min="0.01" step="0.01" placeholder="8.50" required>
+                    </div>
+                </div>
+
+                <!-- Warehouse Location -->
+                <div class="form-group">
+                    <label class="form-label" for="matLocationInput">Depot / Warehouse Location *</label>
+                    <input type="text" id="matLocationInput" name="location" class="form-control" placeholder="e.g. Yard 4, Outer Ring Industrial Corridor, Dallas, TX" required>
+                </div>
+
+                <!-- Description & Details -->
+                <div class="form-group">
+                    <label class="form-label" for="matDescInput">Detailed Description &amp; Quality Notes</label>
+                    <textarea id="matDescInput" name="description" class="form-control" rows="4" placeholder="Detail standard testing certificates, compressive strength, moisture content, minimum order quantities, and transit options..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1.5rem;">
+                    <a href="materials-list.html" class="btn btn-outline" style="padding: 0.65rem 1.4rem;">Cancel</a>
+                    <button type="submit" id="saveMaterialBtn" class="btn btn-primary" style="padding: 0.65rem 1.8rem; background: var(--mat-primary); border-color: var(--mat-primary); font-weight: 700;">
+                        Publish Material Listing
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let editMaterialId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth(['MATERIAL_SUPPLIER', 'ADMIN'])) return;
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            editMaterialId = urlParams.get('id');
+
+            if (editMaterialId) {
+                document.getElementById('formTitle').innerText = 'Edit Material Listing';
+                document.getElementById('formSubtitle').innerText = `Update parameters, inventory levels, and unit pricing for Material #${editMaterialId}.`;
+                document.getElementById('saveMaterialBtn').innerText = 'Save Changes';
+                await loadExistingMaterial(editMaterialId);
+            }
+        });
+
+        async function loadExistingMaterial(id) {
+            try {
+                const m = await AuthService.apiFetch(`/materials/${id}`);
+                document.getElementById('matNameInput').value = m.name || '';
+                document.getElementById('matCategorySelect').value = m.category || '';
+                document.getElementById('matGradeInput').value = m.gradeSpecification || '';
+                document.getElementById('matUnitInput').value = m.unit || '';
+                document.getElementById('matQtyInput').value = m.availableQuantity || 0;
+                document.getElementById('matPriceInput').value = m.price || 0;
+                document.getElementById('matLocationInput').value = m.location || '';
+                document.getElementById('matDescInput').value = m.description || '';
+            } catch (err) {
+                console.error('Failed to load material for edit:', err);
+                UI.showAlert('pageAlert', 'Could not load material details: ' + (err.message || 'Error'), 'danger');
+            }
+        }
+
+        async function handleMaterialSubmit(e) {
+            e.preventDefault();
+            UI.clearAlert('pageAlert');
+
+            const form = e.target;
+            const name = form.name.value.trim();
+            const category = form.category.value;
+            const gradeSpecification = form.gradeSpecification.value.trim();
+            const unit = form.unit.value.trim();
+            const availableQuantity = form.availableQuantity.value;
+            const price = form.price.value;
+            const location = form.location.value.trim();
+            const description = form.description.value.trim();
+
+            if (!name || !category || !unit || availableQuantity === '' || !price || !location) {
+                UI.showAlert('pageAlert', 'Please complete all required fields (*)', 'danger');
+                return;
+            }
+
+            const payload = {
+                name,
+                category,
+                gradeSpecification,
+                unit,
+                availableQuantity: Number(availableQuantity),
+                price: Number(price),
+                location,
+                description
+            };
+
+            UI.setLoading('saveMaterialBtn', true, editMaterialId ? 'Updating...' : 'Publishing...');
+
+            try {
+                let saved = null;
+                if (editMaterialId) {
+                    saved = await AuthService.apiFetch(`/materials/${editMaterialId}`, {
+                        method: 'PUT',
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    saved = await AuthService.apiFetch('/materials', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+                }
+
+                UI.showAlert('pageAlert', `Material ${editMaterialId ? 'updated' : 'published'} successfully!`, 'success');
+                setTimeout(() => {
+                    const targetId = (saved && saved.id) ? saved.id : editMaterialId;
+                    window.location.href = `material-details.html?id=${targetId}`;
+                }, 900);
+
+            } catch (err) {
+                console.error('Save material failed:', err);
+                UI.showAlert('pageAlert', err.message || 'Failed to save material listing. Check validation requirements.', 'danger');
+            } finally {
+                UI.setLoading('saveMaterialBtn', false, editMaterialId ? 'Save Changes' : 'Publish Material Listing');
+            }
+        }
+    </script>
+</body>
+</html>

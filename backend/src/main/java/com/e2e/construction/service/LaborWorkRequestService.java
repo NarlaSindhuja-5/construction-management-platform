@@ -116,6 +116,10 @@ public class LaborWorkRequestService {
             throw new BadRequestException("Cannot send work request: Laborer is not verified.");
         }
 
+        if (laborer.getAvailabilityStatus() == LaborerAvailability.UNAVAILABLE) {
+            throw new BadRequestException("Cannot send work request: Laborer is currently UNAVAILABLE.");
+        }
+
         // 3. Verify project ownership
         Project project = projectRepository.findById(requestDTO.getProjectId())
                 .orElseThrow(() -> new ResourceNotFoundException("Project not found with id: " + requestDTO.getProjectId()));

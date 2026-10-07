@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Labor Assignments & Work History - E2E Construction Management System">
+    <title>Labor Assignments & Work History - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/labor.css">
+    <style>
+        .assignment-table-card {
+            background: #ffffff;
+            border: 1px solid var(--labor-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .assignment-row {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid #f1f5f9;
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr auto;
+            align-items: center;
+            gap: 1rem;
+            transition: background 0.15s;
+        }
+        .assignment-row:last-child {
+            border-bottom: none;
+        }
+        .assignment-row:hover {
+            background: #f8fafc;
+        }
+        .assignment-header-row {
+            background: #f8fafc;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .status-badge-assigned {
+            background: #eff6ff;
+            color: #1d4ed8;
+            border: 1px solid #bfdbfe;
+        }
+        .status-badge-in_progress {
+            background: #fef3c7;
+            color: #b45309;
+            border: 1px solid #fde68a;
+        }
+        .status-badge-completed {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+        .status-badge-terminated {
+            background: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="laborer-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Work History &amp; Assignments</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="laborer-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Labor Directory</a>
+                <a href="labor-requests.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Work Requests</a>
+                <a href="attendance.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Attendance</a>
+                <a href="laborer-profile.html" class="btn btn-outline" id="navProfileLink" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">My Profile</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="margin-top: 2rem; margin-bottom: 4rem;">
+        <!-- Page Alert -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Header Section -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;" id="pageTitle">
+                    Labor Assignments &amp; Work History
+                </h1>
+                <p style="color: #64748b; font-size: 0.95rem;" id="pageSubtitle">
+                    Track mobilized project assignments, daily wages, and assignment completion status.
+                </p>
+            </div>
+
+            <!-- Contractor Project Filter Dropdown -->
+            <div id="contractorProjectSelectorBox" style="display: none; background: #ffffff; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <label style="display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.35rem;">
+                    Select Site Project
+                </label>
+                <select id="projectSelectDropdown" class="form-control" style="min-width: 260px;" onchange="handleProjectChange()">
+                    <option value="" disabled selected>-- Loading Projects --</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filter Status Row -->
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; align-items: center;">
+            <button class="btn btn-sm btn-primary filter-btn active" data-status="" onclick="setFilterStatus('')">All Records</button>
+            <button class="btn btn-sm btn-outline filter-btn" data-status="ASSIGNED" onclick="setFilterStatus('ASSIGNED')">Assigned</button>
+            <button class="btn btn-sm btn-outline filter-btn" data-status="IN_PROGRESS" onclick="setFilterStatus('IN_PROGRESS')">In Progress</button>
+            <button class="btn btn-sm btn-outline filter-btn" data-status="COMPLETED" onclick="setFilterStatus('COMPLETED')">Completed</button>
+            <button class="btn btn-sm btn-outline filter-btn" data-status="TERMINATED" onclick="setFilterStatus('TERMINATED')">Terminated</button>
+        </div>
+
+        <!-- Summary KPIs -->
+        <div class="att-summary-grid">
+            <div class="att-summary-card">
+                <span class="label">Total Assignments</span>
+                <span class="count" id="kpiTotal">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #3b82f6;">
+                <span class="label">Assigned / Mobilizing</span>
+                <span class="count" style="color: #1d4ed8;" id="kpiAssigned">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #f59e0b;">
+                <span class="label">In Progress</span>
+                <span class="count" style="color: #b45309;" id="kpiInProgress">0</span>
+            </div>
+            <div class="att-summary-card" style="border-left: 3px solid #10b981;">
+                <span class="label">Completed</span>
+                <span class="count" style="color: #15803d;" id="kpiCompleted">0</span>
+            </div>
+        </div>
+
+        <!-- Assignments Table / List Card -->
+        <div class="assignment-table-card">
+            <div class="assignment-row assignment-header-row">
+                <div id="colPrimaryHeader">Project / Site</div>
+                <div id="colSecondaryHeader">Contractor / Manager</div>
+                <div>Dates</div>
+                <div>Daily Wage</div>
+                <div>Status</div>
+                <div style="text-align: right;">Action</div>
+            </div>
+
+            <div id="assignmentsListContainer">
+                <div class="empty-state-box" style="padding: 3rem 1.5rem;">
+                    <span class="spinner"></span> Loading assignments...
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Complete Assignment Modal -->
+    <div class="modal-overlay" id="completeModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Mark Assignment as Completed</h3>
+                <button class="modal-close-btn" onclick="closeCompleteModal()">&times;</button>
+            </div>
+            <form onsubmit="handleCompleteSubmit(event)" novalidate>
+                <input type="hidden" id="completeAssignmentId">
+                <div class="modal-body">
+                    <div id="completeModalAlert" style="display:none; margin-bottom: 1rem;"></div>
+                    <p style="font-size: 0.9rem; color: #475569; margin-bottom: 1rem;">
+                        Marking this labor assignment as completed will release the worker and finalize the project work history.
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Completion Remarks / Handover Notes (Optional)</label>
+                        <textarea id="completeNotesInput" class="form-control" rows="3" placeholder="Work satisfactorily verified, rebar inspection signed off..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeCompleteModal()">Cancel</button>
+                    <button type="submit" id="submitCompleteBtn" class="btn btn-primary" style="background: #16a34a; border-color: #16a34a;">
+                        Confirm Complete
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let currentUserRole = null;
+        let currentStatusFilter = '';
+        let activeAssignments = [];
+        let contractorProjects = [];
+        let selectedProjectId = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.requireAuth()) return;
+
+            const user = AuthService.getUser();
+            currentUserRole = user ? user.role : null;
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            if (currentUserRole === 'CONTRACTOR') {
+                document.getElementById('navProfileLink').style.display = 'none';
+                document.getElementById('colPrimaryHeader').innerText = 'Worker / Trade Skill';
+                document.getElementById('colSecondaryHeader').innerText = 'Project Location';
+                document.getElementById('contractorProjectSelectorBox').style.display = 'block';
+                await loadContractorProjects();
+            } else {
+                // Laborer or Admin view
+                document.getElementById('colPrimaryHeader').innerText = 'Project / Site';
+                document.getElementById('colSecondaryHeader').innerText = 'Contractor & Company';
+                await fetchAssignments();
+            }
+        });
+
+        async function loadContractorProjects() {
+            try {
+                const projects = await AuthService.apiFetch('/projects/my-projects');
+                contractorProjects = Array.isArray(projects) ? projects : [];
+
+                const select = document.getElementById('projectSelectDropdown');
+                if (contractorProjects.length === 0) {
+                    select.innerHTML = '<option value="" disabled selected>No active projects found</option>';
+                    document.getElementById('assignmentsListContainer').innerHTML = `
+                        <div class="empty-state-box" style="padding: 3rem;">
+                            <h4>No Projects Found</h4>
+                            <p>Create a project in the Contractor Dashboard to view assigned laborers.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                select.innerHTML = contractorProjects.map((p, idx) => `
+                    <option value="${p.id}" ${idx === 0 ? 'selected' : ''}>
+                        ${escapeHtml(p.name)} (${escapeHtml(p.location || 'Site')})
+                    </option>
+                `).join('');
+
+                selectedProjectId = contractorProjects[0].id;
+                await fetchAssignments();
+
+            } catch (err) {
+                console.error('Failed to load projects:', err);
+                UI.showAlert('pageAlert', 'Could not load your projects: ' + (err.message || 'Error'), 'danger');
+            }
+        }
+
+        async function handleProjectChange() {
+            selectedProjectId = document.getElementById('projectSelectDropdown').value;
+            await fetchAssignments();
+        }
+
+        function setFilterStatus(status) {
+            currentStatusFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const match = btn.getAttribute('data-status') === status;
+                btn.classList.toggle('active', match);
+                btn.classList.toggle('btn-primary', match);
+                btn.classList.toggle('btn-outline', !match);
+            });
+            fetchAssignments();
+        }
+
+        async function fetchAssignments() {
+            const container = document.getElementById('assignmentsListContainer');
+            container.innerHTML = '<div class="empty-state-box" style="padding: 3rem;"><span class="spinner"></span> Loading assignments...</div>';
+
+            try {
+                let endpoint = '';
+                if (currentUserRole === 'CONTRACTOR') {
+                    if (!selectedProjectId) {
+                        container.innerHTML = '<div class="empty-state-box" style="padding: 2rem;">Please select a project to view assignments.</div>';
+                        return;
+                    }
+                    endpoint = `/labor-assignments/project/${selectedProjectId}`;
+                } else {
+                    endpoint = '/labor-assignments/my-assignments';
+                    if (currentStatusFilter) {
+                        endpoint += `?status=${encodeURIComponent(currentStatusFilter)}`;
+                    }
+                }
+
+                const data = await AuthService.apiFetch(endpoint);
+                activeAssignments = Array.isArray(data) ? data : [];
+
+                // Client-side filtering if contractor project list
+                let displayList = activeAssignments;
+                if (currentUserRole === 'CONTRACTOR' && currentStatusFilter) {
+                    displayList = activeAssignments.filter(a => a.status === currentStatusFilter);
+                }
+
+                renderAssignments(displayList);
+                updateKpis(activeAssignments);
+
+            } catch (err) {
+                console.error('Error loading assignments:', err);
+                container.innerHTML = `
+                    <div class="empty-state-box" style="padding: 3rem; color: var(--danger);">
+                        <p>Failed to load assignments: ${escapeHtml(err.message || 'API error')}</p>
+                        <button class="btn btn-outline" style="margin-top: 0.5rem;" onclick="fetchAssignments()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        function updateKpis(list) {
+            document.getElementById('kpiTotal').innerText = list.length;
+            document.getElementById('kpiAssigned').innerText = list.filter(a => a.status === 'ASSIGNED').length;
+            document.getElementById('kpiInProgress').innerText = list.filter(a => a.status === 'IN_PROGRESS').length;
+            document.getElementById('kpiCompleted').innerText = list.filter(a => a.status === 'COMPLETED').length;
+        }
+
+        function renderAssignments(list) {
+            const container = document.getElementById('assignmentsListContainer');
+
+            if (!list || list.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state-box" style="padding: 3rem;">
+                        <svg style="width:48px;height:48px;color:#94a3b8;margin:0 auto 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        <h4 style="font-size:1.1rem;color:#1e293b;margin-bottom:0.25rem;">No assignments found</h4>
+                        <p style="color:#64748b;font-size:0.9rem;">No labor assignments match the current criteria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(item => {
+                const status = item.status || 'ASSIGNED';
+                let statusClass = 'status-badge-assigned';
+                if (status === 'IN_PROGRESS') statusClass = 'status-badge-in_progress';
+                else if (status === 'COMPLETED') statusClass = 'status-badge-completed';
+                else if (status === 'TERMINATED') statusClass = 'status-badge-terminated';
+
+                const isContractor = (currentUserRole === 'CONTRACTOR');
+
+                // Primary column
+                const primaryTitle = isContractor
+                    ? (item.laborerName || `Worker #${item.laborerId}`)
+                    : (item.projectName || 'Construction Project');
+                const primarySub = isContractor
+                    ? `Trade: <strong>${escapeHtml(item.laborerSkills || 'Skilled Labor')}</strong> &bull; Ph: ${escapeHtml(item.laborerPhone || '--')}`
+                    : `Location: ${escapeHtml(item.projectLocation || 'Job Site')} (${item.projectType || 'General'})`;
+
+                // Secondary column
+                const secondaryTitle = isContractor
+                    ? (item.projectLocation || 'Site')
+                    : (item.contractorCompanyName || item.contractorName || 'Contractor');
+                const secondarySub = isContractor
+                    ? `Project: #${item.projectId}`
+                    : `Contact: ${escapeHtml(item.contractorPhone || item.contractorEmail || '--')}`;
+
+                const canComplete = (status === 'ASSIGNED' || status === 'IN_PROGRESS');
+
+                return `
+                    <div class="assignment-row">
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">${escapeHtml(primaryTitle)}</div>
+                            <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.15rem;">${primarySub}</div>
+                        </div>
+
+                        <div>
+                            <div style="font-weight: 600; color: #334155; font-size: 0.9rem;">${escapeHtml(secondaryTitle)}</div>
+                            <div style="font-size: 0.775rem; color: #64748b;">${secondarySub}</div>
+                        </div>
+
+                        <div style="font-size: 0.85rem; color: #334155;">
+                            <div>${item.startDate || '--'}</div>
+                            <div style="color: #94a3b8; font-size: 0.75rem;">to ${item.endDate || '--'}</div>
+                        </div>
+
+                        <div style="font-weight: 700; color: #0f172a; font-size: 0.95rem;">
+                            $${item.dailyWage || 0} <span style="font-size:0.75rem; font-weight:400; color:#64748b;">/day</span>
+                        </div>
+
+                        <div>
+                            <span class="badge ${statusClass}" style="font-weight: 700; font-size: 0.75rem;">
+                                ${status.replace('_', ' ')}
+                            </span>
+                        </div>
+
+                        <div style="text-align: right; display:flex; gap:0.5rem; justify-content: flex-end;">
+                            ${canComplete ? `
+                                <button class="btn btn-sm btn-outline" style="border-color: #16a34a; color: #16a34a; font-size: 0.775rem; padding: 0.35rem 0.75rem;" onclick="openCompleteModal(${item.id})">
+                                    Mark Complete
+                                </button>
+                            ` : `
+                                <span style="font-size: 0.75rem; color: #94a3b8;">Finalized</span>
+                            `}
+                            ${isContractor ? `
+                                <a href="attendance.html?projectId=${item.projectId}&laborerId=${item.laborerId}" class="btn btn-sm btn-outline" style="font-size:0.775rem; padding: 0.35rem 0.65rem;" title="View or record attendance">
+                                    Log Att.
+                                </a>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function openCompleteModal(assignmentId) {
+            document.getElementById('completeAssignmentId').value = assignmentId;
+            document.getElementById('completeNotesInput').value = '';
+            UI.clearAlert('completeModalAlert');
+            document.getElementById('completeModal').classList.add('active');
+        }
+
+        function closeCompleteModal() {
+            document.getElementById('completeModal').classList.remove('active');
+        }
+
+        async function handleCompleteSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('completeAssignmentId').value;
+            const notes = document.getElementById('completeNotesInput').value.trim();
+
+            UI.setLoading('submitCompleteBtn', true, 'Completing...');
+
+            try {
+                await AuthService.apiFetch(`/labor-assignments/${id}/complete`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ notes: notes })
+                });
+
+                closeCompleteModal();
+                UI.showAlert('pageAlert', `Labor assignment #${id} marked as completed!`, 'success');
+                await fetchAssignments();
+
+            } catch (err) {
+                console.error('Failed to complete assignment:', err);
+                UI.showAlert('completeModalAlert', err.message || 'Failed to complete assignment', 'danger');
+            } finally {
+                UI.setLoading('submitCompleteBtn', false, 'Confirm Complete');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+    </script>
+</body>
+</html>

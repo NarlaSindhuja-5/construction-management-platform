@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Add New Machinery Listing - E2E Construction Management System">
+    <title>Add Machinery - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/machinery.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="machinery-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>List Machinery</span>
+            </a>
+            <button id="mobileNavToggle" class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-links">
+                <a href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Marketplace Catalog</a>
+                <a href="machine-bookings.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">Manage Bookings</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="container" style="max-width: 850px; margin: 2.5rem auto;">
+        <div class="content-card">
+            <div class="card-header-bar">
+                <div class="card-title-group">
+                    <h2>List Heavy Machinery For Rental</h2>
+                    <p>Register construction equipment into the marketplace for authorized contractors to book</p>
+                </div>
+            </div>
+
+            <!-- Global Alert Container -->
+            <div id="alertContainer" style="display: none; margin: 1.5rem 1.5rem 0 1.5rem;"></div>
+
+            <!-- Step 1: Machinery Specification Form -->
+            <form id="addMachineryForm" style="padding: 1.75rem;" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="machName">Machine Name / Title *</label>
+                        <input type="text" id="machName" name="name" class="form-control" placeholder="e.g. Caterpillar 320D Hydraulic Excavator" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="machCategory">Equipment Category *</label>
+                        <select id="machCategory" name="category" class="form-control" required>
+                            <option value="" disabled selected>-- Select Equipment Category --</option>
+                            <option value="EARTHWORK">Earthwork (Excavators, Backhoes, Bulldozers)</option>
+                            <option value="LIFTING">Lifting &amp; Cranes (Tower, Mobile Cranes)</option>
+                            <option value="CONCRETE">Concrete Equipment (Mixers, Pumps)</option>
+                            <option value="ROAD">Road Construction (Rollers, Pavers)</option>
+                            <option value="BUILDING">Building Machinery</option>
+                            <option value="BRIDGE">Bridge Construction</option>
+                            <option value="TRANSPORT">Transport &amp; Dump Trucks</option>
+                            <option value="OTHER">Other Specialized Equipment</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="machManufacturer">Manufacturer / Make *</label>
+                        <input type="text" id="machManufacturer" name="manufacturer" class="form-control" placeholder="e.g. Caterpillar, Komatsu, JCB" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="machModel">Model Identifier *</label>
+                        <input type="text" id="machModel" name="model" class="form-control" placeholder="e.g. 320D L" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="machYear">Manufacturing Year *</label>
+                        <input type="number" id="machYear" name="manufacturingYear" class="form-control" min="1970" max="2050" placeholder="e.g. 2022" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="machCapacity">Operating Capacity *</label>
+                        <input type="text" id="machCapacity" name="capacity" class="form-control" placeholder="e.g. 20 Ton Bucket / 1.2 m3" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="machFuel">Fuel Type *</label>
+                        <input type="text" id="machFuel" name="fuelType" class="form-control" placeholder="e.g. Diesel" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="machTransmission">Transmission *</label>
+                        <input type="text" id="machTransmission" name="transmission" class="form-control" placeholder="e.g. Hydrostatic Automatic" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label" for="machLocation">Current Base Location / City *</label>
+                        <input type="text" id="machLocation" name="location" class="form-control" placeholder="e.g. Industrial Area Phase 2, Chicago, IL" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="machPrice">Daily Rental Rate ($) *</label>
+                        <input type="number" id="machPrice" step="0.01" min="1" name="rentalPricePerDay" class="form-control" placeholder="e.g. 450.00" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="machDesc">Technical Overview &amp; Rental Terms *</label>
+                    <textarea id="machDesc" name="description" class="form-control" rows="4" placeholder="Detail attachments included, maintenance certification, operator terms, insurance, and mobilization constraints..." required></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem;">
+                    <a href="machinery-list.html" class="btn btn-outline">Cancel</a>
+                    <button type="submit" id="submitMachBtn" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                        Create Machinery Listing
+                    </button>
+                </div>
+            </form>
+
+            <!-- Step 2: Instant Photo Upload (Appears after creation) -->
+            <div id="stepUploadImagesSection" style="display: none; padding: 1.75rem; border-top: 2px dashed #cbd5e1; background: #f8fafc;">
+                <div style="margin-bottom: 1.25rem;">
+                    <h3 style="color: #0f172a; font-size: 1.2rem;">Step 2: Upload Machine Photographs</h3>
+                    <p style="color: #64748b; font-size: 0.875rem;">Upload real site photos for your new equipment listing (<span id="createdMachineTitle"></span>).</p>
+                </div>
+
+                <form id="uploadPhotosForm" onsubmit="handleInitialPhotoUpload(event)" enctype="multipart/form-data">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Select Equipment Image</label>
+                            <input type="file" id="newMachineFileInput" name="file" accept="image/*" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Photo Classification</label>
+                            <select name="imageType" class="form-control">
+                                <option value="GENERAL">General Overview</option>
+                                <option value="EXTERIOR">Exterior Angle</option>
+                                <option value="ENGINE">Engine Compartment</option>
+                                <option value="CABIN">Operator Controls</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                        <span id="uploadSuccessBadge" style="display:none; color: var(--success); font-weight: 600; font-size: 0.875rem;">
+                            &check; Photo uploaded successfully!
+                        </span>
+                        <div style="display: flex; gap: 0.75rem;">
+                            <button type="submit" id="uploadPhotoSubmitBtn" class="btn btn-primary">Upload Photo</button>
+                            <a id="goToDetailsLink" href="#" class="btn btn-outline" style="border-color: #2563eb; color: #2563eb;">
+                                View Listing &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. Add Machinery Listing.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        let createdMachineId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Guard: Must be authenticated
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            const form = document.getElementById('addMachineryForm');
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                UI.clearAlert('alertContainer');
+                UI.clearFieldErrors(form);
+
+                const name = form.name.value.trim();
+                const category = form.category.value;
+                const manufacturer = form.manufacturer.value.trim();
+                const model = form.model.value.trim();
+                const manufacturingYear = form.manufacturingYear.value;
+                const capacity = form.capacity.value.trim();
+                const fuelType = form.fuelType.value.trim();
+                const transmission = form.transmission.value.trim();
+                const location = form.location.value.trim();
+                const rentalPricePerDay = form.rentalPricePerDay.value;
+                const description = form.description.value.trim();
+
+                // Validation
+                let hasError = false;
+                if (!name) { UI.showFieldError(form.name, 'Machine name is required'); hasError = true; }
+                if (!category) { UI.showFieldError(form.category, 'Please select a category'); hasError = true; }
+                if (!manufacturer) { UI.showFieldError(form.manufacturer, 'Manufacturer is required'); hasError = true; }
+                if (!model) { UI.showFieldError(form.model, 'Model identifier is required'); hasError = true; }
+                if (!manufacturingYear) { UI.showFieldError(form.manufacturingYear, 'Year is required'); hasError = true; }
+                if (!capacity) { UI.showFieldError(form.capacity, 'Capacity is required'); hasError = true; }
+                if (!fuelType) { UI.showFieldError(form.fuelType, 'Fuel type is required'); hasError = true; }
+                if (!transmission) { UI.showFieldError(form.transmission, 'Transmission is required'); hasError = true; }
+                if (!location) { UI.showFieldError(form.location, 'Location is required'); hasError = true; }
+                if (!rentalPricePerDay || Number(rentalPricePerDay) <= 0) { UI.showFieldError(form.rentalPricePerDay, 'Rental rate must be greater than zero'); hasError = true; }
+                if (!description) { UI.showFieldError(form.description, 'Description is required'); hasError = true; }
+
+                if (hasError) return;
+
+                const payload = {
+                    name,
+                    category,
+                    manufacturer,
+                    model,
+                    manufacturingYear: Number(manufacturingYear),
+                    capacity,
+                    fuelType,
+                    transmission,
+                    location,
+                    rentalPricePerDay: Number(rentalPricePerDay),
+                    description,
+                    availabilityStatus: 'AVAILABLE'
+                };
+
+                UI.setLoading('submitMachBtn', true, 'Creating Listing...');
+
+                try {
+                    const result = await AuthService.apiFetch('/machinery', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+
+                    createdMachineId = result.id;
+                    UI.showAlert('alertContainer', `Machinery "${result.name}" listed successfully! Now upload an equipment photograph below.`, 'success');
+                    UI.setLoading('submitMachBtn', false, 'Listing Created');
+                    document.getElementById('submitMachBtn').disabled = true;
+
+                    // Reveal Step 2
+                    document.getElementById('stepUploadImagesSection').style.display = 'block';
+                    document.getElementById('createdMachineTitle').innerText = result.name;
+                    document.getElementById('goToDetailsLink').href = `machinery-details.html?id=${result.id}`;
+                    document.getElementById('stepUploadImagesSection').scrollIntoView({ behavior: 'smooth' });
+
+                } catch (err) {
+                    UI.setLoading('submitMachBtn', false, 'Create Machinery Listing');
+                    if (err.validationErrors) {
+                        Object.keys(err.validationErrors).forEach(field => {
+                            const el = form[field];
+                            if (el) UI.showFieldError(el, err.validationErrors[field]);
+                        });
+                    } else {
+                        UI.showAlert('alertContainer', err.message || 'Failed to list machinery. Ensure you have the MACHINERY_OWNER or ADMIN role.', 'danger');
+                    }
+                }
+            });
+        });
+
+        async function handleInitialPhotoUpload(e) {
+            e.preventDefault();
+            if (!createdMachineId) return;
+
+            const fileInput = document.getElementById('newMachineFileInput');
+            const form = e.target;
+            const imageType = form.imageType.value;
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please choose an image file first');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            if (imageType) formData.append('imageType', imageType);
+
+            UI.setLoading('uploadPhotoSubmitBtn', true, 'Uploading...');
+
+            try {
+                const token = AuthService.getToken();
+                const response = await fetch(`${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/${createdMachineId}/images`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.message || 'Upload failed');
+                }
+
+                UI.setLoading('uploadPhotoSubmitBtn', false, 'Upload Another Photo');
+                const badge = document.getElementById('uploadSuccessBadge');
+                badge.style.display = 'inline-block';
+                form.reset();
+
+            } catch (err) {
+                UI.setLoading('uploadPhotoSubmitBtn', false, 'Upload Photo');
+                alert(err.message || 'Image upload failed');
+            }
+        }
+    </script>
+</body>
+</html>

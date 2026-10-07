@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register an account on E2E Construction Management System">
+    <title>Register - E2E Construction Management System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Construction System</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html">Sign In</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card auth-card-wide">
+            <div class="auth-header">
+                <h1>Create Your Account</h1>
+                <p>Join the E2E Construction Management Platform</p>
+            </div>
+
+            <!-- Alert Notification Container -->
+            <div id="alertContainer" style="display: none;"></div>
+
+            <form id="registerForm" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName" class="form-label">First Name</label>
+                        <input 
+                            type="text" 
+                            id="firstName" 
+                            name="firstName" 
+                            class="form-control" 
+                            placeholder="e.g. Robert" 
+                            required 
+                            autocomplete="given-name"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastName" class="form-label">Last Name</label>
+                        <input 
+                            type="text" 
+                            id="lastName" 
+                            name="lastName" 
+                            class="form-control" 
+                            placeholder="e.g. Miller" 
+                            required 
+                            autocomplete="family-name"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            name="email" 
+                            class="form-control" 
+                            placeholder="e.g. robert@construction.com" 
+                            required 
+                            autocomplete="email"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber" class="form-label">Phone Number</label>
+                        <input 
+                            type="tel" 
+                            id="phoneNumber" 
+                            name="phoneNumber" 
+                            class="form-control" 
+                            placeholder="e.g. +1 555-019-2834" 
+                            required 
+                            autocomplete="tel"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="role" class="form-label">Account Role</label>
+                    <select id="role" name="role" class="form-control" required>
+                        <option value="" disabled selected>-- Select your primary role --</option>
+                        <option value="CONTRACTOR">Contractor (Bids, projects & site management)</option>
+                        <option value="LABORER">Laborer (Trade services & work requests)</option>
+                        <option value="MACHINERY_OWNER">Machinery Owner (Equipment rentals)</option>
+                        <option value="MATERIAL_SUPPLIER">Material Supplier (Raw materials & catalog)</option>
+                        <option value="CLIENT">Client (Commissioning projects & tenders)</option>
+                        <option value="ADMIN">Administrator (Governance & verification)</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password (min 6 characters)</label>
+                        <div class="input-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                name="password" 
+                                class="form-control" 
+                                placeholder="Create password" 
+                                required 
+                                autocomplete="new-password"
+                            >
+                            <button type="button" id="togglePasswordBtn" class="toggle-password-btn" aria-label="Toggle password visibility">Show</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword" class="form-label">Confirm Password</label>
+                        <div class="input-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                name="confirmPassword" 
+                                class="form-control" 
+                                placeholder="Confirm password" 
+                                required 
+                                autocomplete="new-password"
+                            >
+                            <button type="button" id="toggleConfirmPasswordBtn" class="toggle-password-btn" aria-label="Toggle confirm password visibility">Show</button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="registerBtn" class="btn btn-primary btn-block" style="margin-top: 0.5rem;">
+                    Create Account & Get Started
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="login.html">Sign In Here</a></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Auto redirect if already logged in
+            AuthService.redirectIfLoggedIn();
+
+            const form = document.getElementById('registerForm');
+            const firstNameInput = document.getElementById('firstName');
+            const lastNameInput = document.getElementById('lastName');
+            const emailInput = document.getElementById('email');
+            const phoneInput = document.getElementById('phoneNumber');
+            const roleSelect = document.getElementById('role');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            const registerBtn = document.getElementById('registerBtn');
+
+            const togglePasswordBtn = document.getElementById('togglePasswordBtn');
+            const toggleConfirmPasswordBtn = document.getElementById('toggleConfirmPasswordBtn');
+
+            // Password toggles
+            togglePasswordBtn.addEventListener('click', () => {
+                const isPassword = passwordInput.getAttribute('type') === 'password';
+                passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                togglePasswordBtn.innerText = isPassword ? 'Hide' : 'Show';
+            });
+
+            toggleConfirmPasswordBtn.addEventListener('click', () => {
+                const isPassword = confirmPasswordInput.getAttribute('type') === 'password';
+                confirmPasswordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                toggleConfirmPasswordBtn.innerText = isPassword ? 'Hide' : 'Show';
+            });
+
+            // Form Submit Handler
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                UI.clearAlert('alertContainer');
+                UI.clearFieldErrors(form);
+
+                const firstName = firstNameInput.value.trim();
+                const lastName = lastNameInput.value.trim();
+                const email = emailInput.value.trim();
+                const phoneNumber = phoneInput.value.trim();
+                const role = roleSelect.value;
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+
+                let hasError = false;
+
+                if (!firstName) {
+                    UI.showFieldError(firstNameInput, 'First name is required');
+                    hasError = true;
+                }
+                if (!lastName) {
+                    UI.showFieldError(lastNameInput, 'Last name is required');
+                    hasError = true;
+                }
+                if (!email) {
+                    UI.showFieldError(emailInput, 'Email address is required');
+                    hasError = true;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    UI.showFieldError(emailInput, 'Please provide a valid email format');
+                    hasError = true;
+                }
+                if (!phoneNumber) {
+                    UI.showFieldError(phoneInput, 'Phone number is required');
+                    hasError = true;
+                }
+                if (!role) {
+                    UI.showFieldError(roleSelect, 'Please select an account role');
+                    hasError = true;
+                }
+                if (!password) {
+                    UI.showFieldError(passwordInput, 'Password is required');
+                    hasError = true;
+                } else if (password.length < 6) {
+                    UI.showFieldError(passwordInput, 'Password must be at least 6 characters long');
+                    hasError = true;
+                }
+                if (password !== confirmPassword) {
+                    UI.showFieldError(confirmPasswordInput, 'Passwords do not match');
+                    hasError = true;
+                }
+
+                if (hasError) return;
+
+                UI.setLoading('registerBtn', true, 'Create Account & Get Started');
+
+                const payload = {
+                    firstName,
+                    lastName,
+                    email,
+                    phoneNumber,
+                    role,
+                    password
+                };
+
+                try {
+                    const result = await AuthService.register(payload);
+                    UI.showAlert('alertContainer', `Registration successful! Welcome, ${result.user.firstName}. Redirecting to your dashboard...`, 'success');
+
+                    // Automatically redirect to role dashboard
+                    setTimeout(() => {
+                        AuthService.redirectAfterLogin(result.user);
+                    }, 800);
+
+                } catch (error) {
+                    console.error('Registration failed:', error);
+                    UI.setLoading('registerBtn', false, 'Create Account & Get Started');
+
+                    if (error.validationErrors) {
+                        // Display field-specific validation errors from Spring Boot
+                        Object.keys(error.validationErrors).forEach(field => {
+                            const fieldEl = document.getElementById(field);
+                            if (fieldEl) {
+                                UI.showFieldError(fieldEl, error.validationErrors[field]);
+                            }
+                        });
+                        UI.showAlert('alertContainer', 'Please correct the highlighted form errors.', 'danger');
+                    } else if (error.status === 400) {
+                        UI.showAlert('alertContainer', error.message || 'Registration failed. Please check your information.', 'danger');
+                    } else if (error.status === 0) {
+                        UI.showAlert('alertContainer', error.message || 'Cannot connect to backend server.', 'danger');
+                    } else {
+                        UI.showAlert('alertContainer', error.message || 'An unexpected error occurred during registration.', 'danger');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

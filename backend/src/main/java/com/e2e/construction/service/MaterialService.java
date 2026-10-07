@@ -341,6 +341,10 @@ public class MaterialService {
                 .orElseThrow(() -> new ResourceNotFoundException("Material not found with id: " + finalMaterialId));
 
         // Enforce stock availability check: do not allow ordering more than available stock!
+        if (material.getAvailability() == MaterialAvailability.OUT_OF_STOCK || material.getAvailableQuantity().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BadRequestException("Material is currently out of stock.");
+        }
+
         if (request.getQuantity().compareTo(material.getAvailableQuantity()) > 0) {
             throw new BadRequestException("Order quantity (" + request.getQuantity() + " " + material.getUnit() +
                     ") exceeds available stock (" + material.getAvailableQuantity() + " " + material.getUnit() + ").");

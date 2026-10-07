@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Machinery Technical Profile & Booking - E2E Construction Management">
+    <title>Machinery Details - E2E Construction Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/machinery.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container nav-wrapper">
+            <a href="machinery-list.html" class="logo">
+                <span class="logo-icon">E2E</span>
+                <span>Machinery Details</span>
+            </a>
+            <button class="mobile-nav-toggle" aria-label="Toggle navigation">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <div class="nav-links">
+                <a href="machinery-list.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">&larr; Back to Catalog</a>
+                <a href="machine-bookings.html" class="btn btn-outline" style="padding: 0.4rem 0.9rem; font-size: 0.85rem;">My Bookings</a>
+                <button id="navLogoutBtn" class="btn btn-outline" style="padding: 0.4rem 0.8rem; font-size: 0.85rem;">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="margin-top: 2rem;">
+        <!-- Alert Notification Box -->
+        <div id="pageAlert" style="display: none; margin-bottom: 1.5rem;"></div>
+
+        <!-- Details Grid Layout -->
+        <div class="details-layout">
+            <!-- Left Column: Media Gallery, Specs, Diagnostics, History -->
+            <div>
+                <!-- 1. Real Uploaded Image Gallery -->
+                <div class="gallery-container">
+                    <div class="gallery-main-view" id="galleryMain">
+                        <div id="galleryPlaceholder" class="machine-card-placeholder" style="color: #94a3b8;">
+                            <svg width="64" height="64" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <p style="margin-top: 0.5rem; font-size: 0.9rem;">No photos uploaded yet for this equipment.</p>
+                        </div>
+                        <img id="galleryMainImage" class="gallery-main-img" style="display: none;" alt="Machinery Main Photo">
+                    </div>
+                    <div class="gallery-thumbnails" id="galleryThumbnails">
+                        <!-- Dynamic thumbnail ribbon loaded from backend image system -->
+                    </div>
+                    <div style="padding: 0.75rem 1rem; background: #ffffff; border-top: 1px solid var(--mach-border); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; color: #64748b;" id="galleryCounterText">Images (0)</span>
+                        <button id="uploadImageModalBtn" class="btn btn-outline" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">
+                            + Upload Machine Photo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Technical Specifications -->
+                <div class="details-panel">
+                    <div class="details-panel-title">
+                        <div>
+                            <h2 style="font-size: 1.4rem; color: #0f172a;" id="machName">Loading Machine...</h2>
+                            <span style="font-size: 0.85rem; color: #64748b;" id="machCategory">Category: --</span>
+                        </div>
+                        <div style="display: flex; gap: 0.5rem; align-items: center;">
+                            <span class="badge badge-primary" id="machAvailability">AVAILABLE</span>
+                        </div>
+                    </div>
+
+                    <p style="color: #334155; margin-bottom: 1.5rem; line-height: 1.6;" id="machDescription">
+                        Loading detailed equipment description...
+                    </p>
+
+                    <h4 style="font-size: 0.95rem; text-transform: uppercase; color: #64748b; margin-bottom: 1rem; letter-spacing: 0.05em;">Machine Specifications</h4>
+                    <div class="specs-detail-grid">
+                        <div class="spec-detail-box">
+                            <div class="title">Manufacturer</div>
+                            <div class="value" id="specManufacturer">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Model</div>
+                            <div class="value" id="specModel">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Manufacturing Year</div>
+                            <div class="value" id="specYear">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Rated Capacity</div>
+                            <div class="value" id="specCapacity">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Fuel Type</div>
+                            <div class="value" id="specFuel">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Transmission</div>
+                            <div class="value" id="specTransmission">--</div>
+                        </div>
+                        <div class="spec-detail-box">
+                            <div class="title">Deployment Location</div>
+                            <div class="value" id="specLocation">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Machine Condition & System Health Diagnostics -->
+                <div class="details-panel">
+                    <div class="details-panel-title">
+                        <span>Mechanical Condition & Diagnostics</span>
+                        <a id="updateConditionLink" href="#" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                            Edit Condition &rarr;
+                        </a>
+                    </div>
+                    <p style="color: #64748b; font-size: 0.875rem; margin-bottom: 1.25rem;">
+                        Inspection verified diagnostics for critical engine, powertrain, hydraulic, and safety components.
+                    </p>
+
+                    <div class="condition-grid" id="conditionDiagnosticsGrid">
+                        <!-- 8 Primary component cards requested by user -->
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Engine Details</span>
+                                <span class="condition-status-pill status-normal" id="condEngine">--</span>
+                            </div>
+                            <small style="color: #64748b;" id="condEngineHours">Hours: --</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Oil Condition</span>
+                                <span class="condition-status-pill status-normal" id="condOil">--</span>
+                            </div>
+                            <small style="color: #64748b;">Lubrication level</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Coolant</span>
+                                <span class="condition-status-pill status-normal" id="condCoolant">--</span>
+                            </div>
+                            <small style="color: #64748b;">Thermal system</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Transmission</span>
+                                <span class="condition-status-pill status-normal" id="condTransmission">--</span>
+                            </div>
+                            <small style="color: #64748b;">Gearbox health</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Hydraulic System</span>
+                                <span class="condition-status-pill status-normal" id="condHydraulic">--</span>
+                            </div>
+                            <small style="color: #64748b;">Lines &amp; cylinders</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Battery</span>
+                                <span class="condition-status-pill status-normal" id="condBattery">--</span>
+                            </div>
+                            <small style="color: #64748b;">Voltage &amp; ignition</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Brakes</span>
+                                <span class="condition-status-pill status-normal" id="condBrakes">--</span>
+                            </div>
+                            <small style="color: #64748b;">Stopping force</small>
+                        </div>
+
+                        <div class="condition-card">
+                            <div class="condition-header">
+                                <span class="condition-name">Tyre Condition</span>
+                                <span class="condition-status-pill status-normal" id="condTyres">--</span>
+                            </div>
+                            <small style="color: #64748b;">Tread wear rating</small>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.25rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 0.85rem;">
+                        <strong>Inspector Remarks:</strong> <span id="condRemarks">No condition remarks logged.</span>
+                    </div>
+                </div>
+
+                <!-- 4. Maintenance History -->
+                <div class="details-panel">
+                    <div class="details-panel-title">
+                        <span>Maintenance & Service Log</span>
+                        <a id="manageMaintenanceLink" href="#" class="btn btn-outline" style="font-size: 0.8rem; padding: 0.35rem 0.75rem;">
+                            Log Maintenance &rarr;
+                        </a>
+                    </div>
+                    <div id="maintenanceHistoryContainer">
+                        <div class="timeline" id="maintenanceTimeline">
+                            <!-- Populated dynamically via JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Reserved / Booked Dates Calendar -->
+                <div class="details-panel">
+                    <div class="details-panel-title">
+                        <span>Current Reservation Schedule</span>
+                    </div>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 1rem;">
+                        Double-booking prevention is enforced by the backend. The following dates are currently booked.
+                    </p>
+                    <div class="table-responsive">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th>Reserved Start</th>
+                                    <th>Reserved End</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookedRangesTable">
+                                <tr><td colspan="3" class="empty-state-box">No active bookings. Machine is ready for rental.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Verification, Owner Card & Booking Box -->
+            <div>
+                <!-- Verification Status Pill -->
+                <div class="verification-card" id="verificationBanner">
+                    <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <div>
+                        <div style="font-weight: 700;" id="verificationTitle">Verified Listing</div>
+                        <div style="font-size: 0.8rem;" id="verificationSub">Reviewed and approved by system administrators.</div>
+                    </div>
+                </div>
+
+                <!-- Owner Card -->
+                <div class="details-panel">
+                    <h4 style="font-size: 0.95rem; text-transform: uppercase; color: #64748b; margin-bottom: 1rem; letter-spacing: 0.05em;">Fleet Owner</h4>
+                    <div style="display: flex; align-items: center; gap: 0.85rem; margin-bottom: 1rem;">
+                        <div class="avatar" id="ownerAvatar" style="width: 44px; height: 44px; font-size: 1.1rem;">O</div>
+                        <div>
+                            <div style="font-weight: 700; color: #0f172a;" id="ownerName">Owner Name</div>
+                            <div style="font-size: 0.825rem; color: #64748b;" id="ownerCompany">Company Fleet</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #475569; display: flex; flex-direction: column; gap: 0.4rem;">
+                        <div>Location: <strong id="ownerLocation">Pan-India</strong></div>
+                        <div>Listing ID: <strong id="ownerMachineId">#--</strong></div>
+                    </div>
+                </div>
+
+                <!-- Direct Booking Box -->
+                <div class="booking-box">
+                    <div class="booking-price-header">
+                        <div class="price" id="bookingPriceDisplay">$0</div>
+                        <div class="sub">per day &bull; Verified heavy equipment</div>
+                    </div>
+
+                    <form id="bookingForm" onsubmit="handleBookingSubmit(event)" novalidate>
+                        <div id="bookingAlert" style="display: none; margin-bottom: 1rem;"></div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bookStartDate">Start Date *</label>
+                            <input type="date" id="bookStartDate" name="startDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bookEndDate">End Date *</label>
+                            <input type="date" id="bookEndDate" name="endDate" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bookProjectName">Site Project Name *</label>
+                            <input type="text" id="bookProjectName" name="projectName" class="form-control" placeholder="e.g. Metro Line Bridge Pillar 4" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bookDeliveryLoc">Delivery Location *</label>
+                            <input type="text" id="bookDeliveryLoc" name="deliveryLocation" class="form-control" placeholder="e.g. Site Gate 2, Ring Road" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="bookRemarks">Site Remarks (Optional)</label>
+                            <textarea id="bookRemarks" name="remarks" class="form-control" rows="2" placeholder="Specific mobilization or site access instructions..."></textarea>
+                        </div>
+
+                        <div style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.85rem; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                <span>Estimated Days:</span>
+                                <strong id="calcDays">0</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; font-size: 1rem; font-weight: 700; color: #0f172a;">
+                                <span>Total Estimate:</span>
+                                <span id="calcTotal">$0</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="submitBookingBtn" class="btn btn-primary btn-block" style="padding: 0.8rem; font-size: 1rem; font-weight: 700;">
+                            Confirm Booking Request
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Upload Image Modal (Direct Backend Upload System) -->
+    <div class="modal-overlay" id="uploadImageModal">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Upload Machine Photograph</h3>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <form onsubmit="handleImageUpload(event)" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div id="uploadImageAlert" style="display: none; margin-bottom: 1rem;"></div>
+                    <div class="form-group">
+                        <label class="form-label">Select Image File (JPG, PNG, WebP) *</label>
+                        <input type="file" id="machineImageFileInput" name="file" accept="image/*" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Image Category</label>
+                        <select name="imageType" class="form-control">
+                            <option value="GENERAL">General Photo</option>
+                            <option value="EXTERIOR">Exterior Angle</option>
+                            <option value="ENGINE">Engine Compartment</option>
+                            <option value="CABIN">Operator Cabin / Controls</option>
+                            <option value="CONDITION">Component Inspection</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline modal-close-btn">Cancel</button>
+                    <button type="submit" id="submitImageBtn" class="btn btn-primary">Upload To Backend</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 E2E Construction Management System. All machinery actions connected to Spring Boot APIs.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../js/config.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/app.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const machineId = urlParams.get('id');
+        let machineData = null;
+        let dailyRate = 0;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!AuthService.isAuthenticated()) {
+                window.location.href = '../login.html?reason=unauthenticated';
+                return;
+            }
+
+            document.getElementById('navLogoutBtn').addEventListener('click', () => {
+                AuthService.logout();
+            });
+
+            if (!machineId) {
+                UI.showAlert('pageAlert', 'No machine ID specified. Please return to the marketplace catalog.', 'danger');
+                return;
+            }
+
+            // Set management links
+            document.getElementById('updateConditionLink').href = `machine-condition.html?id=${machineId}`;
+            document.getElementById('manageMaintenanceLink').href = `machine-maintenance.html?id=${machineId}`;
+
+            // Bind modal handlers
+            document.getElementById('uploadImageModalBtn').addEventListener('click', () => {
+                document.getElementById('uploadImageModal').classList.add('active');
+                UI.clearAlert('uploadImageAlert');
+            });
+
+            document.querySelectorAll('.modal-overlay').forEach(overlay => {
+                overlay.addEventListener('click', (e) => {
+                    if (e.target === overlay || e.target.classList.contains('modal-close-btn')) {
+                        overlay.classList.remove('active');
+                    }
+                });
+            });
+
+            // Date calculations
+            const startDateInput = document.getElementById('bookStartDate');
+            const endDateInput = document.getElementById('bookEndDate');
+            const today = new Date().toISOString().split('T')[0];
+            startDateInput.min = today;
+            endDateInput.min = today;
+
+            function updateCalculation() {
+                if (startDateInput.value && endDateInput.value) {
+                    const start = new Date(startDateInput.value);
+                    const end = new Date(endDateInput.value);
+                    if (end >= start) {
+                        const diffDays = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                        document.getElementById('calcDays').innerText = diffDays;
+                        document.getElementById('calcTotal').innerText = `$${Number(diffDays * dailyRate).toLocaleString()}`;
+                    } else {
+                        document.getElementById('calcDays').innerText = '0';
+                        document.getElementById('calcTotal').innerText = '$0';
+                    }
+                }
+            }
+
+            startDateInput.addEventListener('change', () => {
+                endDateInput.min = startDateInput.value;
+                updateCalculation();
+            });
+            endDateInput.addEventListener('change', updateCalculation);
+
+            await loadMachineProfile();
+        });
+
+        async function loadMachineProfile() {
+            try {
+                // Fetch full comprehensive profile from GET /api/machinery/{id}/profile
+                const profile = await AuthService.apiFetch(`/machinery/${machineId}/profile`);
+                machineData = profile;
+
+                const spec = profile.specifications || {};
+                dailyRate = spec.rentalPricePerDay ? Number(spec.rentalPricePerDay) : 0;
+
+                // 1. Basic Details
+                document.getElementById('machName').innerText = spec.name || 'Heavy Equipment';
+                document.getElementById('machCategory').innerText = `Category: ${spec.category || 'General Equipment'}`;
+                document.getElementById('machDescription').innerText = spec.description || 'No detailed description provided.';
+                document.getElementById('machAvailability').innerText = profile.availabilityStatus || spec.availabilityStatus || 'AVAILABLE';
+
+                // 2. Specifications
+                document.getElementById('specManufacturer').innerText = spec.manufacturer || '--';
+                document.getElementById('specModel').innerText = spec.model || '--';
+                document.getElementById('specYear').innerText = spec.manufacturingYear || '--';
+                document.getElementById('specCapacity').innerText = spec.capacity || '--';
+                document.getElementById('specFuel').innerText = spec.fuelType || '--';
+                document.getElementById('specTransmission').innerText = spec.transmission || '--';
+                document.getElementById('specLocation').innerText = spec.location || '--';
+
+                // 3. Pricing & Booking Header
+                document.getElementById('bookingPriceDisplay').innerText = `$${dailyRate.toLocaleString()}`;
+
+                // 4. Verification Banner
+                const verifBanner = document.getElementById('verificationBanner');
+                const verifStatus = spec.verificationStatus || 'PENDING';
+                if (verifStatus === 'VERIFIED') {
+                    verifBanner.className = 'verification-card';
+                    document.getElementById('verificationTitle').innerText = 'Verified Equipment';
+                    document.getElementById('verificationSub').innerText = 'Approved & verified by system administration.';
+                } else if (verifStatus === 'PENDING') {
+                    verifBanner.className = 'verification-card pending';
+                    document.getElementById('verificationTitle').innerText = 'Verification Pending';
+                    document.getElementById('verificationSub').innerText = 'Equipment listing is awaiting admin verification.';
+                } else {
+                    verifBanner.className = 'verification-card rejected';
+                    document.getElementById('verificationTitle').innerText = 'Verification Rejected';
+                    document.getElementById('verificationSub').innerText = 'Contact support or review listing credentials.';
+                }
+
+                // 5. Owner Info
+                document.getElementById('ownerName').innerText = spec.ownerName || 'Equipment Fleet Owner';
+                document.getElementById('ownerCompany').innerText = spec.companyName || 'Verified Machinery Fleet';
+                document.getElementById('ownerLocation').innerText = spec.location || 'Local Fleet';
+                document.getElementById('ownerMachineId').innerText = `#${machineId}`;
+                document.getElementById('ownerAvatar').innerText = (spec.ownerName || 'O')[0].toUpperCase();
+
+                // 6. Diagnostics & Condition
+                const cond = profile.condition;
+                if (cond) {
+                    setConditionPill('condEngine', cond.engine);
+                    document.getElementById('condEngineHours').innerText = `Engine Hours: ${cond.engineHours || 0} hrs`;
+                    setConditionPill('condOil', cond.engineOil);
+                    setConditionPill('condCoolant', cond.coolant);
+                    setConditionPill('condTransmission', cond.transmission);
+                    setConditionPill('condHydraulic', cond.hydraulicSystem);
+                    setConditionPill('condBattery', cond.battery);
+                    setConditionPill('condBrakes', cond.brakes);
+                    setConditionPill('condTyres', cond.tyres);
+                    document.getElementById('condRemarks').innerText = cond.remarks || 'All subsystems inspected.';
+                } else {
+                    document.getElementById('condRemarks').innerText = 'No condition report filed yet for this equipment.';
+                }
+
+                // 7. Maintenance History
+                const maint = profile.maintenanceHistory || [];
+                const maintTimeline = document.getElementById('maintenanceTimeline');
+                if (maint.length === 0) {
+                    maintTimeline.innerHTML = '<div class="empty-state-box" style="padding:1rem;">No maintenance logs on file. Machine is in initial operating cycle.</div>';
+                } else {
+                    maintTimeline.innerHTML = maint.map(m => `
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <div class="timeline-date">${formatDate(m.maintenanceDate)} &bull; ${escapeHtml(m.serviceProvider || 'Certified Technician')}</div>
+                                <div class="timeline-title">
+                                    <span>${escapeHtml(m.maintenanceType || 'General Service')}</span>
+                                    <span style="color:var(--primary);">$${Number(m.cost || 0).toLocaleString()}</span>
+                                </div>
+                                <div class="timeline-desc">${escapeHtml(m.description || '')}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
+                // 8. Booked Date Ranges
+                const bookedRanges = profile.bookedDateRanges || [];
+                const bookedTable = document.getElementById('bookedRangesTable');
+                if (bookedRanges.length === 0) {
+                    bookedTable.innerHTML = '<tr><td colspan="3" class="empty-state-box">No active bookings. Machine is available for rental.</td></tr>';
+                } else {
+                    bookedTable.innerHTML = bookedRanges.map(b => `
+                        <tr>
+                            <td><strong>${formatDate(b.startDate)}</strong></td>
+                            <td><strong>${formatDate(b.endDate)}</strong></td>
+                            <td><span class="status-badge booked">Booked</span></td>
+                        </tr>
+                    `).join('');
+                }
+
+                // 9. Real Uploaded Images Gallery
+                renderGallery(profile.images || []);
+
+            } catch (err) {
+                console.error('Error loading machine profile:', err);
+                UI.showAlert('pageAlert', 'Failed to load machinery details: ' + (err.message || 'Unknown error'), 'danger');
+            }
+        }
+
+        function renderGallery(images) {
+            const mainImg = document.getElementById('galleryMainImage');
+            const placeholder = document.getElementById('galleryPlaceholder');
+            const thumbsContainer = document.getElementById('galleryThumbnails');
+            const counterText = document.getElementById('galleryCounterText');
+
+            counterText.innerText = `Images (${images.length})`;
+
+            if (!images || images.length === 0) {
+                mainImg.style.display = 'none';
+                placeholder.style.display = 'flex';
+                thumbsContainer.innerHTML = '<span style="font-size:0.8rem; color:#94a3b8; padding:0.5rem;">Upload machine photos using the button above.</span>';
+                return;
+            }
+
+            // Set main image to first image from backend
+            const firstImgUrl = `${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/images/${images[0].storedFileName}`;
+            mainImg.src = firstImgUrl;
+            mainImg.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            // Render thumbnails
+            thumbsContainer.innerHTML = images.map((img, index) => {
+                const imgUrl = `${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/images/${img.storedFileName}`;
+                return `
+                    <div class="gallery-thumb ${index === 0 ? 'active' : ''}" onclick="selectGalleryImage('${imgUrl}', this)">
+                        <img src="${imgUrl}" alt="Thumbnail ${index + 1}">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectGalleryImage(url, thumbEl) {
+            const mainImg = document.getElementById('galleryMainImage');
+            mainImg.src = url;
+            document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+            thumbEl.classList.add('active');
+        }
+
+        function setConditionPill(elId, val) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const text = val || 'GOOD';
+            el.innerText = text;
+            const clean = text.toLowerCase().replace(/[^a-z]/g, '_');
+            el.className = `condition-status-pill status-${clean}`;
+        }
+
+        async function handleBookingSubmit(e) {
+            e.preventDefault();
+            const form = e.target;
+            UI.clearAlert('bookingAlert');
+
+            const startDate = form.startDate.value;
+            const endDate = form.endDate.value;
+            const projectName = form.projectName.value.trim();
+            const deliveryLocation = form.deliveryLocation.value.trim();
+            const remarks = form.remarks.value.trim();
+
+            const payload = {
+                startDate,
+                endDate,
+                projectName,
+                deliveryLocation,
+                remarks
+            };
+
+            UI.setLoading('submitBookingBtn', true, 'Confirm Booking Request');
+
+            try {
+                await AuthService.apiFetch(`/machinery/${machineId}/bookings`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                UI.showAlert('bookingAlert', 'Booking request submitted successfully! Awaiting owner confirmation.', 'success');
+                form.reset();
+                setTimeout(() => {
+                    loadMachineProfile();
+                }, 800);
+
+            } catch (err) {
+                UI.setLoading('submitBookingBtn', false, 'Confirm Booking Request');
+                UI.showAlert('bookingAlert', err.message || 'Failed to submit booking request', 'danger');
+            }
+        }
+
+        async function handleImageUpload(e) {
+            e.preventDefault();
+            const form = e.target;
+            const fileInput = document.getElementById('machineImageFileInput');
+            const imageType = form.imageType.value;
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                UI.showAlert('uploadImageAlert', 'Please select an image file to upload', 'danger');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            if (imageType) formData.append('imageType', imageType);
+
+            UI.setLoading('submitImageBtn', true, 'Uploading To Backend...');
+
+            try {
+                const token = AuthService.getToken();
+                const response = await fetch(`${E2E_AUTH_CONFIG.API_BASE_URL}/machinery/${machineId}/images`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({}));
+                    throw new Error(err.message || 'Image upload failed');
+                }
+
+                UI.showAlert('uploadImageAlert', 'Photo uploaded successfully!', 'success');
+                form.reset();
+                setTimeout(() => {
+                    document.getElementById('uploadImageModal').classList.remove('active');
+                    loadMachineProfile();
+                }, 600);
+
+            } catch (err) {
+                UI.setLoading('submitImageBtn', false, 'Upload To Backend');
+                UI.showAlert('uploadImageAlert', err.message || 'Failed to upload image', 'danger');
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDate(str) {
+            if (!str) return '--';
+            try {
+                const d = new Date(str);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            } catch (e) {
+                return str;
+            }
+        }
+    </script>
+</body>
+</html>

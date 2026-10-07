@@ -3,6 +3,7 @@ package com.e2e.construction.repository;
 import com.e2e.construction.entity.Machinery;
 import com.e2e.construction.entity.MachineryAvailability;
 import com.e2e.construction.entity.MachineryCategory;
+import com.e2e.construction.entity.VerificationStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +16,12 @@ public interface MachineryRepository extends JpaRepository<Machinery, Long> {
 
     List<Machinery> findByOwnerIdOrderByCreatedAtDesc(Long ownerId);
 
+    List<Machinery> findByVerificationStatusOrderByCreatedAtDesc(VerificationStatus status);
+
+    List<Machinery> findAllByOrderByCreatedAtDesc();
+
     @Query("SELECT m FROM Machinery m WHERE " +
+            "m.verificationStatus = com.e2e.construction.entity.VerificationStatus.VERIFIED AND " +
             "(:category IS NULL OR m.category = :category) AND " +
             "(:availability IS NULL OR m.availabilityStatus = :availability) AND " +
             "(:location IS NULL OR LOWER(m.location) LIKE LOWER(CONCAT('%', :location, '%'))) AND " +

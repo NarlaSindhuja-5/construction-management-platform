@@ -25,6 +25,7 @@ public class DataInitializer implements CommandLineRunner {
         Map<String, String> defaultRoles = Map.of(
                 "ADMIN", "System Administrator with full management and governance privileges",
                 "CONTRACTOR", "Licensed contractor managing bids, site execution, laborers, and materials",
+                "SITE_MANAGER", "Site manager supervising daily construction activities, work logs, and site progress",
                 "LABORER", "Skilled/unskilled worker offering on-site construction trade services",
                 "MACHINERY_OWNER", "Owner/supplier of heavy construction machinery and equipment rentals",
                 "MATERIAL_SUPPLIER", "Vendor/distributor supplying raw construction materials and goods",
