@@ -1,3 +1,7 @@
+# Node.js dependencies
+node_modules/
+**/node_modules/
+
 # Compiled Java / Maven target directories
 target/
 **/target/
@@ -6,6 +10,7 @@ target/
 *.war
 *.exe
 cloudflared*
+backend/bin/
 
 # IDE and Editor configurations
 .idea/
@@ -30,6 +35,7 @@ logs/
 # Secrets and environment files
 .env
 .env.*
+**/.env
 !.env.example
 *.env
 *.pem

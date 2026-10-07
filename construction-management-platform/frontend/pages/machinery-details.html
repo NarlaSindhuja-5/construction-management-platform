@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machinery Details | BuildPro</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item active">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">User</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out">⏻</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1 id="machine-detail-title">Machinery Specification</h1>
+            <p id="machine-detail-subtitle">Loading equipment profile...</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="/pages/machinery.html" class="btn btn-secondary btn-sm">← Back to Marketplace</a>
+          <a id="btn-book-this-machine" href="#" class="btn btn-primary btn-sm">📅 Request Booking</a>
+        </div>
+      </header>
+
+      <div class="page-content" id="machine-content-wrapper">
+        <p style="padding:2rem; text-align:center;">Loading machinery profile...</p>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      requireAuth();
+      const params = new URLSearchParams(window.location.search);
+      const machineId = params.get('id');
+
+      if (!machineId) {
+        window.location.href = '/pages/machinery.html';
+        return;
+      }
+
+      await loadDetails(machineId);
+    });
+
+    async function loadDetails(id) {
+      try {
+        const res = await apiRequest(`/machinery/${id}`);
+        if (!res || !res.machinery) throw new Error('Machinery not found');
+
+        const m = res.machinery;
+        const bookings = res.upcomingBookings || [];
+        const maintenance = res.maintenanceRecords || [];
+
+        document.getElementById('machine-detail-title').textContent = m.machine_name;
+        document.getElementById('machine-detail-subtitle').textContent = `Type: ${m.machine_type} • Reg: ${m.registration_number} • Location: ${m.location}`;
+
+        document.getElementById('btn-book-this-machine').href = `/pages/bookings.html?machineId=${m.id}`;
+
+        const bookingsHtml = bookings.map(b => `
+          <tr>
+            <td>${formatDate(b.start_date)} to ${formatDate(b.end_date)}</td>
+            <td>${b.total_days} Days</td>
+            <td>${formatINR(b.total_amount)}</td>
+            <td>${getStatusBadge(b.status)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="4" class="text-muted" style="text-align:center; padding:1rem;">No confirmed or pending bookings. Machine is fully open!</td></tr>';
+
+        const maintenanceHtml = maintenance.map(mm => `
+          <tr>
+            <td>${formatDate(mm.start_date)} to ${formatDate(mm.end_date)}</td>
+            <td>${escapeHtml(mm.reason)}</td>
+            <td>${getStatusBadge(mm.status)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="3" class="text-muted" style="text-align:center; padding:1rem;">No scheduled maintenance periods recorded.</td></tr>';
+
+        document.getElementById('machine-content-wrapper').innerHTML = `
+          <div class="dashboard-grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Equipment Specifications</h3>
+                ${getStatusBadge(m.status)}
+              </div>
+              <div class="card-body">
+                <div class="machine-spec-row">
+                  <span>Equipment Category:</span>
+                  <span class="machine-spec-val">${escapeHtml(m.machine_type)}</span>
+                </div>
+                <div class="machine-spec-row">
+                  <span>Registration Number:</span>
+                  <span class="machine-spec-val">${escapeHtml(m.registration_number)}</span>
+                </div>
+                <div class="machine-spec-row">
+                  <span>Operational Location:</span>
+                  <span class="machine-spec-val">${escapeHtml(m.location)}</span>
+                </div>
+                <div class="machine-spec-row">
+                  <span>Certified Operator:</span>
+                  <span class="machine-spec-val">${m.operator_available ? 'Available (+₹' + m.operator_charge + '/day)' : 'Not Available'}</span>
+                </div>
+                <div class="machine-spec-row">
+                  <span>Equipment Owner:</span>
+                  <span class="machine-spec-val">${escapeHtml(m.owner_name)} (${escapeHtml(m.owner_phone || m.owner_email)})</span>
+                </div>
+                <div class="machine-rate-box" style="margin-top:1.25rem;">
+                  <span style="font-weight:700;">Standard Daily Rental Rate:</span>
+                  <span class="rate-amt">${formatINR(m.daily_rate)} / day</span>
+                </div>
+                <div style="margin-top:1.25rem;">
+                  <strong>Description:</strong>
+                  <p style="font-size:0.875rem; color:var(--text-muted); margin-top:0.35rem; line-height:1.5;">
+                    ${escapeHtml(m.description || 'Standard high efficiency machinery.')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Scheduled Maintenance Windows</h3>
+              </div>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Dates</th>
+                      <th>Reason</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${maintenanceHtml}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Existing Bookings Schedule (Conflict Prevention Calendar)</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Reserved Dates</th>
+                    <th>Duration</th>
+                    <th>Rental Cost</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${bookingsHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

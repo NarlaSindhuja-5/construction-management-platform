@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Details | Construction Management Platform</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item active">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">User</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out">⏻</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1 id="proj-detail-title">Project Details</h1>
+            <p id="proj-detail-subtitle">Loading operational overview...</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="/pages/projects.html" class="btn btn-secondary btn-sm">← Back to Projects</a>
+          <a id="btn-book-for-proj" href="/pages/machinery.html" class="btn btn-primary btn-sm">🚜 Search &amp; Book Machinery</a>
+        </div>
+      </header>
+
+      <div class="page-content" id="proj-content-wrapper">
+        <!-- Content dynamically populated via JS -->
+        <p style="padding:2rem; text-align:center;">Loading project details and associated resources...</p>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      requireAuth();
+      const params = new URLSearchParams(window.location.search);
+      const projectId = params.get('id');
+
+      if (!projectId) {
+        showToast('No project ID specified', 'warning');
+        setTimeout(() => window.location.href = '/pages/projects.html', 1000);
+        return;
+      }
+
+      await loadProjectDetails(projectId);
+    });
+
+    async function loadProjectDetails(id) {
+      try {
+        const [projRes, resRes] = await Promise.all([
+          apiRequest(`/projects/${id}`),
+          apiRequest(`/projects/${id}/resources`)
+        ]);
+
+        if (!projRes || !projRes.project) {
+          throw new Error('Project not found');
+        }
+
+        const p = projRes.project;
+        const r = resRes ? resRes.resources : { sites: [], machinery: [], workers: [], materials: [] };
+
+        document.getElementById('proj-detail-title').textContent = p.project_name;
+        document.getElementById('proj-detail-subtitle').textContent = `Client: ${p.client_name} • Type: ${p.project_type} • Location: ${p.location}`;
+
+        const bookBtn = document.getElementById('btn-book-for-proj');
+        if (bookBtn) {
+          bookBtn.href = `/pages/machinery.html?projectId=${p.id}`;
+        }
+
+        const sitesHtml = r.sites.map(s => `
+          <div style="padding:0.75rem; background:#f8fafc; border-radius:var(--radius-sm); border:1px solid var(--border-color); margin-bottom:0.6rem;">
+            <div style="display:flex; justify-content:space-between;">
+              <strong>${escapeHtml(s.site_name)}</strong>
+              ${getStatusBadge(s.status)}
+            </div>
+            <div style="font-size:0.8rem; color:var(--text-muted); margin-top:0.25rem;">${escapeHtml(s.address || s.location)}</div>
+          </div>
+        `).join('') || '<p class="text-muted" style="font-size:0.85rem;">No sites created yet.</p>';
+
+        const machineryHtml = r.machinery.map(m => `
+          <tr>
+            <td><strong>${escapeHtml(m.machine_name)}</strong></td>
+            <td>${escapeHtml(m.machine_type)}</td>
+            <td>${escapeHtml(m.site_name)}</td>
+            <td>${formatDate(m.start_date)} to ${formatDate(m.end_date)}</td>
+            <td><strong>${formatINR(m.total_amount)}</strong></td>
+            <td>${getStatusBadge(m.status)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="6" class="text-muted" style="text-align:center; padding:1.5rem;">No machinery bookings confirmed yet. Use "Search & Book Machinery" to reserve equipment.</td></tr>';
+
+        const workersHtml = r.workers.map(w => `
+          <tr>
+            <td><strong>${escapeHtml(w.name)}</strong></td>
+            <td><span class="badge badge-info">${escapeHtml(w.skill)}</span></td>
+            <td>${escapeHtml(w.site_name)}</td>
+            <td>${formatINR(w.daily_wage)} / day</td>
+            <td>${getStatusBadge(w.availability)}</td>
+          </tr>
+        `).join('') || '<tr><td colspan="5" class="text-muted" style="text-align:center; padding:1.5rem;">No workers currently deployed to sites.</td></tr>';
+
+        document.getElementById('proj-content-wrapper').innerHTML = `
+          <!-- Financial Strip -->
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div class="card-body">
+              <div class="finance-metrics-strip" style="margin-bottom:1.25rem;">
+                <div class="finance-metric-item">
+                  <div class="f-label">Project Budget</div>
+                  <div class="f-val">${formatINR(p.budget)}</div>
+                </div>
+                <div class="finance-metric-item">
+                  <div class="f-label">Actual Spent</div>
+                  <div class="f-val spent">${formatINR(p.total_spent)}</div>
+                </div>
+                <div class="finance-metric-item">
+                  <div class="f-label">Remaining Budget</div>
+                  <div class="f-val positive">${formatINR(p.remaining_budget)}</div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:0.85rem; margin-bottom:0.35rem;">
+                  <span>Task Completion Progress</span>
+                  <span>${p.progress_percent}% (${p.completed_tasks} / ${p.total_tasks} Tasks)</span>
+                </div>
+                <div class="progress-bar-wrap" style="height:10px;">
+                  <div class="progress-bar-fill" style="width:${p.progress_percent}%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description and Sites Grid -->
+          <div class="dashboard-grid-2">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Project Overview &amp; Scope</h3>
+              </div>
+              <div class="card-body" style="font-size:0.9rem; line-height:1.6;">
+                <p>${escapeHtml(p.description || 'No detailed scope of work provided.')}</p>
+                <div style="margin-top:1.25rem; font-size:0.8rem; color:var(--text-muted);">
+                  <div><strong>Contractor / PM:</strong> ${escapeHtml(p.created_by_name || 'N/A')}</div>
+                  <div><strong>Schedule:</strong> ${formatDate(p.start_date)} to ${formatDate(p.end_date)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Construction Sites (${r.sites.length})</h3>
+                <a href="/pages/sites.html" class="btn btn-outline btn-sm">+ Site</a>
+              </div>
+              <div class="card-body">
+                ${sitesHtml}
+              </div>
+            </div>
+          </div>
+
+          <!-- Machinery Assigned -->
+          <div class="card" style="margin-bottom:1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title">🚜 Machinery Resources Assigned to Project Sites</h3>
+              <a href="/pages/machinery.html" class="btn btn-primary btn-sm">+ Book Machinery</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Machine</th>
+                    <th>Type</th>
+                    <th>Site Location</th>
+                    <th>Rental Window</th>
+                    <th>Total Rental Expense</th>
+                    <th>Booking Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${machineryHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Workforce Assigned -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">👷 Workforce &amp; Assigned Labor</h3>
+              <a href="/pages/workers.html" class="btn btn-outline btn-sm">Manage Workers</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Worker Name</th>
+                    <th>Skill / Designation</th>
+                    <th>Assigned Site</th>
+                    <th>Daily Wage</th>
+                    <th>Availability</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${workersHtml}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        showToast(err.message || 'Error loading project', 'error');
+        document.getElementById('proj-content-wrapper').innerHTML = `<p class="text-danger" style="padding:2rem;">Failed to load project: ${err.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

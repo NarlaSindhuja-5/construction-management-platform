@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Reports | BuildPro</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item active">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">User</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out">⏻</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1>Executive Project Reports</h1>
+            <p>Generate auditable financial statements, resource allocations, and progress metrics</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button id="btn-print-report" class="btn btn-outline btn-sm">
+            <span>🖨️ Print / Save as PDF</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Project Selector Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-item" style="flex:1;">
+            <label style="font-size:0.75rem; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">
+              CHOOSE ACTIVE CONSTRUCTION PROJECT TO AUDIT:
+            </label>
+            <select id="report-project-select" class="form-select" style="font-weight:600; font-size:0.95rem;">
+              <option value="">Loading Projects...</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Report Output Container -->
+        <div id="report-output-container">
+          <p style="padding:2rem; text-align:center;">Select a project above to compile the analytical report...</p>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script src="/js/reports.js"></script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machinery Bookings &amp; Approvals | BuildPro</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/forms.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <aside class="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">⚡</div>
+        <div>
+          <div class="brand-title">BuildPro Cloud</div>
+          <div class="brand-subtitle">Construction & Machinery ERP</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Core Operations</div>
+        <a href="/dashboard.html" class="nav-item">
+          <span class="nav-icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a href="/pages/projects.html" class="nav-item">
+          <span class="nav-icon">📁</span>
+          <span>Projects</span>
+        </a>
+        <a href="/pages/sites.html" class="nav-item">
+          <span class="nav-icon">🏗️</span>
+          <span>Sites</span>
+        </a>
+        <div class="nav-section-title">Resources & Machinery</div>
+        <a href="/pages/machinery.html" class="nav-item">
+          <span class="nav-icon">🚜</span>
+          <span>Machinery Marketplace</span>
+        </a>
+        <a href="/pages/bookings.html" class="nav-item active">
+          <span class="nav-icon">📅</span>
+          <span>Machinery Bookings</span>
+        </a>
+        <a href="/pages/workers.html" class="nav-item">
+          <span class="nav-icon">👷</span>
+          <span>Workers & Labor</span>
+        </a>
+        <a href="/pages/materials.html" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Materials & Stock</span>
+        </a>
+        <div class="nav-section-title">Execution & Finance</div>
+        <a href="/pages/tasks.html" class="nav-item">
+          <span class="nav-icon">📋</span>
+          <span>Tasks Schedule</span>
+        </a>
+        <a href="/pages/progress.html" class="nav-item">
+          <span class="nav-icon">📈</span>
+          <span>Daily Progress</span>
+        </a>
+        <a href="/pages/expenses.html" class="nav-item">
+          <span class="nav-icon">💰</span>
+          <span>Expenses & Budget</span>
+        </a>
+        <a href="/pages/issues.html" class="nav-item">
+          <span class="nav-icon">⚠️</span>
+          <span>Site Issues & Risks</span>
+        </a>
+        <a href="/pages/reports.html" class="nav-item">
+          <span class="nav-icon">📄</span>
+          <span>Executive Reports</span>
+        </a>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-badge-card">
+          <div class="user-avatar" id="sidebar-user-avatar">U</div>
+          <div class="user-meta">
+            <div class="user-meta-name" id="sidebar-user-name">User</div>
+            <div class="user-meta-role" id="sidebar-user-role">GUEST</div>
+          </div>
+          <button class="btn btn-outline btn-sm btn-logout" title="Sign Out">⏻</button>
+        </div>
+      </div>
+    </aside>
+
+    <main class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button class="menu-toggle-btn" id="menu-toggle">☰</button>
+          <div class="header-title-block">
+            <h1>Machinery Bookings &amp; Approvals</h1>
+            <p>Date-based booking requests, owner approval workflow, conflict prevention &amp; usage logs</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="openCreateBookingModal()">
+            <span>+ Request Machine Booking</span>
+          </button>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <!-- Section 1: Owner Pending Booking Requests (Highlighted) -->
+        <div class="card" id="pending-requests-card" style="border: 2px solid #f59e0b;">
+          <div class="card-header" style="background:#fffbeb;">
+            <h2 class="card-title" style="color:#92400e;">
+              ⏳ Pending Booking Requests (Requires Owner / Admin Approval)
+            </h2>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Requested Machine</th>
+                  <th>Target Project &amp; Site</th>
+                  <th>Requesting Contractor</th>
+                  <th>Booking Window</th>
+                  <th>Total Cost Calculation</th>
+                  <th>Status</th>
+                  <th>Approval Action</th>
+                </tr>
+              </thead>
+              <tbody id="pending-requests-tbody">
+                <tr>
+                  <td colspan="7" style="text-align:center; padding:1.5rem;">Loading pending requests...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 2: Confirmed & Past Bookings -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">📋 Confirmed &amp; Historical Machinery Bookings</h2>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Machinery</th>
+                  <th>Project &amp; Site</th>
+                  <th>Contractor</th>
+                  <th>Dates &amp; Duration</th>
+                  <th>Total Amount</th>
+                  <th>Status</th>
+                  <th>Requested At</th>
+                  <th>Usage &amp; Actions</th>
+                </tr>
+              </thead>
+              <tbody id="all-bookings-tbody">
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:2rem;">Loading bookings history...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Booking Modal with Real-Time Calculator -->
+  <div class="modal-overlay" id="booking-modal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title">Request Machinery Booking</h3>
+        <button class="modal-close" onclick="closeModal('booking-modal')">&times;</button>
+      </div>
+      <form id="booking-form">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="booking-project-id">Target Project <span class="required">*</span></label>
+              <select id="booking-project-id" class="form-select" required>
+                <option value="">Select Project</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="booking-site-id">Target Construction Site <span class="required">*</span></label>
+              <select id="booking-site-id" class="form-select" required>
+                <option value="">Select Site (Choose Project first)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="booking-machine-id">Select Machinery <span class="required">*</span></label>
+            <select id="booking-machine-id" class="form-select" required>
+              <option value="">Select Machinery to Book</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="booking-start-date">Booking Start Date <span class="required">*</span></label>
+              <input type="date" id="booking-start-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="booking-end-date">Booking End Date <span class="required">*</span></label>
+              <input type="date" id="booking-end-date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top:1.5rem;">
+              <input type="checkbox" id="booking-operator-required" checked>
+              <label for="booking-operator-required" style="font-weight:600; font-size:0.875rem; cursor:pointer;">
+                Operator Required
+              </label>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="booking-transport-charge">Transport Charge (₹)</label>
+              <input type="number" id="booking-transport-charge" class="form-control" placeholder="0" min="0" value="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="booking-additional-charge">Additional Charges (₹)</label>
+              <input type="number" id="booking-additional-charge" class="form-control" placeholder="0" min="0" value="0">
+            </div>
+          </div>
+
+          <!-- Real-Time Booking Calculation Summary Box -->
+          <div class="booking-calc-summary">
+            <div class="calc-title">
+              <span>Financial Rental Calculation</span>
+              <span class="badge badge-info">Real-time Estimate</span>
+            </div>
+            <div class="calc-row">
+              <span>Number of Days (inclusive):</span>
+              <strong id="calc-total-days">0 Days</strong>
+            </div>
+            <div class="calc-row">
+              <span>Daily Rate:</span>
+              <strong id="calc-daily-rate">₹0 / day</strong>
+            </div>
+            <div class="calc-row">
+              <span>Base Equipment Rental:</span>
+              <span id="calc-base-rental">₹0</span>
+            </div>
+            <div class="calc-row">
+              <span>Operator Cost:</span>
+              <span id="calc-op-charge">₹0</span>
+            </div>
+            <div class="calc-row">
+              <span>Transport &amp; Mobilization:</span>
+              <span id="calc-trans-charge">₹0</span>
+            </div>
+            <div class="calc-row">
+              <span>Additional Charges:</span>
+              <span id="calc-add-charge">₹0</span>
+            </div>
+            <div class="calc-row total-row">
+              <span>Total Estimated Booking Amount:</span>
+              <span class="calc-val" id="calc-grand-total">₹0</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('booking-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Booking Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Rejection Modal -->
+  <div class="modal-overlay" id="reject-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Reject Machinery Booking Request</h3>
+        <button class="modal-close" onclick="closeModal('reject-modal')">&times;</button>
+      </div>
+      <form id="reject-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="rejection-reason">Rejection Reason <span class="required">*</span></label>
+            <textarea id="rejection-reason" class="form-control" rows="3" placeholder="Provide reason for rejecting this booking (e.g. equipment scheduled for overhaul, operator unavailable)..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('reject-modal')">Cancel</button>
+          <button type="submit" class="btn btn-danger">Confirm Rejection</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Machine Usage Logging Modal -->
+  <div class="modal-overlay" id="usage-modal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 class="modal-title">Log Daily Machine Usage</h3>
+        <button class="modal-close" onclick="closeModal('usage-modal')">&times;</button>
+      </div>
+      <form id="usage-form">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="usage-date">Usage Date <span class="required">*</span></label>
+              <input type="date" id="usage-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="usage-hours">Hours Operated <span class="required">*</span></label>
+              <input type="number" id="usage-hours" class="form-control" placeholder="e.g. 8.5" step="0.5" min="0.5" max="24" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="usage-fuel">Fuel Cost (₹)</label>
+              <input type="number" id="usage-fuel" class="form-control" placeholder="e.g. 3500" min="0">
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:0.5rem; margin-top:1.5rem;">
+              <input type="checkbox" id="usage-operator-present" checked>
+              <label for="usage-operator-present" style="font-weight:600; font-size:0.875rem;">Operator Present</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="usage-work-desc">Work Activity Description</label>
+            <textarea id="usage-work-desc" class="form-control" rows="2" placeholder="e.g. Foundation earth excavation and bucket loading into dumpers..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="usage-remarks">Remarks / Machine Condition</label>
+            <input type="text" id="usage-remarks" class="form-control" placeholder="e.g. Good performance, routine grease lubrication completed.">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('usage-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Usage Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/navigation.js"></script>
+  <script src="/js/bookings.js"></script>
+</body>
+</html>

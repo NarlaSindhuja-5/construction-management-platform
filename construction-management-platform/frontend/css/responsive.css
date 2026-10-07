@@ -1,0 +1,147 @@
+/* ==========================================================================
+   Responsive Breakpoints & Print Stylesheet
+   ========================================================================== */
+
+/* Tablet & Smaller Screens (< 1024px) */
+@media (max-width: 1024px) {
+  .dashboard-grid-2 {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-metrics-strip {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Mobile Devices (< 768px) */
+@media (max-width: 768px) {
+  .menu-toggle-btn {
+    display: inline-flex;
+  }
+
+  .app-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .app-sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.5);
+    z-index: 90;
+  }
+
+  .sidebar-backdrop.active {
+    display: block;
+  }
+
+  .page-content {
+    padding: 1rem;
+  }
+
+  .app-header {
+    padding: 0.75rem 1rem;
+  }
+
+  .header-title-block h1 {
+    font-size: 1.1rem;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-metrics-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-item, .filter-search {
+    width: 100%;
+  }
+
+  .modal-dialog {
+    max-width: 95%;
+    margin: 0.5rem;
+  }
+
+  .form-row, .form-row-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .machine-card-actions {
+    flex-direction: column;
+  }
+}
+
+/* Very Small Mobile (< 480px) */
+@media (max-width: 480px) {
+  .header-actions .btn-text {
+    display: none;
+  }
+
+  .stat-card {
+    padding: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.35rem;
+  }
+}
+
+/* Print Stylesheet for Reports & Academic Demonstrations */
+@media print {
+  .app-sidebar,
+  .app-header,
+  .menu-toggle-btn,
+  .filter-bar,
+  .btn,
+  .modal-overlay,
+  #toast-container {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  .app-container {
+    display: block;
+  }
+
+  .app-main {
+    width: 100% !important;
+  }
+
+  .page-content {
+    padding: 0;
+  }
+
+  .card {
+    border: 1px solid #000000 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .table th, .table td {
+    border-bottom: 1px solid #cccccc !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+}

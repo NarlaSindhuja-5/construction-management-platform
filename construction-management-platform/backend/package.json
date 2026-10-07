@@ -1,0 +1,39 @@
+{
+  "name": "construction-management-backend",
+  "version": "1.0.0",
+  "description": "End-to-End Construction Management & Resource Booking Platform Backend API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "tunnel": ".\\bin\\cloudflared.exe tunnel --url http://127.0.0.1:5000",
+    "tunnel:cloudflare": ".\\bin\\cloudflared.exe tunnel --url http://127.0.0.1:5000",
+    "tunnel:localtunnel": "npx localtunnel --port 5000 --subdomain buildpro-narla",
+    "test": "node tests/booking.test.js && node tests/integration.test.js",
+    "test:unit": "node tests/booking.test.js",
+    "test:integration": "node tests/integration.test.js",
+    "db:init": "node ../database/init-db.js"
+  },
+  "keywords": [
+    "construction-management",
+    "resource-booking",
+    "equipment-rental",
+    "mysql",
+    "express",
+    "jwt"
+  ],
+  "author": "Antigravity Engineering",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.11.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}
